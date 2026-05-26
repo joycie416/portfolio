@@ -12,9 +12,11 @@
   "dependencies": {
     "@lucide/vue": "^1.16.0",
     "@tailwindcss/vite": "^4.3.0",
+    "@vueuse/core": "^14.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "nuxt": "^4.4.6",
+    "reka-ui": "^2.9.8",
     "shadcn-nuxt": "^2.7.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",
