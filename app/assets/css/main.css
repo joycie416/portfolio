@@ -33,7 +33,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
+  --color-primary: var(--primary-500);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -44,6 +44,28 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --color-primary-45: var(--primary-45);
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  --color-primary-950: var(--primary-950);
+
+  --color-gray-00: var(--gray-00);
+  --color-gray-01: var(--gray-01);
+  --color-gray-02: var(--gray-02);
+  --color-gray-03: var(--gray-03);
+  --color-gray-04: var(--gray-04);
+  --color-gray-05: var(--gray-05);
+  --color-gray-06: var(--gray-06);
+  --color-gray-07: var(--gray-07);
 }
 
 :root {
@@ -63,8 +85,10 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  /* --border: oklch(0.922 0 0); */
+  /* --input: oklch(0.922 0 0); */
+  --border: var(--gray-02);
+  --input: var(--gray-02);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -79,6 +103,29 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --primary-45: #f8fcff;
+  --primary-50: #f2f8fd;
+  --primary-100: #dfeefb;
+  --primary-200: #b8d9f5;
+  --primary-300: #91c4f0;
+  --primary-400: #6ab0ea;
+  --primary-500: #439be5;
+  --primary-600: #1d80d3;
+  --primary-700: #1662a1;
+  --primary-800: #104470;
+  --primary-900: #09263f;
+  --primary-950: #051726;
+
+  --gray-00: #ffffff;
+  --gray-01: #f5f6f7;
+  --gray-02: #dce0e3;
+  --gray-03: #c3cad0;
+  --gray-04: #aab4bc;
+  --gray-05: #919ea9;
+  --gray-06: #728290;
+  --gray-07: #272d32;
+  --gray-08: #1b1f23;
 }
 
 .dark {
@@ -97,8 +144,10 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  /* --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%); */
+  --border: var(--gray-02);
+  --input: var(--gray-02);
   --ring: oklch(0.556 0 0);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
@@ -113,6 +162,30 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* TODO: 다크모드 색상 별도 구현되지 않음 */
+  --primary-45: #f8fcff;
+  --primary-50: #f2f8fd;
+  --primary-100: #dfeefb;
+  --primary-200: #b8d9f5;
+  --primary-300: #91c4f0;
+  --primary-400: #6ab0ea;
+  --primary-500: #439be5;
+  --primary-600: #1d80d3;
+  --primary-700: #1662a1;
+  --primary-800: #104470;
+  --primary-900: #09263f;
+  --primary-950: #051726;
+
+  --gray-00: #ffffff;
+  --gray-01: #f5f6f7;
+  --gray-02: #dce0e3;
+  --gray-03: #c3cad0;
+  --gray-04: #aab4bc;
+  --gray-05: #919ea9;
+  --gray-06: #728290;
+  --gray-07: #272d32;
+  --gray-08: #1b1f23;
 }
 
 @layer base {
