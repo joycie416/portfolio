@@ -40,8 +40,8 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from "~/components/ui/button";
-import { DataTable, type Columns } from "~/components/ui/data-table";
+import { Button } from "@/components/ui/button";
+import { DataTable, type Columns } from "@/components/ui/data-table";
 
 type SampleDataType = {
   id: string;

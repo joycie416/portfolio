@@ -1,4 +1,4 @@
-import type { Align } from "~/types";
+import type { Align } from "@/types";
 
 export const getAlignClassName = (align?: Align) => {
   if (align === "left") return "text-left";

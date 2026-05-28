@@ -1,8 +1,8 @@
 import "@tanstack/table-core";
-import type { Align } from "~/types/index.js";
+import type { Align } from "@/types/index.js";
 
 declare module "@tanstack/table-core" {
-  interface ColumnMeta<TData, TValue> {
+  interface ColumnMeta {
     classNames?: {
       header?: string;
       cell?: string;

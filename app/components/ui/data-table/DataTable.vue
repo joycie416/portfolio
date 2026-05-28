@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="TData, TValue">
 import { FlexRender, getCoreRowModel, useVueTable } from "@tanstack/vue-table";
-import { type Columns } from ".";
+import type { Columns } from ".";
 import { cn } from "@/lib/utils";
 
 import {
