@@ -117,6 +117,9 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
+  /* 커스텀 변수 */
+  --header-height: 60px;
+
   --primary-45: #f8fcff;
   --primary-50: #f2f8fd;
   --primary-100: #dfeefb;

@@ -1,5 +1,10 @@
+<script setup lang="ts">
+import { Header } from "./components/layout";
+</script>
+
 <template>
   <div class="app">
+    <Header />
     <NuxtPage />
   </div>
 </template>
@@ -15,5 +20,6 @@
   justify-content: flex-start;
 
   background-color: var(--color-primary-45);
+  color: var(--color-text-gray-01);
 }
 </style>
