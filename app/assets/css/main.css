@@ -219,6 +219,14 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  section[id] {
+    scroll-margin-top: var(--header-height);
+  }
+
   * {
     @apply border-border outline-ring/50;
   }

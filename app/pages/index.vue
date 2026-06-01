@@ -1,8 +1,16 @@
 <template>
-  <div class="w-full h-full flex">
-    <div class="w-80 h-full bg-gray-01 border-r border-r-border">sidebar</div>
-    <h2>Hello World</h2>
+  <div class="w-full flex flex-col">
+    <TopSection />
+    <SkillSection />
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { SkillSection, TopSection } from "@/components/features/portfolio";
+</script>
+
+<style scoped>
+html {
+  scroll-behavior: smooth;
+}
+</style>

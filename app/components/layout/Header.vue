@@ -2,7 +2,7 @@
 import { Home } from "@lucide/vue";
 
 const route = useRoute();
-const currentPath = computed(() => route.path);
+const currentPath = computed(() => route.fullPath);
 const isCurrentPath = (path: string) => {
   if (path === "/") {
     return currentPath.value === "/";
@@ -18,24 +18,31 @@ const isCurrentPath = (path: string) => {
     </NuxtLink>
 
     <div class="flex justify-between items-center gap-5">
+      <NuxtLink href="/#top" class="text" :data-current="isCurrentPath('/#top')"
+        >Top</NuxtLink
+      >
+      <NuxtLink
+        href="/#skills"
+        class="text"
+        :data-current="isCurrentPath('/#skills')"
+        >Skills</NuxtLink
+      >
       <NuxtLink
         to="/components"
         class="text"
         :data-current="isCurrentPath('/components')"
         >Components</NuxtLink
       >
-      <NuxtLink to="/components" class="text">Components</NuxtLink>
       <NuxtLink to="/components" class="text" :data-current="isCurrentPath('/')"
         >Components</NuxtLink
       >
-      <NuxtLink to="/components" class="text">Components</NuxtLink>
     </div>
   </header>
 </template>
 
 <style scoped>
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
 
   width: 100%;
@@ -47,7 +54,10 @@ const isCurrentPath = (path: string) => {
   justify-content: space-between;
   align-items: center;
 
+  background-color: var(--color-primary-45);
   border-bottom: solid 1px var(--color-gray-02);
+
+  z-index: 10;
 }
 .icon {
   width: 44px;
@@ -65,7 +75,8 @@ const isCurrentPath = (path: string) => {
   background-color: var(--color-gray-01);
 }
 .text {
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
 }
 .text:hover {
   color: var(--color-primary-400);
