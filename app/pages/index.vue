@@ -1,12 +1,12 @@
 <template>
   <div class="w-full flex flex-col">
-    <TopSection />
+    <ProfileSection />
     <SkillSection />
   </div>
 </template>
 
 <script setup lang="ts">
-import { SkillSection, TopSection } from "@/components/features/portfolio";
+import { SkillSection, ProfileSection } from "@/components/features/portfolio";
 </script>
 
 <style scoped>

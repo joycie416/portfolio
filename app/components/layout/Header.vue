@@ -40,7 +40,7 @@ const isCurrentPath = (path: string) => {
   </header>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .header {
   position: fixed;
   top: 0;
@@ -70,21 +70,25 @@ const isCurrentPath = (path: string) => {
   border-radius: 8px;
 
   transition: background-color 0.2s;
-}
-.icon:hover {
-  background-color: var(--color-gray-01);
+
+  &:hover {
+    background-color: var(--color-gray-01);
+  }
 }
 .text {
   font-size: 18px;
   font-weight: 600;
-}
-.text:hover {
-  color: var(--color-primary-400);
-}
-.text[data-current="true"] {
-  color: var(--color-primary-600);
-}
-.text[data-current="true"]:hover {
-  color: var(--color-primary-600);
+
+  &:hover {
+    color: var(--color-primary-400);
+  }
+
+  &[data-current="true"] {
+    color: var(--color-primary-600);
+
+    &:hover {
+      color: var(--color-primary-600);
+    }
+  }
 }
 </style>
