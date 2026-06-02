@@ -10,7 +10,7 @@ import {
 </script>
 
 <template>
-  <section id="top" class="h-screen py-20">
+  <section id="top" class="min-h-screen py-20">
     <div
       class="w-full max-w-[1024px] h-full mx-auto py-10 flex flex-col space-y-10"
     >

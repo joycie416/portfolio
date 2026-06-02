@@ -81,6 +81,31 @@
   --color-text-gray-02: var(--gray-08);
   --color-text-gray-03: var(--gray-06);
   --color-text-gray-04: var(--gray-00);
+
+  /* 스킬 색상 */
+  --color-skill-typescript: var(--skill-typescript);
+  --color-skill-javascript: var(--skill-javascript);
+  --color-skill-python: var(--skill-python);
+  --color-skill-nextjs: var(--skill-nextjs);
+  --color-skill-nuxt: var(--skill-nuxt);
+  --color-skill-react: var(--skill-react);
+  --color-skill-vue: var(--skill-vue);
+  --color-skill-tanstack-query: var(--skill-tanstack-query);
+  --color-skill-zustand: var(--skill-zustand);
+  --color-skill-recoil: var(--skill-recoil);
+  --color-skill-axios: var(--skill-axios);
+  --color-skill-supabase: var(--skill-supabase);
+  --color-skill-shadcn-ui: var(--skill-shadcn-ui);
+  --color-skill-tailwind-css: var(--skill-tailwind-css);
+  --color-skill-scss: var(--skill-scss);
+  --color-skill-zod: var(--skill-zod);
+  --color-skill-react-hook-form: var(--skill-react-hook-form);
+  --color-skill-dayjs: var(--skill-dayjs);
+  --color-skill-group-languages: var(--skill-group-languages);
+  --color-skill-group-frameworks: var(--skill-group-frameworks);
+  --color-skill-group-data-state: var(--skill-group-data-state);
+  --color-skill-group-ui-styling: var(--skill-group-ui-styling);
+  --color-skill-group-forms-utilities: var(--skill-group-forms-utilities);
 }
 
 :root {
@@ -150,6 +175,31 @@
   --red-03: #f58b99;
   --red-04: #f5485d;
   --red-05: #b92e43;
+
+  /* 스킬 색상 */
+  --skill-typescript: #3178c6;
+  --skill-javascript: #f7df1e;
+  --skill-python: #3776ab;
+  --skill-nextjs: #000000;
+  --skill-nuxt: #00dc82;
+  --skill-react: #58c4dc;
+  --skill-vue: #42b883;
+  --skill-tanstack-query: #ff4154;
+  --skill-zustand: #443e38;
+  --skill-recoil: #3578e5;
+  --skill-axios: #5a29e4;
+  --skill-supabase: #3ecf8e;
+  --skill-shadcn-ui: #000000;
+  --skill-tailwind-css: #06b6d4;
+  --skill-scss: #cc6699;
+  --skill-zod: #3068b7;
+  --skill-react-hook-form: #ec5990;
+  --skill-dayjs: #ff5f4c;
+  --skill-group-languages: #3b82f6;
+  --skill-group-frameworks: #22c55e;
+  --skill-group-data-state: #8b5cf6;
+  --skill-group-ui-styling: #ec4899;
+  --skill-group-forms-utilities: #f97316;
 }
 
 .dark {
@@ -216,6 +266,31 @@
   --red-03: #f58b99;
   --red-04: #f5485d;
   --red-05: #b92e43;
+
+  /* 스킬 색상 */
+  --skill-typescript: #3178c6;
+  --skill-javascript: #f7df1e;
+  --skill-python: #3776ab;
+  --skill-nextjs: #000000;
+  --skill-nuxt: #00dc82;
+  --skill-react: #58c4dc;
+  --skill-vue: #42b883;
+  --skill-tanstack-query: #ff4154;
+  --skill-zustand: #443e38;
+  --skill-recoil: #3578e5;
+  --skill-axios: #5a29e4;
+  --skill-supabase: #3ecf8e;
+  --skill-shadcn-ui: #000000;
+  --skill-tailwind-css: #06b6d4;
+  --skill-scss: #cc6699;
+  --skill-zod: #3068b7;
+  --skill-react-hook-form: #ec5990;
+  --skill-dayjs: #ff5f4c;
+  --skill-group-languages: #3b82f6;
+  --skill-group-frameworks: #22c55e;
+  --skill-group-data-state: #8b5cf6;
+  --skill-group-ui-styling: #ec4899;
+  --skill-group-forms-utilities: #f97316;
 }
 
 @layer base {
@@ -224,7 +299,7 @@
   }
 
   section[id] {
-    scroll-margin-top: var(--header-height);
+    scroll-padding-top: var(--header-height);
   }
 
   * {
