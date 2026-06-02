@@ -18,11 +18,11 @@ const isCurrentPath = (path: string) => {
     </NuxtLink>
 
     <div class="flex justify-between items-center gap-5">
-      <NuxtLink href="/#top" class="text" :data-current="isCurrentPath('/#top')"
+      <NuxtLink to="/#top" class="text" :data-current="isCurrentPath('/#top')"
         >Top</NuxtLink
       >
       <NuxtLink
-        href="/#skills"
+        to="/#skills"
         class="text"
         :data-current="isCurrentPath('/#skills')"
         >Skills</NuxtLink
