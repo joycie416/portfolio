@@ -60,7 +60,7 @@ import {
       color-mix(in srgb, var(--color-primary-50) 65%, transparent),
       color-mix(in srgb, var(--color-primary-50) 65%, transparent)
     ),
-    url("/images/BackgroundImage01.jpg");
+    url("@/assets/images/BackgroundImage01.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
