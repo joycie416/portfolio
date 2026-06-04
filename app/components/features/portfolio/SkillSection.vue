@@ -33,16 +33,12 @@
           </div>
 
           <div class="flex flex-wrap gap-3">
-            <Badge
+            <SkillBadge
               v-for="skill in group.skills"
               :key="skill.name"
+              :skill="skill"
               size="lg"
-              variant="outline"
-              class="skill__badge"
-              :style="{ '--skill-color': `var(--skill-${skill.color})` }"
-            >
-              {{ skill.name }}
-            </Badge>
+            />
           </div>
         </article>
       </div>
@@ -51,9 +47,9 @@
 </template>
 
 <script setup lang="ts">
-import { Badge } from "@/components/ui/badge";
 import { CodeXml, Command, Database, Layers, Paintbrush } from "@lucide/vue";
 import type { Component } from "vue";
+import SkillBadge from "./SkillBadge.vue";
 
 interface Skill {
   name: string;
@@ -154,16 +150,6 @@ const skillSets: Group[] = [
       background-color: color-mix(in srgb, var(--skill-group-color) 12%, white);
       color: var(--skill-group-color);
     }
-  }
-
-  &__badge {
-    border-radius: 6px;
-
-    --skill-color: var(--color-gray-05);
-    border-color: color-mix(in srgb, var(--skill-color) 45%, transparent);
-    background-color: color-mix(in srgb, var(--skill-color) 10%, white);
-    color: color-mix(in srgb, var(--skill-color) 70%, black);
-    font-weight: 700;
   }
 }
 </style>
