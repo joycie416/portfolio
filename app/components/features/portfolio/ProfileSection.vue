@@ -1,25 +1,35 @@
 <script setup lang="ts">
-import {
-  Cake,
-  GraduationCap,
-  Mail,
-  MapPinHouse,
-  PersonStanding,
-  UserRound,
-} from "@lucide/vue";
+import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
 </script>
 
 <template>
-  <section id="top" class="min-h-screen py-20">
+  <section id="top" class="relative min-h-screen py-20">
+    <!-- 배경 이미지 -->
+    <NuxtImg
+      src="/images/BackgroundImage01.jpg"
+      alt=""
+      format="webp"
+      fit="cover"
+      class="absolute top-0 size-full"
+    />
+    <!-- 배경 이미지 오버레이 -->
+    <div aria-hidden="true" class="absolute inset-0 bg-gray-02 opacity-65" />
+
     <div
-      class="w-full max-w-[1024px] h-full mx-auto py-10 flex flex-col space-y-10"
+      class="relative w-full max-w-[1024px] h-full mx-auto py-10 flex flex-col space-y-10"
     >
       <p>여기에도 뭘 더 써놓으면 좋을 것 같은데</p>
 
       <div class="profile">
         <!-- 프로필 사진 -->
         <div class="profile__image">
-          <PersonStanding class="w-full h-full object-cover" />
+          <NuxtImg
+            src="/images/ProfileImage.jpg"
+            alt="profile_image"
+            format="webp"
+            fit="cover"
+            class="size-full"
+          />
         </div>
 
         <!-- 내 정보 -->
@@ -54,17 +64,6 @@ import {
 </template>
 
 <style lang="scss" scoped>
-#top {
-  background-image:
-    linear-gradient(
-      color-mix(in srgb, var(--color-primary-50) 65%, transparent),
-      color-mix(in srgb, var(--color-primary-50) 65%, transparent)
-    ),
-    url("@/assets/images/BackgroundImage01.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
 .profile {
   width: 100%;
   height: fit-content;
@@ -80,14 +79,13 @@ import {
   border-radius: 32px;
 
   &__image {
+    overflow: hidden;
+
     width: 100%;
     max-width: 320px;
     aspect-ratio: 3 / 4;
     border-radius: 50%;
-    background-color: var(--color-primary-200);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: var(--color-gray-02);
   }
 
   &__list {
