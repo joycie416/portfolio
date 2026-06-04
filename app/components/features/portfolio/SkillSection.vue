@@ -48,22 +48,10 @@
 
 <script setup lang="ts">
 import { CodeXml, Command, Database, Layers, Paintbrush } from "@lucide/vue";
-import type { Component } from "vue";
 import SkillBadge from "./SkillBadge.vue";
+import type { SkillGroup } from "@/types";
 
-interface Skill {
-  name: string;
-  color: string;
-}
-
-interface Group {
-  title: string;
-  icon: Component;
-  color: string;
-  skills: Skill[];
-}
-
-const skillSets: Group[] = [
+const skillSets: SkillGroup[] = [
   {
     title: "Languages",
     icon: CodeXml,
@@ -126,7 +114,7 @@ const skillSets: Group[] = [
     padding: 24px 28px;
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.56);
+    background: var(--color-primary-50);
     box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
     backdrop-filter: blur(8px);
 

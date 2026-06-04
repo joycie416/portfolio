@@ -28,6 +28,12 @@ const isCurrentPath = (path: string) => {
         >Skills</NuxtLink
       >
       <NuxtLink
+        to="/#projects"
+        class="text"
+        :data-current="isCurrentPath('/#projects')"
+        >Projects</NuxtLink
+      >
+      <NuxtLink
         to="/components"
         class="text"
         :data-current="isCurrentPath('/components')"

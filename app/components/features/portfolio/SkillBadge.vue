@@ -13,12 +13,10 @@
 <script setup lang="ts">
 import { Badge } from "@/components/ui/badge";
 import type { BadgeVariants } from "@/components/ui/badge";
+import type { Skill } from "@/types";
 
 const props = defineProps<{
-  skill: {
-    name: string;
-    color: string;
-  };
+  skill: Skill;
   size?: BadgeVariants["size"];
 }>();
 </script>
