@@ -6,7 +6,7 @@
       <h2 class="text-5xl font-bold tracking-tight">Projects</h2>
 
       <!-- 프로젝트 리스트 -->
-      <div class="project grid grid-cols-2 gap-5">
+      <div class="project grid grid-cols-2 gap-7">
         <!-- 프로젝트 카드 -->
         <ProjectCard
           v-for="project in PROJECT_DATA"

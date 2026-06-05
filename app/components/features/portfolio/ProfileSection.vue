@@ -22,7 +22,7 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
         조해인<br />FRONTEND PORTFOLIO
       </p>
 
-      <div class="profile bg-primary-50 border border-gray-02 rounded-[32px]">
+      <div class="profile bg-primary-45 border border-gray-02 rounded-[32px]">
         <!-- 프로필 사진 -->
         <div class="profile__image">
           <NuxtImg
