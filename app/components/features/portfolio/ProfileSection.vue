@@ -18,9 +18,11 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
     <div
       class="relative w-full max-w-[1024px] h-full mx-auto py-10 flex flex-col space-y-10"
     >
-      <p>여기에도 뭘 더 써놓으면 좋을 것 같은데</p>
+      <p class="font-rix text-5xl leading-[1.3] text-center text-white">
+        조해인<br />FRONTEND PORTFOLIO
+      </p>
 
-      <div class="profile">
+      <div class="profile bg-primary-50 border border-gray-02 rounded-[32px]">
         <!-- 프로필 사진 -->
         <div class="profile__image">
           <NuxtImg
@@ -33,28 +35,47 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
         </div>
 
         <!-- 내 정보 -->
-        <div class="flex-1 space-y-20">
-          <p>멘트 뭐라고 하면 좋을까</p>
-          <ul class="profile__list">
+        <div class="flex-1 space-y-10">
+          <div>
+            <p
+              class="text-xl font-semibold tracking-tight text-text-gray-02 text-center"
+            >
+              수학의 증명 과정처럼, 프로그래밍 역시<br />
+              주어진 조건을 분석하고 원하는 결과에 도달하는<br />로직을 설계하는
+              과정이라고 생각합니다.
+            </p>
+          </div>
+          <hr class="w-1/2 mx-auto border border-gray-05" />
+          <ul class="profile__list pl-10">
             <li>
               <UserRound />
-              <p>조해인</p>
+              <label for="name" class="w-16">이름</label>
+              <hr class="h-4 border border-gray-05" />
+              <p id="name">조해인</p>
             </li>
             <li>
               <Cake />
-              <p>98. 04. 16.</p>
+              <label for="birthday" class="w-16">생년월일</label>
+              <hr class="h-4 border border-gray-05" />
+              <p id="birthday">98. 04. 16.</p>
             </li>
             <li>
               <Mail />
-              <p>joycie416(at)gmail.com</p>
+              <label for="email" class="w-16">이메일</label>
+              <hr class="h-4 border border-gray-05" />
+              <p id="email">joycie416@gmail.com</p>
             </li>
             <li>
               <MapPinHouse />
-              <p>서울특별시 종로구</p>
+              <label for="address" class="w-16">주소</label>
+              <hr class="h-4 border border-gray-05" />
+              <p id="address">서울특별시 종로구</p>
             </li>
             <li>
               <GraduationCap />
-              <p>강원대학교 수학과 이학석사</p>
+              <label for="education" class="w-16">학력</label>
+              <hr class="h-4 border border-gray-05" />
+              <p id="education">강원대학교 수학과 이학석사</p>
             </li>
           </ul>
         </div>
@@ -75,9 +96,6 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
   align-items: center;
   gap: 120px;
 
-  background-color: #ffffff;
-  border-radius: 32px;
-
   &__image {
     overflow: hidden;
 
@@ -94,6 +112,8 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
       align-items: center;
       gap: 20px;
       margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: 500;
 
       &:last-child {
         margin-bottom: 0;

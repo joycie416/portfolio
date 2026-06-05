@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap");
 @import "../fonts/pretendardvariable.css";
+@import "../fonts/rixfontVariable.css";
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -8,6 +9,7 @@
 
 @theme inline {
   --font-pretendard: "Pretendard Variable", sans-serif;
+  --font-rix: "Rix", sans-serif;
   --font-heading: var(--font-pretendard);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
