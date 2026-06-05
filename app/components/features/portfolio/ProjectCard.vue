@@ -28,7 +28,7 @@
       <div
         v-for="link in props.project.links"
         :key="link.url"
-        class="project__card__link h-fit"
+        class="project__card__link h-fit flex items-center"
       >
         <Button variant="ghost" class="h-5 px-1 py-0">
           <NuxtImg
@@ -38,7 +38,7 @@
             width="20"
             height="20"
           />
-          <SquareArrowOutUpLeft
+          <SquareArrowOutUpRight
             v-if="link.type === 'demo'"
             width="20"
             height="20"
@@ -67,7 +67,7 @@
 import { Button } from "@/components/ui/button/index.js";
 import SkillBadge from "./SkillBadge.vue";
 import type { Project } from "@/types/index.js";
-import { BookText, Link2, SquareArrowOutUpLeft } from "@lucide/vue";
+import { BookText, Link2, SquareArrowOutUpRight } from "@lucide/vue";
 
 const props = defineProps<{ project: Project }>();
 </script>
