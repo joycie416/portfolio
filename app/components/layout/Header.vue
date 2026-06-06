@@ -2,13 +2,40 @@
 import { Home } from "@lucide/vue";
 
 const route = useRoute();
-const currentPath = computed(() => route.fullPath);
-const isCurrentPath = (path: string) => {
-  if (path === "/") {
-    return currentPath.value === "/";
+
+const sectionIds = ["profile", "skills", "projects"] as const;
+const activeSection = ref<(typeof sectionIds)[number] | null>(null);
+
+const scrollToSection = async (id: (typeof sectionIds)[number]) => {
+  if (route.path !== "/") {
+    await navigateTo("/");
   }
-  return currentPath.value.startsWith(path);
+  await nextTick();
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 };
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        // 섹션이 화면에 보이면 해당 섹션의 ID를 activeSection에 저장
+        if (entry.isIntersecting) {
+          activeSection.value = entry.target.id as (typeof sectionIds)[number];
+        }
+      }
+    },
+    { rootMargin: "-40% 0px -40% 0px", threshold: 0 },
+  );
+
+  // 각 섹션을 관찰 대상으로 등록
+  for (const id of sectionIds) {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  }
+
+  // 언마운트 시 관찰 중단
+  onUnmounted(() => observer.disconnect());
+});
 </script>
 
 <template>
@@ -18,30 +45,30 @@ const isCurrentPath = (path: string) => {
     </NuxtLink>
 
     <div class="flex justify-between items-center gap-5">
-      <NuxtLink to="/#top" class="text" :data-current="isCurrentPath('/#top')"
-        >Top</NuxtLink
-      >
-      <NuxtLink
-        to="/#skills"
+      <button
+        type="button"
         class="text"
-        :data-current="isCurrentPath('/#skills')"
-        >Skills</NuxtLink
+        :data-current="activeSection === 'profile'"
+        @click="scrollToSection('profile')"
       >
-      <NuxtLink
-        to="/#projects"
+        Top
+      </button>
+      <button
+        type="button"
         class="text"
-        :data-current="isCurrentPath('/#projects')"
-        >Projects</NuxtLink
+        :data-current="activeSection === 'skills'"
+        @click="scrollToSection('skills')"
       >
-      <NuxtLink
-        to="/components"
+        Skills
+      </button>
+      <button
+        type="button"
         class="text"
-        :data-current="isCurrentPath('/components')"
-        >Components</NuxtLink
+        :data-current="activeSection === 'projects'"
+        @click="scrollToSection('projects')"
       >
-      <NuxtLink to="/components" class="text" :data-current="isCurrentPath('/')"
-        >Components</NuxtLink
-      >
+        Projects
+      </button>
     </div>
   </header>
 </template>
@@ -84,6 +111,10 @@ const isCurrentPath = (path: string) => {
 .text {
   font-size: 18px;
   font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 
   &:hover {
     color: var(--color-primary-400);

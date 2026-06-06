@@ -3,7 +3,7 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
 </script>
 
 <template>
-  <section id="top" class="relative min-h-screen py-20">
+  <section id="profile" class="relative min-h-screen py-20">
     <!-- 배경 이미지 -->
     <NuxtImg
       src="/images/BackgroundImage01.jpg"
