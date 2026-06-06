@@ -10,9 +10,15 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
   },
 
-  modules: ["shadcn-nuxt"],
+  modules: ["shadcn-nuxt", "@nuxt/eslint", "@nuxt/image"],
   shadcn: {
     prefix: "",
     componentDir: "./components/ui",
+  },
+
+  routeRules: {
+    "/": {
+      prerender: true,
+    },
   },
 });

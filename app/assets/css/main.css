@@ -1,5 +1,5 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap');
+@import "../fonts/pretendardvariable.css";
+@import "../fonts/rixfontVariable.css";
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -7,7 +7,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-heading: var(--font-sans);
+  --font-pretendard: "Pretendard Variable", sans-serif;
+  --font-rix: "Rix", sans-serif;
+  --font-heading: var(--font-pretendard);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -32,7 +34,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
+  --color-primary: var(--primary-500);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
@@ -43,6 +45,68 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --color-primary-45: var(--primary-45);
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  --color-primary-950: var(--primary-950);
+
+  --color-gray-00: var(--gray-00);
+  --color-gray-01: var(--gray-01);
+  --color-gray-02: var(--gray-02);
+  --color-gray-03: var(--gray-03);
+  --color-gray-04: var(--gray-04);
+  --color-gray-05: var(--gray-05);
+  --color-gray-06: var(--gray-06);
+  --color-gray-07: var(--gray-07);
+  --color-gray-08: var(--gray-08);
+  --color-gray-09: var(--gray-09);
+  --color-gray-10: var(--gray-10);
+
+  --color-red: var(--red-04);
+  --color-red-01: var(--red-01);
+  --color-red-02: var(--red-02);
+  --color-red-03: var(--red-03);
+  --color-red-04: var(--red-04);
+  --color-red-05: var(--red-05);
+
+  --color-text-gray-01: var(--gray-10);
+  --color-text-gray-02: var(--gray-08);
+  --color-text-gray-03: var(--gray-06);
+  --color-text-gray-04: var(--gray-00);
+
+  /* 스킬 색상 */
+  --color-skill-typescript: var(--skill-typescript);
+  --color-skill-javascript: var(--skill-javascript);
+  --color-skill-python: var(--skill-python);
+  --color-skill-nextjs: var(--skill-nextjs);
+  --color-skill-nuxt: var(--skill-nuxt);
+  --color-skill-react: var(--skill-react);
+  --color-skill-vue: var(--skill-vue);
+  --color-skill-tanstack-query: var(--skill-tanstack-query);
+  --color-skill-zustand: var(--skill-zustand);
+  --color-skill-recoil: var(--skill-recoil);
+  --color-skill-axios: var(--skill-axios);
+  --color-skill-supabase: var(--skill-supabase);
+  --color-skill-shadcn-ui: var(--skill-shadcn-ui);
+  --color-skill-tailwind-css: var(--skill-tailwind-css);
+  --color-skill-scss: var(--skill-scss);
+  --color-skill-zod: var(--skill-zod);
+  --color-skill-react-hook-form: var(--skill-react-hook-form);
+  --color-skill-dayjs: var(--skill-dayjs);
+  --color-skill-group-languages: var(--skill-group-languages);
+  --color-skill-group-frameworks: var(--skill-group-frameworks);
+  --color-skill-group-data-state: var(--skill-group-data-state);
+  --color-skill-group-ui-styling: var(--skill-group-ui-styling);
+  --color-skill-group-forms-utilities: var(--skill-group-forms-utilities);
 }
 
 :root {
@@ -53,17 +117,17 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  --primary: var(--primary-500);
+  --primary-foreground: var(--primary-45);
+  --secondary: var(--gray-07);
+  --secondary-foreground: var(--gray-00);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --destructive: var(--red-04);
+  --border: var(--gray-02);
+  --input: var(--gray-02);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -78,6 +142,66 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* 커스텀 변수 */
+  --header-height: 60px;
+
+  --primary-45: #f8fcff;
+  --primary-50: #f2f8fd;
+  --primary-100: #dfeefb;
+  --primary-200: #b8d9f5;
+  --primary-300: #91c4f0;
+  --primary-400: #6ab0ea;
+  --primary-500: #439be5;
+  --primary-600: #1d80d3;
+  --primary-700: #1662a1;
+  --primary-800: #104470;
+  --primary-900: #09263f;
+  --primary-950: #051726;
+
+  --gray-00: #ffffff;
+  --gray-01: #f5f6f7;
+  --gray-02: #dce0e3;
+  --gray-03: #c3cad0;
+  --gray-04: #aab4bc;
+  --gray-05: #919ea9;
+  --gray-06: #728290;
+  --gray-07: #596671;
+  --gray-08: #404a52;
+  --gray-09: #272d32;
+  --gray-10: #1b1f23;
+
+  --red-01: #fcedef;
+  --red-02: #f7d3d9;
+  --red-03: #f58b99;
+  --red-04: #f5485d;
+  --red-05: #b92e43;
+
+  /* 스킬 색상 */
+  --skill-typescript: #3178c6;
+  --skill-javascript: #f7df1e;
+  --skill-python: #3776ab;
+  --skill-nextjs: #000000;
+  --skill-nuxt: #00dc82;
+  --skill-vite: #646cff;
+  --skill-react: #58c4dc;
+  --skill-vue: #42b883;
+  --skill-tanstack-query: #ff4154;
+  --skill-zustand: #443e38;
+  --skill-recoil: #3578e5;
+  --skill-axios: #5a29e4;
+  --skill-supabase: #3ecf8e;
+  --skill-shadcn-ui: #000000;
+  --skill-tailwind-css: #06b6d4;
+  --skill-scss: #cc6699;
+  --skill-zod: #3068b7;
+  --skill-react-hook-form: #ec5990;
+  --skill-dayjs: #ff5f4c;
+  --skill-group-languages: #3b82f6;
+  --skill-group-frameworks: #22c55e;
+  --skill-group-data-state: #8b5cf6;
+  --skill-group-ui-styling: #ec4899;
+  --skill-group-forms-utilities: #f97316;
 }
 
 .dark {
@@ -87,17 +211,17 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
+  --primary: var(--primary-500);
+  --primary-foreground: var(--primary-45);
+  --secondary: var(--gray-07);
+  --secondary-foreground: var(--gray-00);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  --destructive: var(--red-04);
+  --border: var(--gray-02);
+  --input: var(--gray-02);
   --ring: oklch(0.556 0 0);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
@@ -112,13 +236,79 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* TODO: 다크모드 색상 별도 구현되지 않음 */
+  --primary-45: #f8fcff;
+  --primary-50: #f2f8fd;
+  --primary-100: #dfeefb;
+  --primary-200: #b8d9f5;
+  --primary-300: #91c4f0;
+  --primary-400: #6ab0ea;
+  --primary-500: #439be5;
+  --primary-600: #1d80d3;
+  --primary-700: #1662a1;
+  --primary-800: #104470;
+  --primary-900: #09263f;
+  --primary-950: #051726;
+
+  --gray-00: #ffffff;
+  --gray-01: #f5f6f7;
+  --gray-02: #dce0e3;
+  --gray-03: #c3cad0;
+  --gray-04: #aab4bc;
+  --gray-05: #919ea9;
+  --gray-06: #728290;
+  --gray-07: #596671;
+  --gray-08: #404a52;
+  --gray-09: #272d32;
+  --gray-10: #1b1f23;
+
+  --red-01: #fcedef;
+  --red-02: #f7d3d9;
+  --red-03: #f58b99;
+  --red-04: #f5485d;
+  --red-05: #b92e43;
+
+  /* 스킬 색상 */
+  --skill-typescript: #3178c6;
+  --skill-javascript: #f7df1e;
+  --skill-python: #3776ab;
+  --skill-nextjs: #000000;
+  --skill-nuxt: #00dc82;
+  --skill-vite: #646cff;
+  --skill-react: #58c4dc;
+  --skill-vue: #42b883;
+  --skill-tanstack-query: #ff4154;
+  --skill-zustand: #443e38;
+  --skill-recoil: #3578e5;
+  --skill-axios: #5a29e4;
+  --skill-supabase: #3ecf8e;
+  --skill-shadcn-ui: #000000;
+  --skill-tailwind-css: #06b6d4;
+  --skill-scss: #cc6699;
+  --skill-zod: #3068b7;
+  --skill-react-hook-form: #ec5990;
+  --skill-dayjs: #ff5f4c;
+  --skill-group-languages: #3b82f6;
+  --skill-group-frameworks: #22c55e;
+  --skill-group-data-state: #8b5cf6;
+  --skill-group-ui-styling: #ec4899;
+  --skill-group-forms-utilities: #f97316;
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  section[id] {
+    scroll-padding-top: var(--header-height);
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-text-gray-01 font-pretendard;
   }
 }
