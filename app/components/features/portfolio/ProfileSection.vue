@@ -5,7 +5,7 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
 <template>
   <section
     id="profile"
-    class="relative min-h-screen px-5 py-10 md:min-h-fit lg:min-h-screen lg:px-0 lg:py-20"
+    class="relative min-h-fit px-5 py-10 lg:min-h-screen lg:px-0 lg:py-20"
   >
     <!-- 배경 이미지 -->
     <NuxtImg
@@ -13,7 +13,7 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
       alt=""
       format="webp"
       fit="cover"
-      class="absolute inset-0 size-full"
+      class="absolute inset-0 h-full object-cover"
     />
     <!-- 배경 이미지 오버레이 -->
     <div aria-hidden="true" class="absolute inset-0 bg-gray-02 opacity-65" />

@@ -1,7 +1,7 @@
 <template>
   <section
     id="projects"
-    class="min-h-screen bg-primary-200 px-5 py-10 md:min-h-fit lg:min-h-screen lg:px-0 lg:py-20"
+    class="min-h-fit bg-primary-200 px-5 py-10 lg:min-h-screen lg:px-0 lg:py-20"
   >
     <div
       class="w-full max-w-[1024px] h-full flex flex-col mx-auto py-5 space-y-6 lg:py-10 lg:space-y-10"
