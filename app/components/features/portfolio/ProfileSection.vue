@@ -41,7 +41,7 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
 
         <!-- 내 정보 -->
         <div
-          class="flex-1 md:max-w-[360px] lg:max-w-[420px] mx-auto space-y-10"
+          class="flex-1 md:max-w-[360px] lg:max-w-[420px] md:mx-auto space-y-10"
         >
           <div>
             <p
@@ -138,7 +138,7 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
 
   &__list {
     @include md {
-      padding: 0 0 0 40px;
+      padding: 0 0 0 20px;
     }
     @include lg {
       padding: 0 0 0 20px;
