@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="project__card flex flex-col p-7 pb-6 bg-primary-50 border border-gray-02 rounded-3xl"
-  >
+  <div class="project__card">
     <!-- 프로젝트 제목 -->
     <p class="text-2xl font-bold mb-3">{{ props.project.title }}</p>
     <!-- 프로젝트 설명 -->
@@ -28,7 +26,7 @@
       <div
         v-for="link in props.project.links"
         :key="link.url"
-        class="project__card__link h-fit flex items-center"
+        class="project__card__link"
       >
         <Button variant="ghost" class="h-5 px-1 py-0">
           <NuxtImg
@@ -75,6 +73,14 @@ const props = defineProps<{ project: Project }>();
 <style lang="scss" scoped>
 .project {
   &__card {
+    display: flex;
+    flex-direction: column;
+    padding: 28px 28px 24px 28px;
+
+    border: 1px solid var(--color-gray-02);
+    border-radius: 24px;
+    background: var(--color-primary-50);
+
     box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
     backdrop-filter: blur(8px);
 
@@ -88,6 +94,10 @@ const props = defineProps<{ project: Project }>();
       }
     }
     &__link {
+      display: flex;
+      align-items: center;
+      height: fit-content;
+
       &:not(:first-child) {
         padding-left: 10px;
         border-left: 1px solid var(--color-gray-02);

@@ -10,7 +10,7 @@
         </p>
       </div>
 
-      <div class="skill grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div class="skill">
         <article
           v-for="group in skillSets"
           :key="group.title"
@@ -110,6 +110,10 @@ const skillSets: SkillGroup[] = [
 
 <style lang="scss" scoped>
 .skill {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+
   &__card {
     padding: 24px 28px;
     border: 1px solid rgba(15, 23, 42, 0.08);

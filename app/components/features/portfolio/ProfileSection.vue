@@ -22,7 +22,7 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
         조해인<br />FRONTEND PORTFOLIO
       </p>
 
-      <div class="profile bg-primary-45 border border-gray-02 rounded-[32px]">
+      <div class="profile">
         <!-- 프로필 사진 -->
         <div class="profile__image">
           <NuxtImg
@@ -46,35 +46,35 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
             </p>
           </div>
           <hr class="w-1/2 mx-auto border border-gray-05" />
-          <ul class="profile__list pl-10">
+          <ul class="profile__list">
             <li>
               <UserRound />
               <label for="name" class="w-16">이름</label>
-              <hr class="h-4 border border-gray-05" />
+              <hr />
               <p id="name">조해인</p>
             </li>
             <li>
               <Cake />
               <label for="birthday" class="w-16">생년월일</label>
-              <hr class="h-4 border border-gray-05" />
+              <hr />
               <p id="birthday">98. 04. 16.</p>
             </li>
             <li>
               <Mail />
               <label for="email" class="w-16">이메일</label>
-              <hr class="h-4 border border-gray-05" />
+              <hr />
               <p id="email">joycie416@gmail.com</p>
             </li>
             <li>
               <MapPinHouse />
               <label for="address" class="w-16">주소</label>
-              <hr class="h-4 border border-gray-05" />
+              <hr />
               <p id="address">서울특별시 종로구</p>
             </li>
             <li>
               <GraduationCap />
               <label for="education" class="w-16">학력</label>
-              <hr class="h-4 border border-gray-05" />
+              <hr />
               <p id="education">강원대학교 수학과 이학석사</p>
             </li>
           </ul>
@@ -96,6 +96,11 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
   align-items: center;
   gap: 120px;
 
+  background-color: var(--color-primary-45);
+  border: 1px solid var(--color-gray-02);
+  border-radius: 32px;
+  backdrop-filter: blur(8px);
+
   &__image {
     overflow: hidden;
 
@@ -107,6 +112,8 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
   }
 
   &__list {
+    padding: 0 0 0 20px;
+
     li {
       display: flex;
       align-items: center;
@@ -121,6 +128,11 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
 
       svg {
         flex-shrink: 0;
+      }
+
+      hr {
+        height: 16px;
+        border-left: 1px solid var(--color-gray-05);
       }
     }
   }
