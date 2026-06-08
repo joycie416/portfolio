@@ -8,6 +8,13 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use "@/assets/css/mixins.scss" as *;`,
+        },
+      },
+    },
   },
 
   modules: ["shadcn-nuxt", "@nuxt/eslint", "@nuxt/image"],

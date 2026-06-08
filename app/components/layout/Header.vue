@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Home } from "@lucide/vue";
-
 const route = useRoute();
 
 const sectionIds = ["profile", "skills", "projects"] as const;
@@ -40,11 +38,7 @@ onMounted(() => {
 
 <template>
   <header class="header">
-    <NuxtLink to="/" class="icon">
-      <Home />
-    </NuxtLink>
-
-    <div class="flex justify-between items-center gap-5">
+    <div class="flex justify-between items-center gap-3 lg:gap-5">
       <button
         type="button"
         class="text"
@@ -84,7 +78,7 @@ onMounted(() => {
   padding: 8px 20px;
 
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   align-items: center;
 
   background-color: var(--color-primary-45);
@@ -109,7 +103,7 @@ onMounted(() => {
   }
 }
 .text {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   background: none;
   border: none;
@@ -126,6 +120,13 @@ onMounted(() => {
     &:hover {
       color: var(--color-primary-600);
     }
+  }
+
+  @include md {
+    font-size: 16px;
+  }
+  @include lg {
+    font-size: 18px;
   }
 }
 </style>
