@@ -51,7 +51,7 @@ onMounted(() => {
         :data-current="activeSection === 'profile'"
         @click="scrollToSection('profile')"
       >
-        Top
+        Profile
       </button>
       <button
         type="button"
