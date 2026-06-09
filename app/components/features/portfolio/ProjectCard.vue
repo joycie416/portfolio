@@ -1,16 +1,19 @@
 <template>
-  <div
-    class="project__card flex flex-col p-7 pb-6 bg-primary-50 border border-gray-02 rounded-3xl"
-  >
+  <div class="project__card">
     <!-- 프로젝트 제목 -->
-    <p class="text-2xl font-bold mb-3">{{ props.project.title }}</p>
+    <p class="text-lg font-bold mb-1 lg:text-2xl lg:mb-3">
+      {{ props.project.title }}
+    </p>
     <!-- 프로젝트 설명 -->
-    <p class="text-text-gray-02 mb-4">{{ props.project.description }}</p>
+    <p class="text-text-gray-02 mb-2 text-sm lg:mb-4 lg:text-base">
+      {{ props.project.description }}
+    </p>
     <!-- 기여 -->
-    <ul class="space-y-1.5 mb-5">
+    <ul class="pl-5 mb-4 space-y-1 md:space-y-1.5 lg:mb-5">
       <li
         v-for="(contribution, index) in props.project.contributions"
         :key="`contribution-${index + 1}`"
+        class="text-sm lg:text-base"
       >
         {{ contribution }}
       </li>
@@ -24,37 +27,41 @@
       />
     </div>
     <!-- 링크 -->
-    <div v-if="props.project.links" class="flex items-center gap-x-2.5 mt-6">
+    <div
+      v-if="props.project.links"
+      class="flex items-center gap-x-2.5 mt-4 lg:mt-6"
+    >
       <div
         v-for="link in props.project.links"
         :key="link.url"
-        class="project__card__link h-fit flex items-center"
+        class="project__card__link"
       >
-        <Button variant="ghost" class="h-5 px-1 py-0">
+        <Button variant="ghost" class="h-5 px-1 py-0 text-sm lg:text-base">
           <NuxtImg
             v-if="link.type === 'github'"
             src="/icons/github-logo.svg"
             alt="github"
             width="20"
             height="20"
+            class="w-4 h-4 lg:w-5 lg:h-5"
           />
           <SquareArrowOutUpRight
             v-if="link.type === 'demo'"
             width="20"
             height="20"
-            class="w-5 h-5"
+            class="w-4 h-4 lg:w-5 lg:h-5"
           />
           <BookText
             v-if="link.type === 'doc'"
             width="20"
             height="20"
-            class="w-5 h-5"
+            class="w-4 h-4 lg:w-5 lg:h-5"
           />
           <Link2
             v-if="link.type === 'link'"
             width="20"
             height="20"
-            class="w-5 h-5"
+            class="w-4 h-4 lg:w-5 lg:h-5"
           />
           <a :href="link.url" target="_blank">{{ link.text }}</a>
         </Button>
@@ -75,19 +82,36 @@ const props = defineProps<{ project: Project }>();
 <style lang="scss" scoped>
 .project {
   &__card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+
+    border: 1px solid var(--color-gray-02);
+    border-radius: 20px;
+    background: var(--color-primary-50);
+
     box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
     backdrop-filter: blur(8px);
 
+    @include lg {
+      padding: 28px 28px 24px 28px;
+      border-radius: 24px;
+    }
+
     ul {
       list-style: disc;
-      padding-left: 16px;
       color: var(--color-text-gray-02);
 
       li::marker {
         color: var(--color-primary-700);
       }
     }
+
     &__link {
+      display: flex;
+      align-items: center;
+      height: fit-content;
+
       &:not(:first-child) {
         padding-left: 10px;
         border-left: 1px solid var(--color-gray-02);

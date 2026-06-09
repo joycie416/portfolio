@@ -29,5 +29,9 @@ const props = defineProps<{
   background-color: color-mix(in srgb, var(--skill-color) 10%, white);
   color: color-mix(in srgb, var(--skill-color) 70%, black);
   font-weight: 700;
+
+  @include lg {
+    font-size: 18px;
+  }
 }
 </style>
