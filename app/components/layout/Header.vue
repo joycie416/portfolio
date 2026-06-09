@@ -42,11 +42,11 @@ onMounted(() => {
   <header class="header">
     <button
       type="button"
-      class="icon font-rix"
+      class="icon"
       :data-current="activeSection === 'profile'"
       @click="scrollToSection('profile')"
     >
-      <SimpleLogo />
+      <SimpleLogo class="size-5 md:size-7 lg:size-8" />
       Haein
     </button>
     <div class="flex justify-between items-center gap-3 lg:gap-5">
@@ -111,12 +111,19 @@ onMounted(() => {
   transition: background-color 0.2s;
 
   font-family: var(--font-rix);
-  font-size: 24px;
+  font-size: 16px;
   color: var(--color-primary-800);
   cursor: pointer;
 
   &:hover {
     background-color: var(--color-gray-01);
+  }
+
+  @include md {
+    font-size: 20px;
+  }
+  @include lg {
+    font-size: 24px;
   }
 }
 .text {

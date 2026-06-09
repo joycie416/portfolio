@@ -1,11 +1,8 @@
-<script setup lang="ts">
-import { Header } from "./components/layout";
-</script>
-
 <template>
   <div class="app">
-    <Header />
-    <NuxtPage />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 

@@ -23,6 +23,12 @@ export default defineNuxtConfig({
     componentDir: "./components/ui",
   },
 
+  runtimeConfig: {
+    public: {
+      siteUrl: "https://localhost:3000",
+    },
+  },
+
   routeRules: {
     "/": {
       prerender: true,
