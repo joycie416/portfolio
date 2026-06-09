@@ -12,6 +12,10 @@ import {
   ProfileSection,
   ProjectSection,
 } from "@/components/features/portfolio";
+
+definePageMeta({
+  layout: "portfolio-layout",
+});
 </script>
 
 <style scoped>

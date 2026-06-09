@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
+
 const route = useRoute();
 
 const sectionIds = ["profile", "skills", "projects"] as const;
@@ -38,6 +40,15 @@ onMounted(() => {
 
 <template>
   <header class="header">
+    <button
+      type="button"
+      class="icon"
+      :data-current="activeSection === 'profile'"
+      @click="scrollToSection('profile')"
+    >
+      <SimpleLogo class="size-5 md:size-7 lg:size-8" />
+      Haein
+    </button>
     <div class="flex justify-between items-center gap-3 lg:gap-5">
       <button
         type="button"
@@ -78,7 +89,7 @@ onMounted(() => {
   padding: 8px 20px;
 
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   align-items: center;
 
   background-color: var(--color-primary-45);
@@ -87,19 +98,32 @@ onMounted(() => {
   z-index: 10;
 }
 .icon {
-  width: 44px;
-  height: 44px;
+  width: fit-content;
+  height: fit-content;
+  padding: 4px 8px;
 
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 8px;
 
   border-radius: 8px;
-
   transition: background-color 0.2s;
+
+  font-family: var(--font-rix);
+  font-size: 16px;
+  color: var(--color-primary-800);
+  cursor: pointer;
 
   &:hover {
     background-color: var(--color-gray-01);
+  }
+
+  @include md {
+    font-size: 20px;
+  }
+  @include lg {
+    font-size: 24px;
   }
 }
 .text {
