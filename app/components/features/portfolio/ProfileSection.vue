@@ -21,11 +21,11 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
     <div
       class="relative w-full max-w-[1024px] h-full mx-auto flex flex-col py-5 space-y-6 lg:py-0 lg:space-y-10"
     >
-      <p
+      <h1
         class="font-rix text-2xl leading-[1.3] text-center text-white md:text-4xl lg:text-5xl"
       >
         조해인<br />FRONTEND PORTFOLIO
-      </p>
+      </h1>
 
       <div class="profile">
         <!-- 프로필 사진 -->
