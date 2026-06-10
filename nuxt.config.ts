@@ -37,7 +37,7 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["shadcn-nuxt", "@nuxt/eslint", "@nuxt/image"],
+  modules: ["shadcn-nuxt", "@nuxt/eslint", "@nuxt/image", "@nuxtjs/sitemap"],
   shadcn: {
     prefix: "",
     componentDir: "./components/ui",
@@ -47,6 +47,12 @@ export default defineNuxtConfig({
     public: {
       siteUrl: "https://portfolio-haein.vercel.app",
     },
+  },
+
+  // 사이트맵 생성 시 필요한 정보
+  site: {
+    url: "https://localhost:3000",
+    name: "Haein's Portfolio",
   },
 
   routeRules: {
