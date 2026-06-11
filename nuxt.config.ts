@@ -46,6 +46,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       siteUrl: "https://localhost:3000",
+      supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
+      supabasePublishableKey: process.env.NUXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     },
   },
 
