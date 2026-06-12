@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "gen:types": "npx supabase gen types typescript --project-id ajnazdloqylmrmqnrkvb > app/types/database.types.ts"
   },
   "dependencies": {
     "@lucide/vue": "^1.16.0",
