@@ -26,9 +26,9 @@
           <Button size="sm" variant="secondary">Small</Button>
           <Button variant="secondary">Default</Button>
           <Button size="lg" variant="secondary">Large</Button>
-          <Button size="sm" variant="outline">Outline</Button>
-          <Button variant="outline">Outline</Button>
-          <Button size="lg" variant="outline">Outline</Button>
+          <Button size="sm" variant="outline">Small</Button>
+          <Button variant="outline">Default</Button>
+          <Button size="lg" variant="outline">Large</Button>
         </div>
       </div>
     </div>
@@ -36,12 +36,20 @@
       <h2>테이블</h2>
       <DataTable table-id="test-table" :data="sampleData" :columns="columns" />
     </div>
+    <div class="flex flex-col gap-3">
+      <h2>카드</h2>
+      <Card title="카드 제목">
+        <p>카드 내용</p>
+      </Card>
+      <Card class="bg-primary-300"><p>제목 없는 카드</p></Card>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { DataTable, type Columns } from "@/components/ui/data-table";
+import { Card } from "@/components/common";
 
 type SampleDataType = {
   id: string;
