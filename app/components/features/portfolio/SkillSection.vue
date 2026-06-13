@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { CodeXml, Command, Database, Layers, Paintbrush } from "@lucide/vue";
 import SkillBadge from "./SkillBadge.vue";
-import type { SkillGroup } from "@/types";
+import type { SkillGroup } from "@/types/common";
 
 const skillSets: SkillGroup[] = [
   {

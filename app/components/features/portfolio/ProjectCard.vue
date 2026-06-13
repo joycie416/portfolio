@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button/index.js";
 import SkillBadge from "./SkillBadge.vue";
-import type { Project } from "@/types/index.js";
+import type { Project } from "@/types/common";
 import { BookText, Link2, SquareArrowOutUpRight } from "@lucide/vue";
 
 const props = defineProps<{ project: Project }>();

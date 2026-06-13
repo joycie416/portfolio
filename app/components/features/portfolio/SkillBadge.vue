@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { Badge } from "@/components/ui/badge";
 import type { BadgeVariants } from "@/components/ui/badge";
-import type { Skill } from "@/types";
+import type { Skill } from "@/types/common";
 
 const props = defineProps<{
   skill: Skill;
