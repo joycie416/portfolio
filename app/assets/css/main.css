@@ -83,7 +83,8 @@
   --color-text-gray-01: var(--gray-10);
   --color-text-gray-02: var(--gray-08);
   --color-text-gray-03: var(--gray-06);
-  --color-text-gray-04: var(--gray-00);
+  --color-text-gray-04: var(--gray-04);
+  --color-text-gray-05: var(--gray-00);
 
   /* 스킬 색상 */
   --color-skill-typescript: var(--skill-typescript);
@@ -310,10 +311,6 @@
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-
   section[id] {
     scroll-padding-top: var(--header-height);
   }
@@ -323,5 +320,10 @@
   }
   body {
     @apply bg-background text-text-gray-01 font-pretendard;
+  }
+
+  /* Edge 비밀번호 눈버튼 제거 */
+  input[type="password"]::-ms-reveal {
+    display: none;
   }
 }

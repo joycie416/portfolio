@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-10">
+  <div class="flex flex-col gap-10 pb-30">
     <div class="flex flex-col gap-3">
       <h2>버튼</h2>
       <div class="space-y-1">
@@ -43,13 +43,47 @@
       </Card>
       <Card class="bg-primary-300"><p>제목 없는 카드</p></Card>
     </div>
+    <div class="flex flex-col gap-3">
+      <h2>인풋 그룹</h2>
+      <InputGroup
+        v-model="email"
+        type="text"
+        label="기본"
+        placeholder="이메일을 입력해주세요."
+        hint="이메일을 입력해주세요."
+      />
+      <InputGroup
+        v-model="email"
+        type="text"
+        label="필수+에러 상태"
+        required
+        state="error"
+        placeholder="이메일을 입력해주세요."
+        hint="이메일을 입력해주세요."
+      />
+      <InputGroup
+        v-model="email"
+        type="text"
+        label="disabled 상태"
+        disabled
+        placeholder="이메일을 입력해주세요."
+        hint="이메일을 입력해주세요."
+      />
+      <InputGroup
+        v-model="email"
+        type="password"
+        label="비밀번호"
+        placeholder="비밀번호를 입력해주세요."
+        hint="비밀번호를 입력해주세요."
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { DataTable, type Columns } from "@/components/ui/data-table";
-import { Card } from "@/components/common";
+import { Card, InputGroup } from "@/components/common";
 
 type SampleDataType = {
   id: string;
@@ -126,4 +160,7 @@ const columns = computed<Columns<SampleDataType>>(() => [
     cell: ({ row }) => h("div", null, row.original.createdAt),
   },
 ]);
+
+const email = ref<string>("");
+const showPassword = ref<boolean>(false);
 </script>
