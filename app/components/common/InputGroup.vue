@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="props.containerClass">
     <label
       v-if="props.label"
       :class="

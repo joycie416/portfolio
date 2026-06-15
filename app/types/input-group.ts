@@ -13,15 +13,24 @@ export interface CommonInputGroupProps {
   disabled?: boolean;
   hint?: string;
   class?: HTMLAttributes["class"];
+  containerClass?: HTMLAttributes["class"];
 }
 
 export type InputGroupProps<TValue extends string | number = string | number> =
   | (CommonInputGroupProps & { type: "text" })
   | (CommonInputGroupProps & { type: "password"; enableToggle?: boolean })
-  | (CommonInputGroupProps & { type: "dropdown"; options: InputOption<TValue>[] })
-  | (CommonInputGroupProps & { type: "checkbox"; options: InputOption<TValue>[] });
+  | (CommonInputGroupProps & {
+      type: "dropdown";
+      options: InputOption<TValue>[];
+    })
+  | (CommonInputGroupProps & {
+      type: "checkbox";
+      options: InputOption<TValue>[];
+    });
 
-export interface DropdownProps<TValue extends string | number = string | number> {
+export interface DropdownProps<
+  TValue extends string | number = string | number,
+> {
   options: InputOption<TValue>[];
   placeholder?: string;
   required?: boolean;
