@@ -46,14 +46,14 @@
     <div class="flex flex-col gap-3">
       <h2>인풋 그룹</h2>
       <InputGroup
-        v-model="email"
+        v-model="form.email"
         type="text"
         label="기본"
         placeholder="이메일을 입력해주세요."
         hint="이메일을 입력해주세요."
       />
       <InputGroup
-        v-model="email"
+        v-model="form.email"
         type="text"
         label="필수+에러 상태"
         required
@@ -62,7 +62,7 @@
         hint="이메일을 입력해주세요."
       />
       <InputGroup
-        v-model="email"
+        v-model="form.email"
         type="text"
         label="disabled 상태"
         disabled
@@ -70,12 +70,19 @@
         hint="이메일을 입력해주세요."
       />
       <InputGroup
-        v-model="email"
+        v-model="form.email"
         type="password"
         label="비밀번호"
         placeholder="비밀번호를 입력해주세요."
         hint="비밀번호를 입력해주세요."
       />
+      <InputGroup
+        v-model="form.checkbox"
+        type="checkbox"
+        label="체크박스"
+        :options="checkboxOptions"
+      />
+      <p class="text-sm text-text-gray-04">선택된 값: {{ form.checkbox }}</p>
     </div>
   </div>
 </template>
@@ -84,6 +91,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable, type Columns } from "@/components/ui/data-table";
 import { Card, InputGroup } from "@/components/common";
+import type { InputOption } from "@/types/common";
 
 type SampleDataType = {
   id: string;
@@ -161,6 +169,14 @@ const columns = computed<Columns<SampleDataType>>(() => [
   },
 ]);
 
-const email = ref<string>("");
-const showPassword = ref<boolean>(false);
+const form = reactive<{ email: string; checkbox: string[] }>({
+  email: "",
+  checkbox: [],
+});
+
+const checkboxOptions = ref<InputOption<string>[]>([
+  { label: "옵션 1", value: "option1" },
+  { label: "옵션옵션옵션옵션 2", value: "option2" },
+  { label: "옵션 3 disabled", value: "option3", disabled: true },
+]);
 </script>

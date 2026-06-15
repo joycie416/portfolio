@@ -12,9 +12,10 @@
     >
       {{ props.label }}
     </label>
+    <!-- 텍스트 -->
     <Input
       v-if="props.type === 'text'"
-      v-model="model"
+      v-model="singleModel"
       :placeholder="props.placeholder"
       :required="props.required"
       :disabled="props.disabled"
@@ -23,25 +24,50 @@
     <!-- TODO: Dropdown 컴포넌트 추가 -->
     <Input
       v-if="props.type === 'dropdown'"
-      v-model="model"
+      v-model="singleModel"
       :placeholder="props.placeholder"
       :required="props.required"
       :disabled="props.disabled"
       :class="cn(props.class, stateStyle)"
     />
-    <!-- TODO: Checkbox 컴포넌트 추가 -->
-    <Input
+    <!-- 체크박스 -->
+    <div
       v-if="props.type === 'checkbox'"
-      v-model="model"
-      :placeholder="props.placeholder"
-      :required="props.required"
-      :disabled="props.disabled"
-      :class="cn(props.class, stateStyle)"
-    />
+      id="checkbox-container"
+      class="h-8 md:h-10 flex items-center gap-4"
+    >
+      <div
+        v-for="option in props.options"
+        :key="option.value"
+        class="flex items-center gap-2"
+      >
+        <input
+          :id="getCheckboxId(option.value)"
+          v-model="checkedValues"
+          type="checkbox"
+          :value="option.value"
+          :disabled="props.disabled || option.disabled"
+          class="size-3.5 md:size-4 shrink-0 rounded-sm cursor-pointer"
+        />
+        <label
+          :for="getCheckboxId(option.value)"
+          :class="
+            cn(
+              'text-sm md:text-base',
+              !option.disabled && 'cursor-pointer',
+              stateStyle,
+            )
+          "
+        >
+          {{ option.label }}
+        </label>
+      </div>
+    </div>
+    <!-- 비밀번호 -->
     <div v-if="props.type === 'password'" class="relative">
       <Input
         :type="showPassword ? 'text' : 'password'"
-        v-model="model"
+        v-model="singleModel"
         :placeholder="props.placeholder"
         :required="props.required"
         :disabled="props.disabled"
@@ -88,10 +114,8 @@ interface CommonProps {
 type Props =
   | (CommonProps & { type: "text" })
   | (CommonProps & { type: "password"; enableToggle?: boolean })
-  | (CommonProps & {
-      type: "dropdown" | "checkbox";
-      options: InputOption<TValue>[];
-    });
+  | (CommonProps & { type: "dropdown"; options: InputOption<TValue>[] })
+  | (CommonProps & { type: "checkbox"; options: InputOption<TValue>[] });
 
 const props = withDefaults(defineProps<Props>(), {
   type: "text",
@@ -99,15 +123,33 @@ const props = withDefaults(defineProps<Props>(), {
   enableToggle: true,
 });
 
-const model = defineModel<TValue | undefined>();
+const model = defineModel<TValue | TValue[] | undefined>();
+
+const singleModel = computed({
+  get: () => (Array.isArray(model.value) ? undefined : model.value),
+  set: (value: TValue | undefined) => {
+    model.value = value;
+  },
+});
+
+const checkedValues = computed({
+  get: () => (Array.isArray(model.value) ? model.value : []) as TValue[],
+  set: (value: TValue[]) => {
+    model.value = value;
+  },
+});
 
 const showPassword = ref<boolean>(false);
 
-const togglePassword = () => {
+function getCheckboxId(value: TValue) {
+  return `checkbox-${String(value)}`;
+}
+
+function togglePassword() {
   if (props.type !== "password" || !props?.enableToggle) return;
 
   showPassword.value = !showPassword.value;
-};
+}
 
 const stateStyle = computed(() => {
   switch (props.state) {
