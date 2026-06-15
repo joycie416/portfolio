@@ -21,10 +21,11 @@
       :disabled="props.disabled"
       :class="cn(props.class, stateStyle)"
     />
-    <!-- TODO: Dropdown 컴포넌트 추가 -->
-    <Input
+    <!-- 드롭다운 -->
+    <Dropdown
       v-if="props.type === 'dropdown'"
       v-model="singleModel"
+      :options="props.options"
       :placeholder="props.placeholder"
       :required="props.required"
       :disabled="props.disabled"
@@ -94,30 +95,14 @@
 </template>
 
 <script setup lang="ts" generic="TValue extends string | number">
-import type { HTMLAttributes } from "vue";
-import type { InputOption } from "@/types/common";
+import type { InputGroupProps } from "@/types/input-group";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EyeIcon, EyeOffIcon } from "@lucide/vue";
+import Dropdown from "./Dropdown.vue";
 
-interface CommonProps {
-  state?: "success" | "error";
-  label?: string;
-  placeholder?: string;
-  required?: boolean;
-  disabled?: boolean;
-  hint?: string;
-  class?: HTMLAttributes["class"];
-}
-
-type Props =
-  | (CommonProps & { type: "text" })
-  | (CommonProps & { type: "password"; enableToggle?: boolean })
-  | (CommonProps & { type: "dropdown"; options: InputOption<TValue>[] })
-  | (CommonProps & { type: "checkbox"; options: InputOption<TValue>[] });
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<InputGroupProps<TValue>>(), {
   type: "text",
   state: "success",
   enableToggle: true,

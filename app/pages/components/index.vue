@@ -76,13 +76,33 @@
         placeholder="비밀번호를 입력해주세요."
         hint="비밀번호를 입력해주세요."
       />
+      <div>
+        <InputGroup
+          v-model="form.checkbox"
+          type="checkbox"
+          label="체크박스"
+          :options="checkboxOptions"
+        />
+        <p class="text-sm text-text-gray-04">선택된 값: {{ form.checkbox }}</p>
+      </div>
       <InputGroup
-        v-model="form.checkbox"
-        type="checkbox"
-        label="체크박스"
-        :options="checkboxOptions"
+        v-model="form.dropdown"
+        type="dropdown"
+        label="드롭다운"
+        :options="dropdownOptions"
+        required
+        placeholder="드롭다운을 선택해주세요."
+        hint="드롭다운을 선택해주세요."
       />
-      <p class="text-sm text-text-gray-04">선택된 값: {{ form.checkbox }}</p>
+      <InputGroup
+        v-model="form.dropdown"
+        type="dropdown"
+        label="disabled 상태"
+        disabled
+        :options="dropdownOptions"
+        placeholder="드롭다운을 선택해주세요."
+        hint="드롭다운을 선택해주세요."
+      />
     </div>
   </div>
 </template>
@@ -169,14 +189,37 @@ const columns = computed<Columns<SampleDataType>>(() => [
   },
 ]);
 
-const form = reactive<{ email: string; checkbox: string[] }>({
+const form = reactive<{ email: string; checkbox: string[]; dropdown: string }>({
   email: "",
   checkbox: [],
+  dropdown: "",
 });
 
 const checkboxOptions = ref<InputOption<string>[]>([
   { label: "옵션 1", value: "option1" },
   { label: "옵션옵션옵션옵션 2", value: "option2" },
   { label: "옵션 3 disabled", value: "option3", disabled: true },
+]);
+
+const dropdownOptions = ref<InputOption<string>[]>([
+  { label: "옵션 A", value: "optionA" },
+  { label: "옵션옵션옵션옵션 B", value: "optionB" },
+  { label: "옵션 C", value: "optionC" },
+  { label: "옵션 D", value: "optionD" },
+  { label: "옵션 E", value: "optionE" },
+  { label: "옵션 F", value: "optionF" },
+  { label: "옵션 G", value: "optionG" },
+  { label: "옵션 H", value: "optionH" },
+  { label: "옵션 I", value: "optionI" },
+  { label: "옵션 J", value: "optionJ" },
+  { label: "옵션 K", value: "optionK" },
+  { label: "옵션 L", value: "optionL" },
+  { label: "옵션 M", value: "optionM" },
+  { label: "옵션 N", value: "optionN" },
+  { label: "옵션 O", value: "optionO" },
+  { label: "옵션 P", value: "optionP" },
+  { label: "옵션 Q", value: "optionQ" },
+  { label: "옵션 R", value: "optionR" },
+  { label: "옵션 S", value: "optionS" },
 ]);
 </script>

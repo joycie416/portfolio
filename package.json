@@ -13,7 +13,7 @@
     "gen:types": "npx supabase gen types typescript --project-id ajnazdloqylmrmqnrkvb > app/types/database.types.ts"
   },
   "dependencies": {
-    "@lucide/vue": "^1.16.0",
+    "@lucide/vue": "^1.18.0",
     "@nuxt/image": "^2.0.0",
     "@nuxtjs/sitemap": "^8.1.0",
     "@supabase/ssr": "^0.12.0",
@@ -24,7 +24,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "nuxt": "^4.4.6",
-    "reka-ui": "^2.9.8",
+    "reka-ui": "^2.9.10",
     "shadcn-nuxt": "^2.7.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",
