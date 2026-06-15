@@ -60,6 +60,13 @@ export default defineNuxtConfig({
   routeRules: {
     "/": {
       prerender: true,
+      appLayout: "portfolio-layout",
+    },
+    "/blog/**": {
+      appLayout: "blog-layout",
+    },
+    "/blog/admin/login": {
+      appLayout: false,
     },
   },
   app: {
