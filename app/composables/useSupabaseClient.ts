@@ -8,6 +8,6 @@ export function useSupabaseClient(): SupabaseClient {
     if (!event) throw new Error("useSupabaseClient: no request event");
     return serverSupabaseClient(event);
   }
-  // 클라이언트 환경에서는 singleton 패턴턴
+  // 클라이언트 환경에서는 singleton 패턴 (plugin에서 생성한 인스턴스 사용)
   return useNuxtApp().$supabase;
 }
