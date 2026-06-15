@@ -4,13 +4,24 @@
       <SimpleLogo class="size-5 md:size-7 lg:size-8" />
       Haein
     </button>
-    <Button @click="navigateTo('/blog/admin/login')">로그인</Button>
+    <Button v-if="isAuthenticated" type="button" @click="handleSignOut"
+      >로그아웃</Button
+    >
+    <Button v-else type="button" @click="navigateTo('/blog/admin/login')"
+      >로그인</Button
+    >
   </header>
 </template>
 
 <script setup lang="ts">
 import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
 import { Button } from "@/components/ui/button";
+
+const { isAuthenticated, signOut } = useAuth();
+
+const handleSignOut = async () => {
+  await signOut();
+};
 </script>
 
 <style lang="scss" scoped>
