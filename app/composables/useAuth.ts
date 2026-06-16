@@ -27,7 +27,7 @@ export function useAuth() {
     loading.value = false;
 
     if (signInError) {
-      error.value = toAuthErrorMessage(signInError.message);
+      error.value = toAuthErrorMessage(signInError.code ?? "signInFailed");
       throw signInError;
     }
 
