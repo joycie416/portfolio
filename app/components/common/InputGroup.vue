@@ -78,6 +78,7 @@
         v-if="props.enableToggle"
         variant="ghost"
         size="icon"
+        type="button"
         class="size-7 md:size-8 text-text-gray-03 absolute right-0.5 md:right-1 top-1/2 -translate-y-1/2"
         @click="togglePassword"
       >
