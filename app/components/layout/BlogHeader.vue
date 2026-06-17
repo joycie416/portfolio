@@ -38,7 +38,7 @@ const handleSignOut = async () => {
   justify-content: space-between;
   align-items: center;
 
-  background-color: var(--color-primary-45);
+  background-color: var(--color-white);
   border-bottom: solid 1px var(--color-gray-02);
 
   z-index: 10;

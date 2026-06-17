@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BlogHeader from "@/components/layout/BlogHeader.vue";
+import { BlogHeader } from "@/components/layout";
 
 const runtimeConfig = useRuntimeConfig();
 const siteUrl = runtimeConfig.public.siteUrl;

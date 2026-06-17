@@ -1,43 +1,3 @@
-<script setup lang="ts">
-import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
-
-const route = useRoute();
-
-const sectionIds = ["profile", "skills", "projects"] as const;
-const activeSection = ref<(typeof sectionIds)[number] | null>(null);
-
-const scrollToSection = async (id: (typeof sectionIds)[number]) => {
-  if (route.path !== "/") {
-    await navigateTo("/");
-  }
-  await nextTick();
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-};
-
-onMounted(() => {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        // 섹션이 화면에 보이면 해당 섹션의 ID를 activeSection에 저장
-        if (entry.isIntersecting) {
-          activeSection.value = entry.target.id as (typeof sectionIds)[number];
-        }
-      }
-    },
-    { rootMargin: "-40% 0px -40% 0px", threshold: 0 },
-  );
-
-  // 각 섹션을 관찰 대상으로 등록
-  for (const id of sectionIds) {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  }
-
-  // 언마운트 시 관찰 중단
-  onUnmounted(() => observer.disconnect());
-});
-</script>
-
 <template>
   <header class="header">
     <button
@@ -78,6 +38,46 @@ onMounted(() => {
   </header>
 </template>
 
+<script setup lang="ts">
+import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
+
+const route = useRoute();
+
+const sectionIds = ["profile", "skills", "projects"] as const;
+const activeSection = ref<(typeof sectionIds)[number] | null>(null);
+
+const scrollToSection = async (id: (typeof sectionIds)[number]) => {
+  if (route.path !== "/") {
+    await navigateTo("/");
+  }
+  await nextTick();
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+};
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        // 섹션이 화면에 보이면 해당 섹션의 ID를 activeSection에 저장
+        if (entry.isIntersecting) {
+          activeSection.value = entry.target.id as (typeof sectionIds)[number];
+        }
+      }
+    },
+    { rootMargin: "-40% 0px -40% 0px", threshold: 0 },
+  );
+
+  // 각 섹션을 관찰 대상으로 등록
+  for (const id of sectionIds) {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  }
+
+  // 언마운트 시 관찰 중단
+  onUnmounted(() => observer.disconnect());
+});
+</script>
+
 <style lang="scss" scoped>
 .header {
   position: fixed;
@@ -92,7 +92,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
 
-  background-color: var(--color-primary-45);
+  background-color: var(--color-white);
   border-bottom: solid 1px var(--color-gray-02);
 
   z-index: 10;
