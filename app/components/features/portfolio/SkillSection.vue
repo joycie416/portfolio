@@ -1,5 +1,8 @@
 <template>
-  <section id="skills" class="min-h-fit bg-primary-100 px-5 py-10 lg:min-h-screen lg:px-0 lg:py-20"">
+  <section
+    id="skills"
+    class="min-h-fit bg-primary-100 px-5 py-10 lg:min-h-screen lg:px-0 lg:py-20"
+  >
     <div
       class="w-full max-w-[1024px] h-full flex flex-col mx-auto py-5 space-y-6 lg:py-10 lg:space-y-10"
     >
@@ -7,7 +10,9 @@
         <h2 class="text-2xl font-bold tracking-tight md:text-3xl lg:text-5xl">
           Skills
         </h2>
-        <p class="mt-3 text-sm font-medium text-text-gray-02 md:text-base lg:mt-5 lg:text-lg">
+        <p
+          class="mt-3 text-sm font-medium text-text-gray-02 md:text-base lg:mt-5 lg:text-lg"
+        >
           새로운 기술을 빠르게 학습하고, 실제 서비스에 적용하는 것을 좋아합니다.
         </p>
       </div>
@@ -136,7 +141,6 @@ const skillSets: SkillGroup[] = [
     @include md {
       padding: 24px 28px;
       border-radius: 24px;
-
     }
 
     &__icon {
@@ -163,8 +167,8 @@ const skillSets: SkillGroup[] = [
       }
 
       @include lg {
-      width: 52px;
-      height: 52px;
+        width: 52px;
+        height: 52px;
       }
 
       svg {

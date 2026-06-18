@@ -6,7 +6,7 @@
         cn(
           'font-medium block mb-1 text-sm md:text-base',
           props.required && 'required-label',
-          stateStyle,
+          stateStyle
         )
       "
     >
@@ -56,7 +56,7 @@
             cn(
               'text-sm md:text-base',
               !option.disabled && 'cursor-pointer',
-              stateStyle,
+              stateStyle
             )
           "
         >
@@ -142,6 +142,7 @@ const stateStyle = computed(() => {
     case "success":
       return "selection:text-text-gray-01";
     case "error":
+    default:
       return "text-red-04 border-red-04 focus-visible:border-red-04 focus-visible:ring-red-02 selection:text-red-04";
   }
 });

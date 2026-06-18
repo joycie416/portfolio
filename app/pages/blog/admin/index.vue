@@ -2,4 +2,4 @@
 await navigateTo("/blog/admin/menus", { replace: true });
 </script>
 
-<template></template>
+<template><div /></template>

@@ -64,7 +64,7 @@ onMounted(() => {
         }
       }
     },
-    { rootMargin: "-40% 0px -40% 0px", threshold: 0 },
+    { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
   );
 
   // 각 섹션을 관찰 대상으로 등록

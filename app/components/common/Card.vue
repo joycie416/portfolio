@@ -4,7 +4,7 @@
       cn(
         'p-5 bg-white border border-gray-02 rounded-[20px] md:p-7 md:rounded-3xl',
         props.title && 'pt-4 md:pt-6',
-        props.class,
+        props.class
       )
     "
   >

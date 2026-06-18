@@ -21,7 +21,7 @@ export function useAuth() {
       {
         email,
         password,
-      },
+      }
     );
 
     loading.value = false;

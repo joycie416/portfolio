@@ -45,7 +45,7 @@ const table = useVueTable({
               cn(
                 'h-8 border-b border-b-gray-04',
                 getAlignClassName(header.column.columnDef.meta?.aligns?.header),
-                header.column.columnDef.meta?.classNames?.header,
+                header.column.columnDef.meta?.classNames?.header
               )
             "
           >
@@ -71,7 +71,7 @@ const table = useVueTable({
               :class="
                 cn(
                   getAlignClassName(cell.column.columnDef.meta?.aligns?.cell),
-                  cell.column.columnDef.meta?.classNames?.cell,
+                  cell.column.columnDef.meta?.classNames?.cell
                 )
               "
             >

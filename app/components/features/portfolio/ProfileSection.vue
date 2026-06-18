@@ -24,7 +24,9 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
       <h1
         class="font-rix text-2xl leading-[1.3] text-center text-white md:text-4xl lg:text-5xl"
       >
-        조해인<br />FRONTEND PORTFOLIO
+        조해인
+        <br />
+        FRONTEND PORTFOLIO
       </h1>
 
       <div class="profile">
@@ -47,9 +49,11 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
             <p
               class="text-base font-semibold tracking-tight text-text-gray-02 text-center whitespace-nowrap lg:text-xl"
             >
-              수학의 증명 과정처럼, 프로그래밍 역시<br />
-              주어진 조건을 분석하고 원하는 결과에 도달하는<br />로직을 설계하는
-              과정이라고 생각합니다.
+              수학의 증명 과정처럼, 프로그래밍 역시
+              <br />
+              주어진 조건을 분석하고 원하는 결과에 도달하는
+              <br />
+              로직을 설계하는 과정이라고 생각합니다.
             </p>
           </div>
           <hr class="w-1/2 mx-auto border border-gray-05" />

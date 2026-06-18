@@ -5,12 +5,12 @@
         <SimpleLogo class="size-5 md:size-7 lg:size-8" />
         블로그 관리
       </button>
-      <Button v-if="isAuthenticated" type="button" @click="handleSignOut"
-        >로그아웃</Button
-      >
-      <Button v-else type="button" @click="navigateTo('/blog/admin/login')"
-        >로그인</Button
-      >
+      <Button v-if="isAuthenticated" type="button" @click="handleSignOut">
+        로그아웃
+      </Button>
+      <Button v-else type="button" @click="navigateTo('/blog/admin/login')">
+        로그인
+      </Button>
     </header>
     <main
       class="w-full max-w-[1024px] min-h-[calc(100vh-var(--header-height))] mx-auto flex flex-col py-5 px-5 space-y-6 lg:py-8 lg:space-y-10"
@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
 import { Button } from "@/components/ui/button";
-import { Card } from "~/components/common";
+import { Card } from "@/components/common";
 
 const runtimeConfig = useRuntimeConfig();
 const siteUrl = runtimeConfig.public.siteUrl;

@@ -23,13 +23,13 @@ export function serverSupabaseClient(event: H3Event) {
       }));
     },
     setAll(
-      cookiesToSet: { name: string; value: string; options: CookieOptions }[],
+      cookiesToSet: { name: string; value: string; options: CookieOptions }[]
     ) {
       cookiesToSet.forEach(({ name, value, options }) => {
         appendHeader(
           event,
           "Set-Cookie",
-          serializeCookieHeader(name, value, options),
+          serializeCookieHeader(name, value, options)
         );
       });
     },
@@ -38,6 +38,6 @@ export function serverSupabaseClient(event: H3Event) {
   return createServerClient(
     config.public.supabaseUrl,
     config.public.supabasePublishableKey,
-    { cookies },
+    { cookies }
   );
 }

@@ -13,7 +13,7 @@ const props = defineProps<{
     :class="
       cn(
         'data-[state=selected]:bg-primary-100 border-b transition-colors',
-        props.class,
+        props.class
       )
     "
   >

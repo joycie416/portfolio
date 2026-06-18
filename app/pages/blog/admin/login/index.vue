@@ -16,7 +16,7 @@
           type="password"
           label="비밀번호"
           placeholder="비밀번호를 입력해주세요."
-          containerClass="mt-3 mb-5"
+          container-class="mt-3 mb-5"
         />
         <p v-if="error" class="mb-3 text-sm text-red-600">{{ error }}</p>
         <Button type="submit" class="w-full" :disabled="loading">

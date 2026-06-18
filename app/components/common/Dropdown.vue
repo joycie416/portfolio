@@ -44,7 +44,7 @@ const selectModel = computed({
     }
 
     const selected = props.options.find(
-      (option) => String(option.value) === value,
+      (option) => String(option.value) === value
     );
 
     model.value = selected?.value;

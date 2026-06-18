@@ -30,7 +30,7 @@ export const AUTH_ERROR_MESSAGES = {
 export function toAuthErrorMessage(code: string): string {
   if (
     Object.values(AUTH_ERROR_CODES).includes(
-      code as keyof typeof AUTH_ERROR_CODES,
+      code as keyof typeof AUTH_ERROR_CODES
     )
   ) {
     return AUTH_ERROR_MESSAGES[code as keyof typeof AUTH_ERROR_MESSAGES];

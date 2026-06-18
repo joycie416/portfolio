@@ -36,7 +36,7 @@ export function resolvePostLoginRedirect(
   // 이전 페이지의 URL
   referrer: string | undefined,
   // same-origin 검증 기준
-  origin: string,
+  origin: string
 ): string {
   // redirect 쿼리가 있는 경우
   if (redirectQuery) {

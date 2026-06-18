@@ -13,7 +13,7 @@ const props = withDefaults(
       size?: "sm" | "default";
     }
   >(),
-  { size: "default" },
+  { size: "default" }
 );
 
 const delegatedProps = reactiveOmit(props, "class", "size");
@@ -28,7 +28,7 @@ const forwardedProps = useForwardProps(delegatedProps);
     :class="
       cn(
         'border-input data-placeholder:text-text-gray-03 [&_svg:not([class*=\'text-\'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-sm border bg-white px-3 py-2 text-sm whitespace-nowrap transition-[color] outline-none focus-visible:ring-3 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-gray-01 disabled:text-text-gray-04 disabled:data-placeholder:text-text-gray-04 data-[size=default]:h-8 md:data-[size=default]:h-10 data-[size=sm]:h-9 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=\'size-\'])]:size-4',
-        props.class,
+        props.class
       )
     "
   >

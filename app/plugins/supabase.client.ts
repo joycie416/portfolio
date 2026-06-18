@@ -7,7 +7,7 @@ export default defineNuxtPlugin(() => {
 
   const supabase = createBrowserClient(
     config.public.supabaseUrl,
-    config.public.supabasePublishableKey,
+    config.public.supabasePublishableKey
   );
 
   // 서버, 클라이언트 상태 동기화
