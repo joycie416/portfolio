@@ -14,32 +14,81 @@ export type Database = {
   };
   public: {
     Tables: {
+      comments: {
+        Row: {
+          content: string;
+          created_at: string;
+          id: number;
+          modified_at: string;
+          nickname: string;
+          password: string;
+          post_id: number;
+        };
+        Insert: {
+          content?: string;
+          created_at?: string;
+          id?: number;
+          modified_at?: string;
+          nickname?: string;
+          password?: string;
+          post_id: number;
+        };
+        Update: {
+          content?: string;
+          created_at?: string;
+          id?: number;
+          modified_at?: string;
+          nickname?: string;
+          password?: string;
+          post_id?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "comments_post_id_fkey";
+            columns: ["post_id"];
+            isOneToOne: false;
+            referencedRelation: "posts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       menus: {
         Row: {
-          children: string[] | null;
           created_at: string;
           hidden: boolean;
           id: string;
+          modified_at: string;
           name: string;
-          parent: string | null;
+          order_idx: number;
+          parent_id: string | null;
         };
         Insert: {
-          children?: string[] | null;
           created_at?: string;
           hidden?: boolean;
           id?: string;
+          modified_at?: string;
           name?: string;
-          parent?: string | null;
+          order_idx?: number;
+          parent_id?: string | null;
         };
         Update: {
-          children?: string[] | null;
           created_at?: string;
           hidden?: boolean;
           id?: string;
+          modified_at?: string;
           name?: string;
-          parent?: string | null;
+          order_idx?: number;
+          parent_id?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "menus_parent_fkey";
+            columns: ["parent_id"];
+            isOneToOne: false;
+            referencedRelation: "menus";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       posts: {
         Row: {
@@ -48,6 +97,7 @@ export type Database = {
           hidden: boolean;
           id: number;
           menu_id: string;
+          modified_at: string;
           tags: string[] | null;
           title: string;
           title_image: string | null;
@@ -58,6 +108,7 @@ export type Database = {
           hidden?: boolean;
           id?: number;
           menu_id?: string;
+          modified_at?: string;
           tags?: string[] | null;
           title?: string;
           title_image?: string | null;
@@ -68,6 +119,7 @@ export type Database = {
           hidden?: boolean;
           id?: number;
           menu_id?: string;
+          modified_at?: string;
           tags?: string[] | null;
           title?: string;
           title_image?: string | null;
@@ -95,6 +147,7 @@ export type Database = {
           hidden: boolean;
           id: number;
           menu_id: string;
+          modified_at: string;
           tags: string[] | null;
           title: string;
           title_image: string | null;
