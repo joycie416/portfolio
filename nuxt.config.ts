@@ -65,6 +65,9 @@ export default defineNuxtConfig({
     "/blog/**": {
       appLayout: "blog-layout",
     },
+    "/blog/admin/**": {
+      appLayout: "blog-admin-layout",
+    },
     "/blog/admin/login": {
       appLayout: false,
     },
