@@ -5,6 +5,7 @@ import {
 } from "@supabase/ssr";
 import type { CookieMethodsServer, CookieOptions } from "@supabase/ssr";
 import { appendHeader, getHeader, type H3Event } from "h3";
+import type { Database } from "@/types/database.types";
 
 export function serverSupabaseClient(event: H3Event) {
   const config = useRuntimeConfig();
@@ -35,7 +36,7 @@ export function serverSupabaseClient(event: H3Event) {
     },
   };
 
-  return createServerClient(
+  return createServerClient<Database>(
     config.public.supabaseUrl,
     config.public.supabasePublishableKey,
     { cookies }
