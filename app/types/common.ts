@@ -26,3 +26,14 @@ export interface InputOption<TValue extends string | number> {
   value: TValue;
   disabled?: boolean;
 }
+export type MenuItem = {
+  id: string;
+  name: string;
+  hidden: boolean;
+};
+export type MenuGroup = {
+  id: string;
+  name: string;
+  hidden: boolean;
+  children?: MenuItem[];
+};
