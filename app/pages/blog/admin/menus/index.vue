@@ -4,9 +4,9 @@
       <template v-if="status === 'success'">
         <div
           v-if="fixedMenu"
-          class="rounded-md border bg-muted/40 px-3 py-2 flex items-center gap-2"
+          class="rounded-sm md:rounded-md border bg-gray-01 px-1.5 py-1.5 md:px-3 md:py-2 flex items-center gap-1 md:gap-2"
         >
-          <Lock class="size-4 shrink-0 text-muted-foreground/50" />
+          <Pin class="size-3.5 md:size-4 shrink-0 text-text-gray-03" />
           <span class="text-sm font-medium">{{ fixedMenu.name }}</span>
         </div>
 
@@ -21,10 +21,12 @@
 
 <script setup lang="ts">
 import MenuItem from "@/components/features/menu/MenuItem.vue";
-import { Lock } from "@lucide/vue";
+import { Pin } from "@lucide/vue";
 import type { MenuGroup } from "@/types/common";
 
-const { data: menus, status } = useGetAllMenus();
+const { data: menus, status, refresh } = useGetAllMenus();
+provide("refreshMenus", refresh);
+
 const transformedMenus = computed(() =>
   menus.value ? menusTransformer(menus.value) : []
 );

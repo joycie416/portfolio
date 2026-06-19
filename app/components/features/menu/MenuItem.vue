@@ -5,17 +5,25 @@
     tag="ul"
     handle=".drag-handle"
     class="flex flex-col gap-1"
-    :class="depth > 0 ? 'mt-2 ml-6 min-h-8' : 'min-h-8'"
+    :class="
+      depth > 0
+        ? 'mt-1 ml-4 md:mt-2 md:ml-6 min-h-6 md:min-h-8'
+        : 'min-h-6 md:min-h-8'
+    "
   >
     <li
       v-for="item in list"
       :key="item.id"
-      class="rounded-md border bg-background select-none"
-      :class="depth === 0 ? 'p-3' : 'px-3 py-2'"
+      class="rounded-sm md:rounded-md border bg-background select-none"
+      :class="
+        depth === 0
+          ? 'p-1.5 pl-1 pt-1 md:p-3 md:pt-2'
+          : 'p-1 pl-2 md:px-3 md:py-2'
+      "
     >
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1 md:gap-2">
         <GripVertical
-          class="drag-handle shrink-0 cursor-grab text-muted-foreground active:cursor-grabbing"
+          class="drag-handle shrink-0 cursor-grab text-text-gray-03 active:cursor-grabbing"
           :class="depth === 0 ? 'size-4' : 'size-3.5'"
         />
         <span
@@ -28,7 +36,8 @@
           <Button
             variant="ghost"
             size="icon"
-            class="size-7 p-[5px] text-text-gray-03"
+            class="size-6 p-1 md:size-7 md:p-[5px] text-text-gray-03"
+            @click="handleUpdateHidden(item)"
           >
             <Eye v-if="!item.hidden" />
             <EyeOff v-else />
@@ -36,7 +45,7 @@
           <Button
             variant="ghost"
             size="icon"
-            class="size-7 p-[5px] text-red-03"
+            class="size-6 md:size-7 p-1 md:p-[5px] text-red-03"
           >
             <Trash2 />
           </Button>
@@ -50,9 +59,10 @@
 
 <script setup lang="ts">
 import { VueDraggable } from "vue-draggable-plus";
-import { Eye, GripVertical, Trash2 } from "@lucide/vue";
+import { Eye, EyeOff, GripVertical, Trash2 } from "@lucide/vue";
 import type { MenuGroup } from "@/types/common";
-import { Button } from "~/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { PostgrestError } from "@supabase/supabase-js";
 
 defineOptions({
   name: "MenuItem",
@@ -74,4 +84,19 @@ const list = computed({
   get: () => props.modelValue,
   set: (value) => emits("update:modelValue", value),
 });
+
+const refreshMenus = inject<() => Promise<void>>("refreshMenus");
+
+const { updateHidden } = useUpdateHidden();
+const handleUpdateHidden = async (data: MenuGroup) => {
+  const { id, hidden } = data;
+  try {
+    await updateHidden({ id, hidden: !hidden });
+    await refreshMenus?.();
+  } catch (error) {
+    if (error instanceof PostgrestError) {
+      alert(error.message);
+    }
+  }
+};
 </script>

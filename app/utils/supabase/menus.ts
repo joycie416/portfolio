@@ -19,7 +19,7 @@ export const menus = (client: SupabaseClient<Database>) => ({
   create: async (formData: MenuInsertType) => {
     const { error } = await client.from("menus").insert(formData);
     if (error) throw error;
-    return ;
+    return;
   },
   delete: async (id: string) => {
     const { error } = await client.from("menus").delete().eq("id", id);
