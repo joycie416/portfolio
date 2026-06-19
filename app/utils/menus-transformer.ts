@@ -20,10 +20,11 @@ export const menusTransformer = (menus: Menu[]): MenuGroup[] => {
     .filter((menu) => menu.parent_id)
     .sort((a, b) => a.order_idx - b.order_idx)
     .forEach((child) => {
-      parentMap.get(child.parent_id!)?.children?.push({
+      parentMap.get(child.parent_id!)?.children.push({
         id: child.id,
         name: child.name,
         hidden: child.hidden,
+        children: [],
       });
     });
 
