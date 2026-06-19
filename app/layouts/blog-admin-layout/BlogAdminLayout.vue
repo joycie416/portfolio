@@ -132,24 +132,9 @@ const currentMenu = computed(() => {
     font-size: 24px;
   }
 }
-.text {
-  font-size: 14px;
-  font-weight: 600;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-
-  @include md {
-    font-size: 16px;
-  }
-  @include lg {
-    font-size: 18px;
-  }
-}
 .tab {
   display: inline-block;
-  padding: 8px 16px 6px 16px;
+  padding: 6px 12px 4px 12px;
 
   background-color: var(--color-white);
   border: solid 1px var(--color-gray-02);
@@ -157,18 +142,22 @@ const currentMenu = computed(() => {
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-gray-07);
 
   cursor: pointer;
 
   &:hover {
-    padding-top: 12px;
+    padding-top: 8px;
+
+    @include md {
+      padding-top: 12px;
+    }
   }
 
   &[data-current="true"] {
-    padding-top: 12px;
+    padding-top: 8px;
     color: var(--color-primary-600);
     position: relative;
     overflow: hidden;
@@ -179,9 +168,24 @@ const currentMenu = computed(() => {
       top: 0;
       left: 0;
       width: 100%;
-      height: 4px;
+      height: 3px;
       background-color: var(--color-primary-600);
+
+      @include md {
+        height: 4px;
+      }
     }
+
+    @include md {
+      padding-top: 12px;
+    }
+  }
+
+  @include md {
+    padding: 8px 16px 6px 16px;
+  }
+  @include lg {
+    font-size: 16px;
   }
 }
 </style>
