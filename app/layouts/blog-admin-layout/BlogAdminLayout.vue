@@ -15,7 +15,7 @@
     <main
       class="w-full max-w-[1024px] min-h-[calc(100vh-var(--header-height))] mx-auto flex flex-col py-5 px-5 space-y-6 lg:py-8 lg:space-y-10"
     >
-      <div>
+      <div class="flex-1 flex flex-col">
         <div class="flex items-end">
           <NuxtLink
             v-for="menu in ADMIN_MENUS"
@@ -27,7 +27,7 @@
             {{ menu.label }}
           </NuxtLink>
         </div>
-        <Card class="rounded-tl-none md:rounded-tl-none">
+        <Card class="flex-1 rounded-tl-none md:rounded-tl-none">
           <slot />
         </Card>
       </div>
@@ -42,14 +42,6 @@ import { Card } from "@/components/common";
 
 const runtimeConfig = useRuntimeConfig();
 const siteUrl = runtimeConfig.public.siteUrl;
-
-useSeoMeta({
-  title: "Haein's Blog 블로그 관리",
-  description: "Haein's Blog 블로그 관리",
-  ogTitle: "Haein's Blog 블로그 관리",
-  ogDescription: "Haein's Blog 블로그 관리",
-  ogUrl: siteUrl,
-});
 
 const route = useRoute();
 
@@ -79,8 +71,16 @@ const ADMIN_MENUS: AdminMenu[] = [
   },
 ];
 
-const currentMenu = computed(() => {
-  return ADMIN_MENUS.find((menu) => menu.path === route.path);
+const currentMenu = computed<AdminMenu>(
+  () => ADMIN_MENUS.find((menu) => menu.path === route.path) || ADMIN_MENUS[0]!
+);
+
+useSeoMeta({
+  title: `Haein's Blog 블로그 관리 - ${currentMenu.value.label}`,
+  description: "Haein's Blog 블로그 관리",
+  ogTitle: "Haein's Blog 블로그 관리",
+  ogDescription: "Haein's Blog 블로그 관리",
+  ogUrl: siteUrl,
 });
 </script>
 

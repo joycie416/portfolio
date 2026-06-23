@@ -45,6 +45,14 @@
           <Button
             variant="ghost"
             size="icon"
+            class="size-6 p-[5px] md:size-7 md:p-1.5 text-text-gray-03"
+            @click="props.onEditClick(item.id)"
+          >
+            <Pencil />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
             class="size-6 md:size-7 p-1 md:p-[5px] text-red-03"
           >
             <Trash2 />
@@ -52,15 +60,20 @@
         </div>
       </div>
 
-      <MenuItem v-if="depth < 1" v-model="item.children" :depth="depth + 1" />
+      <MenuItem
+        v-if="depth < 1"
+        v-model="item.children"
+        :depth="depth + 1"
+        :on-edit-click="props.onEditClick"
+      />
     </li>
   </VueDraggable>
 </template>
 
 <script setup lang="ts">
 import { VueDraggable } from "vue-draggable-plus";
-import { Eye, EyeOff, GripVertical, Trash2 } from "@lucide/vue";
-import type { MenuGroup } from "@/types/common";
+import { Eye, EyeOff, GripVertical, Pencil, Trash2 } from "@lucide/vue";
+import type { MenuGroup } from "@/types/menu";
 import { Button } from "@/components/ui/button";
 import { PostgrestError } from "@supabase/supabase-js";
 
@@ -72,6 +85,7 @@ const props = withDefaults(
   defineProps<{
     modelValue: MenuGroup[];
     depth?: number;
+    onEditClick: (menuId: string) => void;
   }>(),
   { depth: 0 }
 );

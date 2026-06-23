@@ -1,5 +1,5 @@
 import type { Menu } from "@/types/supabase";
-import type { MenuGroup } from "@/types/common";
+import type { MenuGroup } from "@/types/menu";
 
 export const menusTransformer = (menus: Menu[]): MenuGroup[] => {
   const parentMap = new Map<string, MenuGroup>();
