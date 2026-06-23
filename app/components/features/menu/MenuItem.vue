@@ -46,7 +46,7 @@
             variant="ghost"
             size="icon"
             class="size-6 p-[5px] md:size-7 md:p-1.5 text-text-gray-03"
-            @click="props.onEditClick(item.id)"
+            @click="onEditClick(item.id)"
           >
             <Pencil />
           </Button>
@@ -54,6 +54,7 @@
             variant="ghost"
             size="icon"
             class="size-6 md:size-7 p-1 md:p-[5px] text-red-03"
+            @click="onDeleteClick(item.id)"
           >
             <Trash2 />
           </Button>
@@ -64,7 +65,8 @@
         v-if="depth < 1"
         v-model="item.children"
         :depth="depth + 1"
-        :on-edit-click="props.onEditClick"
+        @edit-click="onEditClick"
+        @delete-click="onDeleteClick"
       />
     </li>
   </VueDraggable>
@@ -85,14 +87,18 @@ const props = withDefaults(
   defineProps<{
     modelValue: MenuGroup[];
     depth?: number;
-    onEditClick: (menuId: string) => void;
   }>(),
   { depth: 0 }
 );
 
 const emits = defineEmits<{
   "update:modelValue": [MenuGroup[]];
+  editClick: [menuId: string];
+  deleteClick: [menuId: string];
 }>();
+
+const onEditClick = (menuId: string) => emits("editClick", menuId);
+const onDeleteClick = (menuId: string) => emits("deleteClick", menuId);
 
 const list = computed({
   get: () => props.modelValue,

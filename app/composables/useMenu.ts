@@ -37,6 +37,14 @@ export const useUpdateHidden = () => {
   return { updateHidden };
 };
 
+export const useUpdateMenu = () => {
+  const supabase = useSupabaseClient();
+
+  const updateMenu = (data: MenuUpdateType) => menus(supabase).update(data);
+
+  return { updateMenu };
+};
+
 export const useDeleteMenu = () => {
   const supabase = useSupabaseClient();
 

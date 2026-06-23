@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex justify-end gap-2">
-      <Button @click="openCreate()">메뉴 추가</Button>
+      <Button @click="() => openCreate()">메뉴 추가</Button>
     </div>
     <div class="flex flex-col gap-1">
       <ClientOnly>
@@ -14,7 +14,11 @@
             <span class="text-sm font-medium">{{ fixedMenu.name }}</span>
           </div>
 
-          <MenuItem v-model="draggableMenus" :on-edit-click="handleEditClick" />
+          <MenuItem
+            v-model="draggableMenus"
+            @edit-click="handleEditClick"
+            @delete-click="handleDeleteMenu"
+          />
         </template>
         <template #fallback>
           <p class="text-sm text-muted-foreground">로딩중...</p>
@@ -22,6 +26,13 @@
       </ClientOnly>
     </div>
   </div>
+  <EditMenuModal
+    v-if="menuState !== null"
+    :menu="menuState.menu"
+    @on-close="closeEditModal"
+    @on-create="handleCreateMenu"
+    @on-edit="handleEditMenu"
+  />
 </template>
 
 <script setup lang="ts">
@@ -29,7 +40,9 @@ import MenuItem from "@/components/features/menu/MenuItem.vue";
 import { Button } from "@/components/ui/button";
 import { Pin } from "@lucide/vue";
 import type { MenuGroup, MenuState } from "@/types/menu";
-import type { Menu } from "@/types/supabase";
+import type { MenuInsertType, MenuUpdateType } from "@/types/supabase";
+import EditMenuModal from "@/components/features/menu/EditMenuModal.vue";
+import { PostgrestError } from "@supabase/supabase-js";
 
 // 메뉴 목록 조회
 const { data: menus, status, refresh } = useGetAllMenus();
@@ -64,14 +77,11 @@ const draggableMenus = computed({
 const menuState = ref<MenuState>(null);
 
 const openCreate = () => {
+  console.log("openCreate");
   menuState.value = { menu: null };
 };
 
-const openEdit = (menu: Menu) => {
-  menuState.value = { menu };
-};
-
-const closeEdit = () => {
+const closeEditModal = () => {
   menuState.value = null;
 };
 
@@ -79,5 +89,44 @@ const handleEditClick = (id: string) => {
   const menuToEdit = menus.value?.find((menu) => menu.id === id);
   if (!menuToEdit) return;
   menuState.value = { menu: menuToEdit };
+};
+
+const { createMenu } = useCreateMenu();
+const handleCreateMenu = async (data: MenuInsertType) => {
+  try {
+    const orderIdx = transformedMenus.value.length + 1;
+    await createMenu({ ...data, order_idx: orderIdx });
+    await refresh();
+    closeEditModal();
+  } catch (error) {
+    if (error instanceof PostgrestError) {
+      alert(error.message);
+    }
+  }
+};
+
+const { updateMenu } = useUpdateMenu();
+const handleEditMenu = async (data: MenuUpdateType) => {
+  try {
+    await updateMenu(data);
+    await refresh();
+    closeEditModal();
+  } catch (error) {
+    if (error instanceof PostgrestError) {
+      alert(error.message);
+    }
+  }
+};
+
+const { deleteMenu } = useDeleteMenu();
+const handleDeleteMenu = async (id: string) => {
+  try {
+    await deleteMenu(id);
+    await refresh();
+  } catch (error) {
+    if (error instanceof PostgrestError) {
+      alert(error.message);
+    }
+  }
 };
 </script>
