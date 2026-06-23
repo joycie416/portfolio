@@ -13,4 +13,4 @@ export type MenuGroup = {
 /**
  * 메뉴 추가/수정 시 상태
  */
-export type MenuState = { mode: "drag" } | { mode: "edit"; menu: Menu | null };
+export type MenuState = { menu: Menu | null } | null;
