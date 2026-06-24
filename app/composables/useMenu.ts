@@ -1,5 +1,6 @@
 import { menus } from "@/utils/supabase/menus";
 import type { Menu, MenuInsertType, MenuUpdateType } from "@/types/supabase";
+import type { FlatMenu } from "@/types/menu";
 import type { PostgrestError } from "@supabase/supabase-js";
 
 export const useGetAllMenus = () => {
@@ -47,4 +48,15 @@ export const useDeleteMenu = () => {
   };
 
   return { deleteMenu };
+};
+
+export const useReorderMenus = () => {
+  const supabase = useSupabaseClient();
+
+  const reorderMenus = async (updates: FlatMenu[]) => {
+    const { error } = await supabase.rpc("fn_menus_reorder", { updates });
+    if (error) throw error;
+  };
+
+  return { reorderMenus };
 };

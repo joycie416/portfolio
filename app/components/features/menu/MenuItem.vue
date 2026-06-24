@@ -4,6 +4,7 @@
     group="menus"
     tag="ul"
     handle=".drag-handle"
+    :disabled="disabled"
     class="flex flex-col gap-1"
     :class="
       depth > 0
@@ -23,8 +24,13 @@
     >
       <div class="flex items-center gap-1 md:gap-2">
         <GripVertical
-          class="drag-handle shrink-0 cursor-grab text-text-gray-03 active:cursor-grabbing"
-          :class="depth === 0 ? 'size-4' : 'size-3.5'"
+          class="drag-handle shrink-0 text-text-gray-03"
+          :class="[
+            depth === 0 ? 'size-4' : 'size-3.5',
+            disabled
+              ? 'cursor-not-allowed opacity-50'
+              : 'cursor-grab active:cursor-grabbing',
+          ]"
         />
         <span
           class="flex-1 truncate"
@@ -37,6 +43,7 @@
             variant="ghost"
             size="icon"
             class="size-6 p-1 md:size-7 md:p-[5px] text-text-gray-03"
+            :disabled="disabled || buttonDisabled"
             @click="handleUpdateHidden(item)"
           >
             <Eye v-if="!item.hidden" />
@@ -46,6 +53,7 @@
             variant="ghost"
             size="icon"
             class="size-6 p-[5px] md:size-7 md:p-1.5 text-text-gray-03"
+            :disabled="disabled || buttonDisabled"
             @click="openEditModal?.(item.id)"
           >
             <Pencil />
@@ -54,6 +62,8 @@
             variant="ghost"
             size="icon"
             class="size-6 md:size-7 p-1 md:p-[5px] text-red-03"
+            :disabled="disabled || buttonDisabled"
+            "
             @click="handleDelete?.(item.id)"
           >
             <Trash2 />
@@ -65,6 +75,8 @@
         v-if="depth < 1"
         v-model="item.children"
         :depth="depth + 1"
+        :disabled="disabled"
+        :button-disabled="buttonDisabled"
       />
     </li>
   </VueDraggable>
@@ -85,8 +97,10 @@ const props = withDefaults(
   defineProps<{
     modelValue: MenuGroup[];
     depth?: number;
+    disabled?: boolean;
+    buttonDisabled?: boolean;
   }>(),
-  { depth: 0 }
+  { depth: 0, disabled: false, buttonDisabled: false }
 );
 
 const emit = defineEmits<{

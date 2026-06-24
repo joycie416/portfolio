@@ -1,5 +1,5 @@
 import type { Menu } from "@/types/supabase";
-import type { MenuGroup } from "@/types/menu";
+import type { MenuGroup, FlatMenu } from "@/types/menu";
 
 export const menusTransformer = (menus: Menu[]): MenuGroup[] => {
   const parentMap = new Map<string, MenuGroup>();
@@ -29,4 +29,18 @@ export const menusTransformer = (menus: Menu[]): MenuGroup[] => {
     });
 
   return [...parentMap.values()];
+};
+
+/**
+ * MenuGroup 트리를 flat 배열로 변환 (order_idx, parent_id 포함)
+ * drag-and-drop 후 변경 diff 계산에 사용
+ */
+export const flattenMenuGroups = (
+  groups: MenuGroup[],
+  parentId: string | null = null
+): FlatMenu[] => {
+  return groups.flatMap((group, index) => [
+    { id: group.id, order_idx: index + 1, parent_id: parentId },
+    ...flattenMenuGroups(group.children, group.id),
+  ]);
 };

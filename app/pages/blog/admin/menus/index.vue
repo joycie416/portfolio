@@ -1,7 +1,19 @@
 <template>
   <div class="flex flex-col gap-2">
     <div class="flex justify-end gap-2">
-      <Button @click="openCreateModal">메뉴 추가</Button>
+      <Button v-if="hasOrderChanges" variant="outline" @click="cancelReorder">
+        취소
+      </Button>
+      <Button
+        v-if="hasOrderChanges"
+        :disabled="isSaveLoading"
+        @click="handleSaveReorder"
+      >
+        {{ isSaveLoading ? "저장 중..." : "순서 저장" }}
+      </Button>
+      <Button v-if="!hasOrderChanges" @click="openCreateModal">
+        메뉴 추가
+      </Button>
     </div>
     <div class="flex flex-col gap-1">
       <ClientOnly>
@@ -14,7 +26,11 @@
             <span class="text-sm font-medium">{{ fixedMenu.name }}</span>
           </div>
 
-          <MenuItem v-model="draggableMenus" />
+          <MenuItem
+            v-model="draggableMenus"
+            :disabled="isSaveLoading"
+            :button-disabled="isSaveLoading || hasOrderChanges"
+          />
         </template>
         <template #fallback>
           <p class="text-sm text-muted-foreground">로딩중...</p>
@@ -35,7 +51,7 @@
 import MenuItem from "@/components/features/menu/MenuItem.vue";
 import { Button } from "@/components/ui/button";
 import { Pin } from "@lucide/vue";
-import type { MenuGroup, MenuState } from "@/types/menu";
+import type { MenuState } from "@/types/menu";
 import type { MenuInsertType, MenuUpdateType } from "@/types/supabase";
 import EditMenuModal from "@/components/features/menu/EditMenuModal.vue";
 import { PostgrestError } from "@supabase/supabase-js";
@@ -43,37 +59,39 @@ import { PostgrestError } from "@supabase/supabase-js";
 // 메뉴 목록
 const { data: menus, status, refresh } = useGetAllMenus();
 
-const transformedMenus = computed(() =>
-  menus.value ? menusTransformer(menus.value) : []
-);
-
-const localMenus = ref<MenuGroup[]>([]);
-watch(
+// 순서 변경
+const {
   transformedMenus,
-  (val) => {
-    localMenus.value = val;
-  },
-  { immediate: true }
-);
+  fixedMenu,
+  draggableMenus,
+  hasOrderChanges,
+  loading: isSaveLoading,
+  save: saveReorder,
+  cancel: cancelReorder,
+} = useMenuReorder(menus, refresh);
 
-const fixedMenu = computed(() => localMenus.value[0]);
-const draggableMenus = computed({
-  get: () => localMenus.value.slice(1),
-  set: (val) => {
-    localMenus.value = localMenus.value[0]
-      ? [localMenus.value[0], ...val]
-      : val;
-  },
-});
+const handleSaveReorder = async () => {
+  try {
+    await saveReorder();
+  } catch (error) {
+    if (error instanceof PostgrestError) {
+      alert(error.message);
+    }
+  }
+};
 
 // 모달 상태
 const menuState = ref<MenuState>(null);
 
 const openCreateModal = () => {
+  if (isSaveLoading.value) return;
+
   menuState.value = { menu: null };
 };
 
 const openEditModal = (id: string) => {
+  if (isSaveLoading.value) return;
+
   const menuToEdit = menus.value?.find((menu) => menu.id === id);
   if (!menuToEdit) return;
   menuState.value = { menu: menuToEdit };
