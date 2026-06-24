@@ -46,7 +46,7 @@
             variant="ghost"
             size="icon"
             class="size-6 p-[5px] md:size-7 md:p-1.5 text-text-gray-03"
-            @click="onEditClick(item.id)"
+            @click="openEditModal?.(item.id)"
           >
             <Pencil />
           </Button>
@@ -54,7 +54,7 @@
             variant="ghost"
             size="icon"
             class="size-6 md:size-7 p-1 md:p-[5px] text-red-03"
-            @click="onDeleteClick(item.id)"
+            @click="handleDelete?.(item.id)"
           >
             <Trash2 />
           </Button>
@@ -65,8 +65,6 @@
         v-if="depth < 1"
         v-model="item.children"
         :depth="depth + 1"
-        @edit-click="onEditClick"
-        @delete-click="onDeleteClick"
       />
     </li>
   </VueDraggable>
@@ -91,27 +89,35 @@ const props = withDefaults(
   { depth: 0 }
 );
 
-const emits = defineEmits<{
+const emit = defineEmits<{
   "update:modelValue": [MenuGroup[]];
-  editClick: [menuId: string];
-  deleteClick: [menuId: string];
 }>();
-
-const onEditClick = (menuId: string) => emits("editClick", menuId);
-const onDeleteClick = (menuId: string) => emits("deleteClick", menuId);
 
 const list = computed({
   get: () => props.modelValue,
-  set: (value) => emits("update:modelValue", value),
+  set: (value) => emit("update:modelValue", value),
 });
 
 const refreshMenus = inject<() => Promise<void>>("refreshMenus");
+const openEditModal = inject<(id: string) => void>("openEditModal");
 
 const { updateHidden } = useUpdateHidden();
 const handleUpdateHidden = async (data: MenuGroup) => {
   const { id, hidden } = data;
   try {
     await updateHidden({ id, hidden: !hidden });
+    await refreshMenus?.();
+  } catch (error) {
+    if (error instanceof PostgrestError) {
+      alert(error.message);
+    }
+  }
+};
+
+const { deleteMenu } = useDeleteMenu();
+const handleDelete = async (id: string) => {
+  try {
+    await deleteMenu(id);
     await refreshMenus?.();
   } catch (error) {
     if (error instanceof PostgrestError) {

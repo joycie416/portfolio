@@ -1,6 +1,6 @@
 import { menus } from "@/utils/supabase/menus";
 import type { Menu, MenuInsertType, MenuUpdateType } from "@/types/supabase";
-import { PostgrestError } from "@supabase/supabase-js";
+import type { PostgrestError } from "@supabase/supabase-js";
 
 export const useGetAllMenus = () => {
   const supabase = useSupabaseClient();
@@ -12,15 +12,8 @@ export const useGetAllMenus = () => {
 export const useCreateMenu = () => {
   const supabase = useSupabaseClient();
 
-  const createMenu = async (formData: MenuInsertType) => {
-    try {
-      await menus(supabase).create(formData);
-    } catch (error) {
-      if (error instanceof PostgrestError) {
-        throw error;
-      }
-    }
-  };
+  const createMenu = (formData: MenuInsertType) =>
+    menus(supabase).create(formData);
 
   return { createMenu };
 };
@@ -51,7 +44,6 @@ export const useDeleteMenu = () => {
   const deleteMenu = async (id: string) => {
     const { error } = await supabase.from("menus").delete().eq("id", id);
     if (error) throw error;
-    return;
   };
 
   return { deleteMenu };

@@ -39,10 +39,10 @@ watch(
   (newVal) => {
     if (newVal) {
       form.value = {
-        name: newVal?.name ?? "",
-        parent_id: newVal?.parent_id ?? null,
-        order_idx: newVal?.order_idx ?? 0,
-        hidden: newVal?.hidden ?? false,
+        name: newVal.name,
+        parent_id: newVal.parent_id,
+        order_idx: newVal.order_idx,
+        hidden: newVal.hidden,
       };
     }
   },
@@ -57,16 +57,16 @@ const hiddenModel = computed({
 });
 
 const emit = defineEmits<{
-  onClose: [];
-  onCreate: [data: MenuInsertType];
-  onEdit: [data: MenuUpdateType];
+  close: [];
+  create: [data: MenuInsertType];
+  edit: [data: MenuUpdateType];
 }>();
 
-const close = () => emit("onClose");
+const close = () => emit("close");
 const save = () => {
   if (props.menu) {
     const { id, parent_id, order_idx } = props.menu;
-    emit("onEdit", {
+    emit("edit", {
       id,
       parent_id,
       order_idx,
@@ -74,7 +74,7 @@ const save = () => {
       hidden: form.value.hidden,
     });
   } else {
-    emit("onCreate", form.value);
+    emit("create", form.value);
   }
 };
 </script>
