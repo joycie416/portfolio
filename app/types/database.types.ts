@@ -139,6 +139,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      fn_menus_reorder: { Args: { updates: Json }; Returns: undefined };
       search_posts_or_title_phrase_or_tags_any: {
         Args: { q?: string };
         Returns: {
