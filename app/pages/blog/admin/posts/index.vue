@@ -1,1 +1,85 @@
-<template></template>
+<template>
+  <div class="flex-1 flex flex-col gap-2">
+    <div
+      v-if="!posts || posts.length === 0"
+      class="flex-1 flex items-center justify-center"
+    >
+      <Empty message="게시글이 없습니다." />
+    </div>
+    <div v-else class="flex flex-col gap-2">
+      <div class="px-2">
+        <InputGroup
+          v-model="selectAllModel"
+          type="checkbox"
+          :options="selectAllOptions"
+        />
+      </div>
+      <div>
+        <AdminPostItem
+          v-for="post in posts"
+          :key="post.id"
+          :post="post"
+          :checked="checkedPosts.includes(post.id.toString())"
+          @update:checked="handleChecked"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { Empty, InputGroup } from "@/components/common";
+import type { TransformedPost } from "@/types/supabase";
+import AdminPostItem from "@/components/features/post/AdminPostItem.vue";
+
+const posts: TransformedPost[] = [
+  {
+    content: "test content",
+    created_at: new Date().toISOString(),
+    hidden: false,
+    id: 1,
+    menu_id: "1",
+    modified_at: new Date().toISOString(),
+    tags: ["test"],
+    title: "test title",
+    title_image: "test",
+    menu_full_name: "test",
+  },
+  {
+    content: "test content 2",
+    created_at: new Date().toISOString(),
+    hidden: true,
+    id: 2,
+    menu_id: "1",
+    modified_at: new Date().toISOString(),
+    tags: ["test"],
+    title: "test title 2",
+    title_image: "test",
+    menu_full_name: "test/today",
+  },
+];
+
+const SELECT_ALL_VALUE = "all";
+const selectAllOptions = [{ label: "전체 선택", value: SELECT_ALL_VALUE }];
+
+const isAllChecked = computed(
+  () => posts.length > 0 && checkedPosts.value.length === posts.length
+);
+
+const selectAllModel = computed<string[]>({
+  get: () => (isAllChecked.value ? [SELECT_ALL_VALUE] : []),
+  set: (value) => {
+    checkedPosts.value = value.includes(SELECT_ALL_VALUE)
+      ? [...posts.map((post) => post.id.toString())]
+      : [];
+  },
+});
+
+const checkedPosts = ref<string[]>([]);
+
+const handleChecked = (id: string) => {
+  checkedPosts.value = checkedPosts.value.includes(id)
+    ? checkedPosts.value.filter((checkedId) => checkedId !== id)
+    : [...checkedPosts.value, id];
+};
+</script>

@@ -33,6 +33,9 @@ export type PostInsertType = OmitDefaultColumns<
 export type PostUpdateType = OmitDefaultColumns<
   RequiredFields<TablesUpdate<"posts">, "id">
 >;
+export type TransformedPost = Post & {
+  menu_full_name: string;
+};
 
 export type Comment = Tables<"comments">;
 export type CommentInsertType = OmitDefaultColumns<

@@ -27,7 +27,7 @@
             {{ menu.label }}
           </NuxtLink>
         </div>
-        <Card class="flex-1 rounded-tl-none md:rounded-tl-none">
+        <Card class="flex-1 flex flex-col rounded-tl-none md:rounded-tl-none">
           <slot />
         </Card>
       </div>
@@ -82,6 +82,9 @@ useSeoMeta({
   ogDescription: "Haein's Blog 블로그 관리",
   ogUrl: siteUrl,
 });
+
+// 관리자 페이지 접근 시 메뉴 목록 조회: 1회만 조회해 공유하기 위함
+useGetAllMenus();
 </script>
 
 <style lang="scss" scoped>
