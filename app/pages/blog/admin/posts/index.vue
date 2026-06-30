@@ -1,5 +1,6 @@
 <template>
   <div class="flex-1 flex flex-col gap-2">
+    <PostFilter v-model="searchForm" class="p-2 bg-gray-01 rounded-sm" />
     <div
       v-if="!posts || posts.length === 0"
       class="flex-1 flex items-center justify-center"
@@ -32,6 +33,8 @@
 import { Empty, Checkbox } from "@/components/common";
 import type { TransformedPost } from "@/types/supabase";
 import AdminPostItem from "@/components/features/post/AdminPostItem.vue";
+import type { PostFilterForm } from "@/types/post";
+import PostFilter from "~/components/features/post/PostFilter.vue";
 
 const posts: TransformedPost[] = [
   {
@@ -60,6 +63,7 @@ const posts: TransformedPost[] = [
   },
 ];
 
+// 게시글 선택 관련
 const checkedPosts = ref<string[]>([]);
 
 const isAllChecked = computed(
@@ -79,4 +83,11 @@ const handleChecked = (id: string) => {
     ? checkedPosts.value.filter((checkedId) => checkedId !== id)
     : [...checkedPosts.value, id];
 };
+
+// 검색 필터 관련
+const searchForm = ref<PostFilterForm>({
+  query: "",
+  visibility: "all",
+  menuId: "all",
+});
 </script>

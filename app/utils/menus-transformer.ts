@@ -66,7 +66,7 @@ export const toMenuOptions = (menus: Menu[]): InputOption<string>[] => {
       childrenByParent.set(child.parent_id!, siblings);
     });
 
-  const options: InputOption<string>[] = [];
+  const options: InputOption<string>[] = [{ label: "전체", value: "all" }];
 
   parents.forEach((parent) => {
     options.push({ label: parent.name, value: parent.id });

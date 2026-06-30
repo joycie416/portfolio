@@ -4,19 +4,21 @@ import type { Post, TransformedPost } from "@/types/supabase";
 
 export const POSTS_PAGE_SIZE = 10;
 
-export const useGetPosts = (params: {
+export interface UseGetPostsParams {
   page: MaybeRefOrGetter<number>;
   menuId?: MaybeRefOrGetter<string | undefined>;
-  q?: MaybeRefOrGetter<string | undefined>;
+  query?: MaybeRefOrGetter<string | undefined>;
   visibility?: MaybeRefOrGetter<PostVisibility>;
-  pageSize?: number;
-}) => {
+  perPage?: number;
+}
+
+export const useGetPosts = (params: UseGetPostsParams) => {
   const supabase = useSupabaseClient();
-  const pageSize = params.pageSize ?? POSTS_PAGE_SIZE;
+  const pageSize = params.perPage ?? POSTS_PAGE_SIZE;
 
   const page = computed(() => toValue(params.page));
   const menuId = computed(() => toValue(params.menuId));
-  const q = computed(() => toValue(params.q));
+  const query = computed(() => toValue(params.query));
   const visibility = computed<PostVisibility>(
     () => toValue(params.visibility) ?? "all"
   );
@@ -34,13 +36,13 @@ export const useGetPosts = (params: {
     count: number;
   }>(
     () =>
-      `posts:${page.value}:${menuId.value ?? "all"}:${visibility.value}:${q.value?.trim() ?? ""}`,
+      `posts:${page.value}:${menuId.value ?? "all"}:${visibility.value}:${query.value?.trim() ?? ""}`,
     () =>
       posts(supabase).getList({
         page: page.value,
         perPage: pageSize,
         menuId: menuId.value,
-        query: q.value,
+        query: query.value,
         visibility: visibility.value,
       }),
     { default: () => ({ data: [], count: 0 }) }
