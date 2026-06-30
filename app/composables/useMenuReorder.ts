@@ -14,7 +14,7 @@ export const useMenuReorder = (
 ) => {
   // 드래그앤드롭 모드에서 사용할 형태로 변환
   const transformedMenus = computed(() =>
-    menus.value ? menusTransformer(menus.value) : []
+    menus.value ? buildMenuTree(menus.value) : []
   );
 
   const localMenus = ref<MenuGroup[]>([]);
@@ -95,7 +95,7 @@ export const useMenuReorder = (
     // transformedMenus는 객체 참조 공유로 오염됐을 수 있으므로 (draggableMenus 위 주석 참고),
     // 원본 서버 데이터(menus)에서 직접 재생성
     if (menus.value) {
-      localMenus.value = menusTransformer(menus.value);
+      localMenus.value = buildMenuTree(menus.value);
     }
   };
 
