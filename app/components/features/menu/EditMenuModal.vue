@@ -1,11 +1,7 @@
 <template>
   <Dialog :open="true" :title="menu ? '메뉴 수정' : '메뉴 추가'">
     <InputGroup v-model="form.name" type="text" label="메뉴 이름" />
-    <InputGroup
-      v-model="hiddenModel"
-      type="checkbox"
-      :options="[{ label: '숨김', value: 'true' }]"
-    />
+    <Checkbox v-model="form.hidden" label="숨김" />
     <template #footer>
       <Button variant="destructive" @click="close">취소</Button>
       <Button variant="default" @click="save">저장</Button>
@@ -15,7 +11,7 @@
 
 <script setup lang="ts">
 import type { MenuInsertType, Menu, MenuUpdateType } from "@/types/supabase";
-import { Dialog, InputGroup } from "@/components/common";
+import { Dialog, InputGroup, Checkbox } from "@/components/common";
 import { Button } from "@/components/ui/button";
 
 const props = withDefaults(
@@ -48,13 +44,6 @@ watch(
   },
   { immediate: true }
 );
-
-const hiddenModel = computed({
-  get: () => (form.value.hidden ? ["true"] : []) as string[],
-  set: (val: string[]) => {
-    form.value.hidden = val.includes("true");
-  },
-});
 
 const emit = defineEmits<{
   close: [];

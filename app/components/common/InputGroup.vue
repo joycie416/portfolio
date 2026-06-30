@@ -32,38 +32,15 @@
       :class="cn(props.class, stateStyle)"
     />
     <!-- 체크박스 -->
-    <div
+    <CheckboxGroup
       v-if="props.type === 'checkbox'"
-      id="checkbox-container"
-      class="h-8 md:h-10 flex items-center gap-4"
-    >
-      <div
-        v-for="option in props.options"
-        :key="option.value"
-        class="flex items-center gap-2"
-      >
-        <input
-          :id="getCheckboxId(option.value)"
-          v-model="checkedValues"
-          type="checkbox"
-          :value="option.value"
-          :disabled="props.disabled || option.disabled"
-          class="size-3.5 md:size-4 shrink-0 rounded-sm cursor-pointer"
-        />
-        <label
-          :for="getCheckboxId(option.value)"
-          :class="
-            cn(
-              'text-sm md:text-base',
-              !option.disabled && 'cursor-pointer',
-              stateStyle
-            )
-          "
-        >
-          {{ option.label }}
-        </label>
-      </div>
-    </div>
+      v-model="checkedValues"
+      :options="props.options"
+      :disabled="props.disabled"
+      :state="props.state"
+      :direction="props.direction"
+      :class="props.class"
+    />
     <!-- 비밀번호 -->
     <div v-if="props.type === 'password'" class="relative">
       <Input
@@ -102,6 +79,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { EyeIcon, EyeOffIcon } from "@lucide/vue";
 import Dropdown from "./Dropdown.vue";
+import CheckboxGroup from "./CheckboxGroup.vue";
 
 const props = withDefaults(defineProps<InputGroupProps<TValue>>(), {
   type: "text",
@@ -126,10 +104,6 @@ const checkedValues = computed({
 });
 
 const showPassword = ref<boolean>(false);
-
-function getCheckboxId(value: TValue) {
-  return `checkbox-${String(value)}`;
-}
 
 function togglePassword() {
   if (props.type !== "password" || !props?.enableToggle) return;

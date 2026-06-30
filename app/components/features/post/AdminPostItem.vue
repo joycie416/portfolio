@@ -1,10 +1,9 @@
 <template>
   <div class="pl-2 py-3 flex items-center gap-3 border-b first:border-t">
     <div class="flex items-center justify-center">
-      <Input
-        type="checkbox"
-        :checked="props.checked"
-        class="size-3.5 md:size-4"
+      <Checkbox
+        :model-value="props.checked"
+        @update:model-value="emit('update:checked', props.post.id.toString())"
       />
     </div>
     <div>
@@ -26,7 +25,7 @@
 
 <script setup lang="ts">
 import type { TransformedPost } from "@/types/supabase";
-import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/common";
 
 interface Props {
   post: TransformedPost;

@@ -8,10 +8,11 @@
     </div>
     <div v-else class="flex flex-col gap-2">
       <div class="px-2">
-        <InputGroup
-          v-model="selectAllModel"
-          type="checkbox"
-          :options="selectAllOptions"
+        <Checkbox
+          :model-value="isAllChecked"
+          :indeterminate="isIndeterminate"
+          label="전체 선택"
+          @update:model-value="toggleAll"
         />
       </div>
       <div>
@@ -28,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { Empty, InputGroup } from "@/components/common";
+import { Empty, Checkbox } from "@/components/common";
 import type { TransformedPost } from "@/types/supabase";
 import AdminPostItem from "@/components/features/post/AdminPostItem.vue";
 
@@ -59,23 +60,19 @@ const posts: TransformedPost[] = [
   },
 ];
 
-const SELECT_ALL_VALUE = "all";
-const selectAllOptions = [{ label: "전체 선택", value: SELECT_ALL_VALUE }];
+const checkedPosts = ref<string[]>([]);
 
 const isAllChecked = computed(
   () => posts.length > 0 && checkedPosts.value.length === posts.length
 );
 
-const selectAllModel = computed<string[]>({
-  get: () => (isAllChecked.value ? [SELECT_ALL_VALUE] : []),
-  set: (value) => {
-    checkedPosts.value = value.includes(SELECT_ALL_VALUE)
-      ? [...posts.map((post) => post.id.toString())]
-      : [];
-  },
-});
+const isIndeterminate = computed(
+  () => checkedPosts.value.length > 0 && !isAllChecked.value
+);
 
-const checkedPosts = ref<string[]>([]);
+const toggleAll = (checked: boolean) => {
+  checkedPosts.value = checked ? posts.map((post) => post.id.toString()) : [];
+};
 
 const handleChecked = (id: string) => {
   checkedPosts.value = checkedPosts.value.includes(id)

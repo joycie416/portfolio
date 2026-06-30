@@ -26,7 +26,20 @@ export type InputGroupProps<TValue extends string | number = string | number> =
   | (CommonInputGroupProps & {
       type: "checkbox";
       options: InputOption<TValue>[];
+      direction?: CheckboxDirection;
     });
+
+export type CheckboxDirection = "horizontal" | "vertical";
+
+export interface CheckboxGroupProps<
+  TValue extends string | number = string | number,
+> {
+  options: InputOption<TValue>[];
+  disabled?: boolean;
+  state?: InputGroupState;
+  direction?: CheckboxDirection;
+  class?: HTMLAttributes["class"];
+}
 
 export interface DropdownProps<
   TValue extends string | number = string | number,
