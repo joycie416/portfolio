@@ -1,4 +1,5 @@
 import type { LocationQueryRaw } from "vue-router";
+import { parseQueryParam } from "@/utils/query-params";
 
 // 쿼리스트링-필터 값 동기화용 컴포저블
 // defaults: 필터가 관리하는 키와 각 키의 기본값(URL에 노출하지 않을 값)
@@ -13,9 +14,9 @@ export function useQueryParams<T extends Record<string, string>>(defaults: T) {
     const result = { ...defaults };
 
     for (const key of keys) {
-      const value = route.query[key as string];
-      if (typeof value === "string" && value !== "") {
-        result[key] = value as T[keyof T];
+      const parsed = parseQueryParam(route.query[key as string]);
+      if (parsed !== undefined && parsed !== "") {
+        result[key] = parsed as T[keyof T];
       }
     }
 

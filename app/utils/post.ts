@@ -1,4 +1,18 @@
+import type { InputOption } from "@/types/common";
 import type { Menu, Post, TransformedPost } from "@/types/supabase";
+import { POST_VISIBILITIES, type PostVisibility } from "@/utils/supabase/posts";
+
+const POST_VISIBILITY_LABELS: Record<PostVisibility, string> = {
+  all: "전체",
+  public: "공개",
+  private: "비공개",
+};
+
+export const getVisibilityOptions = (): InputOption<PostVisibility>[] =>
+  POST_VISIBILITIES.map((value) => ({
+    label: POST_VISIBILITY_LABELS[value],
+    value,
+  }));
 
 /**
  * 게시글 목록에 메뉴 전체 이름(menu_full_name)을 붙여 변환한다.

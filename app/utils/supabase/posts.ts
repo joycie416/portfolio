@@ -1,7 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
 
-export type PostVisibility = "all" | "public" | "private";
+export const POST_VISIBILITIES = ["all", "public", "private"] as const;
+export type PostVisibility = (typeof POST_VISIBILITIES)[number];
 
 export interface GetPostListParams {
   page: number;

@@ -1,6 +1,6 @@
 <template>
   <div class="flex-1 flex flex-col gap-2">
-    <PostFilter v-model="searchForm" class="p-2 bg-gray-01 rounded-sm" />
+    <PostFilter with-visibility class="p-2 bg-gray-01 rounded-sm" />
     <div
       v-if="!posts || posts.length === 0"
       class="flex-1 flex items-center justify-center"
@@ -31,43 +31,31 @@
 
 <script setup lang="ts">
 import { Empty, Checkbox } from "@/components/common";
-import type { TransformedPost } from "@/types/supabase";
 import AdminPostItem from "@/components/features/post/AdminPostItem.vue";
-import type { PostFilterForm } from "@/types/post";
 import PostFilter from "~/components/features/post/PostFilter.vue";
+import { parseQueryEnum, parseQueryParam } from "@/utils/query-params";
+import { POST_VISIBILITIES } from "@/utils/supabase/posts";
 
-const posts: TransformedPost[] = [
-  {
-    content: "test content",
-    created_at: new Date().toISOString(),
-    hidden: false,
-    id: 1,
-    menu_id: "1",
-    modified_at: new Date().toISOString(),
-    tags: ["test"],
-    title: "test title",
-    title_image: "test",
-    menu_full_name: "test",
+const route = useRoute();
+
+// 쿼리스트링 기준으로 검색 파라미터 구성 (getter로 넘겨 URL 변경에 반응)
+const { data: posts } = useGetPosts({
+  query: () => parseQueryParam(route.query.query) ?? "",
+  menuId: () => {
+    const menuId = parseQueryParam(route.query.menuId);
+    return menuId && menuId !== "all" ? menuId : undefined;
   },
-  {
-    content: "test content 2",
-    created_at: new Date().toISOString(),
-    hidden: true,
-    id: 2,
-    menu_id: "1",
-    modified_at: new Date().toISOString(),
-    tags: ["test"],
-    title: "test title 2",
-    title_image: "test",
-    menu_full_name: "test/today",
-  },
-];
+  visibility: () =>
+    parseQueryEnum(route.query.visibility, POST_VISIBILITIES, "all"),
+  page: () => Number(parseQueryParam(route.query.page)) || 1,
+});
 
 // 게시글 선택 관련
 const checkedPosts = ref<string[]>([]);
 
 const isAllChecked = computed(
-  () => posts.length > 0 && checkedPosts.value.length === posts.length
+  () =>
+    posts.value.length > 0 && checkedPosts.value.length === posts.value.length
 );
 
 const isIndeterminate = computed(
@@ -75,7 +63,9 @@ const isIndeterminate = computed(
 );
 
 const toggleAll = (checked: boolean) => {
-  checkedPosts.value = checked ? posts.map((post) => post.id.toString()) : [];
+  checkedPosts.value = checked
+    ? posts.value.map((post) => post.id.toString())
+    : [];
 };
 
 const handleChecked = (id: string) => {
@@ -83,11 +73,4 @@ const handleChecked = (id: string) => {
     ? checkedPosts.value.filter((checkedId) => checkedId !== id)
     : [...checkedPosts.value, id];
 };
-
-// 검색 필터 관련
-const searchForm = ref<PostFilterForm>({
-  query: "",
-  visibility: "all",
-  menuId: "all",
-});
 </script>
