@@ -1,5 +1,5 @@
 import { posts, type PostVisibility } from "@/utils/supabase/posts";
-import { postsTransformer } from "@/utils/posts-transformer";
+import { postsTransformer } from "~/utils/post";
 import type { Post, TransformedPost } from "@/types/supabase";
 
 export const POSTS_PAGE_SIZE = 10;

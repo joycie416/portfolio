@@ -29,7 +29,7 @@ import type { HTMLAttributes } from "vue";
 import type { PostFilterForm } from "@/types/post";
 import { cn } from "@/lib/utils";
 import { InputGroup } from "~/components/common";
-import { toMenuOptions } from "@/utils/menus-transformer";
+import { toMenuOptions } from "~/utils/menu";
 import type { InputOption } from "~/types/common";
 
 const props = defineProps<{
