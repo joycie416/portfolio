@@ -4,4 +4,5 @@ export { default as CheckboxGroup } from "./CheckboxGroup.vue";
 export { default as Checkbox } from "./Checkbox.vue";
 export { default as InputGroup } from "./InputGroup.vue";
 export { default as Dialog } from "./Dialog.vue";
+export { default as ConfirmDialog } from "./ConfirmDialog.vue";
 export { default as Empty } from "./Empty.vue";

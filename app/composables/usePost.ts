@@ -1,6 +1,6 @@
 import { posts, type PostVisibility } from "@/utils/supabase/posts";
-import { postsTransformer } from "~/utils/post";
-import type { Post, TransformedPost } from "@/types/supabase";
+import { postsTransformer } from "@/utils/post";
+import type { Post, TransformedPost, PostBulkFailure } from "@/types/supabase";
 
 export const POSTS_PAGE_SIZE = 10;
 
@@ -86,4 +86,46 @@ export const useGetPosts = (params: UseGetPostsParams) => {
     pageSize,
     filteredCount,
   };
+};
+
+/**
+ * 체크한 게시글에 대한 일괄 처리(삭제/공개여부 변경/메뉴 이동) RPC 래퍼.
+ * 일부 실패한 경우 실패한 행만 반환
+ */
+export const useBulkPostActions = () => {
+  const supabase = useSupabaseClient();
+
+  const bulkDelete = async (postIds: number[]): Promise<PostBulkFailure[]> => {
+    const { data, error } = await supabase.rpc("posts_bulk_delete", {
+      post_ids: postIds,
+    });
+    if (error) throw error;
+    return data ?? [];
+  };
+
+  const bulkUpdateHidden = async (
+    postIds: number[],
+    hidden: boolean
+  ): Promise<PostBulkFailure[]> => {
+    const { data, error } = await supabase.rpc("posts_bulk_update_hidden", {
+      post_ids: postIds,
+      new_hidden: hidden,
+    });
+    if (error) throw error;
+    return data ?? [];
+  };
+
+  const bulkMoveMenu = async (
+    postIds: number[],
+    menuId: string
+  ): Promise<PostBulkFailure[]> => {
+    const { data, error } = await supabase.rpc("posts_bulk_move_menu", {
+      post_ids: postIds,
+      target_menu_id: menuId,
+    });
+    if (error) throw error;
+    return data ?? [];
+  };
+
+  return { bulkDelete, bulkUpdateHidden, bulkMoveMenu };
 };

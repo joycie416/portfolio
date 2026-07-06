@@ -8,13 +8,15 @@
       <Empty message="게시글이 없습니다." />
     </div>
     <div v-else class="flex flex-col gap-2">
-      <div class="px-2">
+      <div class="flex items-center justify-between px-2">
         <Checkbox
           :model-value="isAllChecked"
           :indeterminate="isIndeterminate"
           label="전체 선택"
+          class="shrink-0"
           @update:model-value="toggleAll"
         />
+        <PostBulkActions :selected-ids="checkedIds" @done="handleBulkDone" />
       </div>
       <div>
         <AdminPostItem
@@ -33,13 +35,14 @@
 import { Empty, Checkbox } from "@/components/common";
 import AdminPostItem from "@/components/features/post/AdminPostItem.vue";
 import PostFilter from "~/components/features/post/PostFilter.vue";
+import PostBulkActions from "@/components/features/post/PostBulkActions.vue";
 import { parseQueryEnum, parseQueryParam } from "@/utils/query-params";
 import { POST_VISIBILITIES } from "@/utils/supabase/posts";
 
 const route = useRoute();
 
 // 쿼리스트링 기준으로 검색 파라미터 구성 (getter로 넘겨 URL 변경에 반응)
-const { data: posts } = useGetPosts({
+const { data: posts, refresh } = useGetPosts({
   query: () => parseQueryParam(route.query.query) ?? "",
   menuId: () => {
     const menuId = parseQueryParam(route.query.menuId);
@@ -72,5 +75,25 @@ const handleChecked = (id: string) => {
   checkedPosts.value = checkedPosts.value.includes(id)
     ? checkedPosts.value.filter((checkedId) => checkedId !== id)
     : [...checkedPosts.value, id];
+};
+
+watch(
+  () => route.query,
+  () => {
+    checkedPosts.value = [];
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+);
+
+// bulk RPC는 number[]를 받으므로 문자열 id를 변환해 전달
+const checkedIds = computed(() => checkedPosts.value.map(Number));
+
+// 일괄 처리 후 목록 새로고침 + 선택 초기화
+const handleBulkDone = async () => {
+  await refresh();
+  checkedPosts.value = [];
 };
 </script>

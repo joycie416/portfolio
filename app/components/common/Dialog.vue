@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open">
-    <DialogContent>
+    <DialogContent :class="props.class">
       <DialogHeader>
         <DialogTitle class="text-center font-semibold text-xl">
           {{ title }}
@@ -22,10 +22,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import type { HTMLAttributes } from "vue";
 const props = withDefaults(
   defineProps<{
     title: string;
     open: boolean;
+    class?: HTMLAttributes["class"];
   }>(),
   {
     title: "",

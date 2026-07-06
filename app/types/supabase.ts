@@ -1,4 +1,9 @@
-import type { Tables, TablesInsert, TablesUpdate } from "./database.types";
+import type {
+  Database,
+  Tables,
+  TablesInsert,
+  TablesUpdate,
+} from "./database.types";
 
 // 쉽게 사용할 수 있도록 db 타입 정의
 
@@ -52,3 +57,7 @@ export type CommentInsertType = OmitDefaultColumns<
 export type CommentUpdateType = OmitDefaultColumns<
   RequiredFields<TablesUpdate<"comments">, "id">
 >;
+
+//-------------- 에러 타입 ----------------
+export type PostBulkFailure =
+  Database["public"]["Functions"]["posts_bulk_delete"]["Returns"][number];
