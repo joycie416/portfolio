@@ -88,6 +88,7 @@ import { Eye, EyeOff, GripVertical, Pencil, Trash2 } from "@lucide/vue";
 import type { MenuGroup } from "@/types/menu";
 import { Button } from "@/components/ui/button";
 import { PostgrestError } from "@supabase/supabase-js";
+import { toast } from "vue-sonner";
 
 defineOptions({
   name: "MenuItem",
@@ -121,10 +122,12 @@ const handleUpdateHidden = async (data: MenuGroup) => {
   try {
     await updateHidden({ id, hidden: !hidden });
     await refreshMenus?.();
+    toast.success(`메뉴가 ${hidden? '비공개' : '공개'} 상태로 변경되었습니다.`);
   } catch (error) {
     if (error instanceof PostgrestError) {
-      alert(error.message);
+      toast.error(error.message);
     }
+    toast.error("메뉴 공개 상태 변경에 실패했습니다.");
   }
 };
 
@@ -133,10 +136,12 @@ const handleDelete = async (id: string) => {
   try {
     await deleteMenu(id);
     await refreshMenus?.();
+    toast.success("메뉴가 삭제되었습니다.");
   } catch (error) {
     if (error instanceof PostgrestError) {
-      alert(error.message);
+      toast.error(error.message);
     }
+    toast.error("메뉴 삭제에 실패했습니다.");
   }
 };
 </script>

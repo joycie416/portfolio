@@ -84,6 +84,7 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { toMenuOptions } from "@/utils/menu";
 import { useBulkPostActions } from "@/composables/usePost";
 import type { PostBulkFailure } from "@/types/supabase";
+import { toast } from "vue-sonner";
 
 const props = defineProps<{
   selectedIds: number[];
@@ -122,14 +123,21 @@ const runAction = async (
   try {
     const failures = await action([...props.selectedIds]);
     if (failures.length > 0) {
-      alert(
-        `${props.selectedIds.length}개 중 ${failures.length}개는 처리되지 못했습니다.`
+      toast.error(
+        `${props.selectedIds.length}개 중 ${failures.length}개 게시글 변경에 실패했습니다.`
+      );
+    } else {
+      toast.success(
+        `${props.selectedIds.length}개 게시글 변경에 성공했습니다.`
       );
     }
     emit("done");
   } catch (error) {
-    if (error instanceof PostgrestError) alert(error.message);
-    else throw error;
+    if (error instanceof PostgrestError) {
+      toast.error(error.message);
+    } else {
+      toast.error("게시글 처리에 실패했습니다.");
+    }
   } finally {
     loading.value = false;
   }

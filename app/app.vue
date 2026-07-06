@@ -7,7 +7,18 @@ import { Toaster } from "@/components/ui/sonner";
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
-    <Toaster position="top-center" />
+    <Toaster
+      position="top-center"
+      :toast-options="{
+        classes: {
+          success:
+            'bg-primary-50! border-primary-500! text-primary-700! px-4! py-3! shadow-none!',
+          error:
+            'bg-red-01! border-red-04! text-red-05! px-4! py-3! shadow-none!',
+          info: 'bg-gray-01! border-gray-03! text-text-gray-01! px-4! py-3! shadow-none!',
+        },
+      }"
+    />
   </div>
 </template>
 

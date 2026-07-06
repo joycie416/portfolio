@@ -9,7 +9,7 @@
         :disabled="isSaveLoading"
         @click="handleSaveReorder"
       >
-        {{ isSaveLoading ? "저장 중..." : "순서 저장" }}
+        순서 저장
       </Button>
       <Button v-if="!hasOrderChanges" @click="openCreateModal">
         메뉴 추가
@@ -55,6 +55,7 @@ import type { MenuState } from "@/types/menu";
 import type { MenuInsertType, MenuUpdateType } from "@/types/supabase";
 import EditMenuModal from "@/components/features/menu/EditMenuModal.vue";
 import { PostgrestError } from "@supabase/supabase-js";
+import { toast } from "vue-sonner";
 
 // 메뉴 목록
 const { data: menus, status, refresh } = useGetAllMenus();
@@ -73,10 +74,12 @@ const {
 const handleSaveReorder = async () => {
   try {
     await saveReorder();
+    toast.success("메뉴 순서가 변경되었습니다.");
   } catch (error) {
     if (error instanceof PostgrestError) {
-      alert(error.message);
+      toast.error(error.message);
     }
+    toast.error("메뉴 순서 변경에 실패했습니다.");
   }
 };
 
@@ -113,10 +116,12 @@ const handleCreate = async (data: MenuInsertType) => {
     await createMenu({ ...data, order_idx: orderIdx });
     await refresh();
     closeModal();
+    toast.success("메뉴가 추가되었습니다.");
   } catch (error) {
     if (error instanceof PostgrestError) {
-      alert(error.message);
+      toast.error(error.message);
     }
+    toast.error("메뉴 추가에 실패했습니다.");
   }
 };
 
@@ -126,10 +131,12 @@ const handleEdit = async (data: MenuUpdateType) => {
     await updateMenu(data);
     await refresh();
     closeModal();
+    toast.success("메뉴가 수정되었습니다.");
   } catch (error) {
     if (error instanceof PostgrestError) {
-      alert(error.message);
+      toast.error(error.message);
     }
+    toast.error("메뉴 수정에 실패했습니다.");
   }
 };
 </script>
