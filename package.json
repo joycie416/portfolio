@@ -26,6 +26,7 @@
     "@vueuse/core": "^14.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.21",
     "nuxt": "^4.4.6",
     "reka-ui": "^2.9.10",
     "shadcn-nuxt": "^2.7.3",
