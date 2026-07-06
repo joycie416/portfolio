@@ -15,7 +15,7 @@
       >
         <p>{{ props.post.menu_full_name }}</p>
         <div class="w-px h-3 bg-text-gray-03" />
-        <p>{{ props.post.created_at }}</p>
+        <p>{{ formatDate(props.post.created_at) }}</p>
         <div class="w-px h-3 bg-text-gray-03" />
         <p>{{ props.post.hidden ? "비공개" : "공개" }}</p>
       </div>
@@ -26,6 +26,7 @@
 <script setup lang="ts">
 import type { TransformedPost } from "@/types/supabase";
 import { Checkbox } from "@/components/common";
+import { formatDate } from "@/utils/format-date";
 
 interface Props {
   post: TransformedPost;
