@@ -134,12 +134,80 @@ export type Database = {
           },
         ];
       };
+      temp_posts: {
+        Row: {
+          content: string;
+          created_at: string;
+          hidden: boolean;
+          id: number;
+          menu_id: string;
+          modified_at: string;
+          tags: string[] | null;
+          title: string;
+          title_image: string | null;
+        };
+        Insert: {
+          content?: string;
+          created_at?: string;
+          hidden?: boolean;
+          id?: number;
+          menu_id?: string;
+          modified_at?: string;
+          tags?: string[] | null;
+          title?: string;
+          title_image?: string | null;
+        };
+        Update: {
+          content?: string;
+          created_at?: string;
+          hidden?: boolean;
+          id?: number;
+          menu_id?: string;
+          modified_at?: string;
+          tags?: string[] | null;
+          title?: string;
+          title_image?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "temp_posts_menu_id_fkey";
+            columns: ["menu_id"];
+            isOneToOne: false;
+            referencedRelation: "menus";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
       fn_menus_reorder: { Args: { updates: Json }; Returns: undefined };
+      posts_bulk_delete: {
+        Args: { post_ids: number[] };
+        Returns: {
+          post_id: number;
+          reason: string;
+          title: string;
+        }[];
+      };
+      posts_bulk_move_menu: {
+        Args: { post_ids: number[]; target_menu_id: string };
+        Returns: {
+          post_id: number;
+          reason: string;
+          title: string;
+        }[];
+      };
+      posts_bulk_update_hidden: {
+        Args: { new_hidden: boolean; post_ids: number[] };
+        Returns: {
+          post_id: number;
+          reason: string;
+          title: string;
+        }[];
+      };
       search_posts_or_title_phrase_or_tags_any: {
         Args: { q?: string };
         Returns: {

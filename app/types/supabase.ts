@@ -37,6 +37,10 @@ export type TransformedPost = Post & {
   menu_full_name: string;
 };
 
+// 임시 게시글 타입
+export type TempPost = Tables<"temp_posts">;
+export type TempPostInsertType = OmitDefaultColumns<TablesInsert<"temp_posts">>;
+
 export type Comment = Tables<"comments">;
 export type CommentInsertType = OmitDefaultColumns<
   RequiredFields<
