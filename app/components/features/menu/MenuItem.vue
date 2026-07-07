@@ -6,6 +6,8 @@
     handle=".drag-handle"
     :disabled="disabled"
     class="flex flex-col gap-1"
+    @start="handleDragStart"
+    @end="handleDragEnd"
     :class="
       depth > 0
         ? 'mt-1 ml-4 md:mt-2 md:ml-6 min-h-6 md:min-h-8'
@@ -24,12 +26,12 @@
     >
       <div class="flex items-center gap-1 md:gap-2">
         <GripVertical
-          class="drag-handle shrink-0 text-text-gray-03"
+          class="shrink-0 text-text-gray-03"
           :class="[
             depth === 0 ? 'size-4' : 'size-3.5',
-            disabled
+            disabled || isItemLocked(item.id)
               ? 'cursor-not-allowed opacity-50'
-              : 'cursor-grab active:cursor-grabbing',
+              : 'drag-handle cursor-grab active:cursor-grabbing',
           ]"
         />
         <span
@@ -77,6 +79,7 @@
         :depth="depth + 1"
         :disabled="disabled"
         :button-disabled="buttonDisabled"
+        :active-menu-id="activeMenuId"
       />
     </li>
   </VueDraggable>
@@ -100,8 +103,10 @@ const props = withDefaults(
     depth?: number;
     disabled?: boolean;
     buttonDisabled?: boolean;
+    // 현재 순서를 변경 중인 메뉴 id
+    activeMenuId?: string | null;
   }>(),
-  { depth: 0, disabled: false, buttonDisabled: false }
+  { depth: 0, disabled: false, buttonDisabled: false, activeMenuId: null }
 );
 
 const emit = defineEmits<{
@@ -113,8 +118,26 @@ const list = computed({
   set: (value) => emit("update:modelValue", value),
 });
 
+// 순서 변경 중에는 현재 변경 중인 메뉴만 드래그 가능하도록 나머지를 비활성화
+const isItemLocked = (id: string) =>
+  props.activeMenuId !== null && props.activeMenuId !== id;
+
+// Injecting
 const refreshMenus = inject<() => Promise<void>>("refreshMenus");
 const openEditModal = inject<(id: string) => void>("openEditModal");
+
+const onMenuDragStart = inject<(id: string) => void>("onMenuDragStart");
+const onMenuDragEnd = inject<() => void>("onMenuDragEnd");
+
+const handleDragStart = (evt: { oldIndex?: number }) => {
+  const id =
+    evt.oldIndex !== undefined ? list.value[evt.oldIndex]?.id : undefined;
+  if (id) onMenuDragStart?.(id);
+};
+
+const handleDragEnd = () => {
+  onMenuDragEnd?.();
+};
 
 const { updateHidden } = useUpdateHidden();
 const handleUpdateHidden = async (data: MenuGroup) => {

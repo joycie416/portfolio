@@ -30,6 +30,7 @@
             v-model="draggableMenus"
             :disabled="isSaveLoading"
             :button-disabled="isSaveLoading || hasOrderChanges"
+            :active-menu-id="activeMenuId"
           />
         </template>
         <template #fallback>
@@ -66,6 +67,9 @@ const {
   fixedMenu,
   draggableMenus,
   hasOrderChanges,
+  activeMenuId,
+  startDrag,
+  endDrag,
   loading: isSaveLoading,
   save: saveReorder,
   cancel: cancelReorder,
@@ -107,6 +111,8 @@ const closeModal = () => {
 // Provide
 provide("refreshMenus", refresh);
 provide("openEditModal", openEditModal);
+provide("onMenuDragStart", startDrag);
+provide("onMenuDragEnd", endDrag);
 
 // CRUD
 const { createMenu } = useCreateMenu();

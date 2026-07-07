@@ -48,6 +48,25 @@ export const useMenuReorder = (
   const hasOrderChanges = ref(false);
   const isSavingOrder = ref(false);
 
+  // 현재 순서 변경 중인 메뉴 id (변경 사항이 없으면 항상 null)
+  const activeMenuId = ref<string | null>(null);
+
+  // 드래그로 잡은 메뉴 id (드래그 시작 시점에 기록)
+  const draggingMenuId = ref<string | null>(null);
+
+  const startDrag = (id: string) => {
+    draggingMenuId.value = id;
+  };
+
+  // 드래그 종료 시점에 호출.
+  // 드롭으로 draggableMenus가 갱신된 뒤 hasOrderChanges 재계산(flush: 'pre' watcher)이
+  // 끝나도록 nextTick을 기다린 다음, 실제 변경이 있을 때만 드래그한 메뉴를 활성 상태로 둔다.
+  // 변경 없이 제자리에 놓으면 activeMenuId가 남지 않아 다른 메뉴 핸들이 잠기지 않는다.
+  const endDrag = async () => {
+    await nextTick();
+    activeMenuId.value = hasOrderChanges.value ? draggingMenuId.value : null;
+  };
+
   watch(
     localMenus,
     (current) => {
@@ -68,6 +87,11 @@ export const useMenuReorder = (
     // 자식 메뉴 children 배열 변화까지 감지
     { deep: true }
   );
+
+  // 변경 사항이 없으면 활성화 메뉴 제거
+  watch(hasOrderChanges, (changed) => {
+    if (!changed) activeMenuId.value = null;
+  });
 
   const { reorderMenus } = useReorderMenus();
 
@@ -92,6 +116,8 @@ export const useMenuReorder = (
   };
 
   const cancel = () => {
+    activeMenuId.value = null;
+    draggingMenuId.value = null;
     // transformedMenus는 객체 참조 공유로 오염됐을 수 있으므로 (draggableMenus 위 주석 참고),
     // 원본 서버 데이터(menus)에서 직접 재생성
     if (menus.value) {
@@ -104,6 +130,9 @@ export const useMenuReorder = (
     fixedMenu,
     draggableMenus,
     hasOrderChanges,
+    activeMenuId,
+    startDrag,
+    endDrag,
     loading: isSavingOrder,
     save,
     cancel,
