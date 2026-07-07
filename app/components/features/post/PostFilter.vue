@@ -121,9 +121,9 @@ watch(
   (value) => {
     if (isSyncingFromUrl) return;
     setQuery({
+      query: getQuery().query,
       menuId: value,
       visibility: formValues.visibility,
-      query: getQuery().query,
       // 페이지 초기화
     });
   }
@@ -135,9 +135,9 @@ watch(
   (value) => {
     if (isSyncingFromUrl) return;
     setQuery({
-      visibility: value,
-      menuId: formValues.menuId,
       query: getQuery().query,
+      menuId: formValues.menuId,
+      visibility: value,
       // 페이지 초기화
     });
   }
