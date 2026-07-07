@@ -7,7 +7,7 @@
     >
       <Empty message="게시글이 없습니다." />
     </div>
-    <div v-else class="flex flex-col gap-2">
+    <div v-else class="flex-1 flex flex-col gap-2">
       <div class="flex items-center justify-between px-2">
         <Checkbox
           :model-value="isAllChecked"
@@ -34,6 +34,13 @@
           @update:checked="handleChecked"
         />
       </div>
+      <Pagination
+        :page="page"
+        :total="filteredCount"
+        :items-per-page="pageSize"
+        class="mt-auto"
+        @update:page="onPageChange"
+      />
     </div>
   </div>
 </template>
@@ -45,13 +52,17 @@ import PostFilter from "~/components/features/post/PostFilter.vue";
 import PostBulkActions from "@/components/features/post/PostBulkActions.vue";
 import { parseQueryEnum, parseQueryParam } from "@/utils/query-params";
 import { POST_VISIBILITIES } from "@/utils/supabase/posts";
+import { Pagination } from "@/components/common";
 
 const route = useRoute();
+
+const { page, onPageChange } = usePagination();
 
 // 쿼리스트링 기준으로 검색 파라미터 구성 (getter로 넘겨 URL 변경에 반응)
 const {
   data: posts,
   filteredCount,
+  pageSize,
   refresh,
 } = useGetPosts({
   query: () => parseQueryParam(route.query.query) ?? "",
@@ -61,7 +72,7 @@ const {
   },
   visibility: () =>
     parseQueryEnum(route.query.visibility, POST_VISIBILITIES, "all"),
-  page: () => Number(parseQueryParam(route.query.page)) || 1,
+  page,
 });
 
 // 게시글 선택 관련

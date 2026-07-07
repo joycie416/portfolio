@@ -6,3 +6,4 @@ export { default as InputGroup } from "./InputGroup.vue";
 export { default as Dialog } from "./Dialog.vue";
 export { default as ConfirmDialog } from "./ConfirmDialog.vue";
 export { default as Empty } from "./Empty.vue";
+export { default as Pagination } from "./Pagination.vue";
