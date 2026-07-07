@@ -16,7 +16,14 @@
           class="shrink-0"
           @update:model-value="toggleAll"
         />
-        <PostBulkActions :selected-ids="checkedIds" @done="handleBulkDone" />
+        <PostBulkActions
+          v-if="checkedIds.length > 0"
+          :selected-ids="checkedIds"
+          @done="handleBulkDone"
+        />
+        <p v-else class="text-sm text-text-gray-02">
+          {{ filteredCount.toLocaleString() }} 개
+        </p>
       </div>
       <div>
         <AdminPostItem
@@ -42,7 +49,11 @@ import { POST_VISIBILITIES } from "@/utils/supabase/posts";
 const route = useRoute();
 
 // 쿼리스트링 기준으로 검색 파라미터 구성 (getter로 넘겨 URL 변경에 반응)
-const { data: posts, refresh } = useGetPosts({
+const {
+  data: posts,
+  filteredCount,
+  refresh,
+} = useGetPosts({
   query: () => parseQueryParam(route.query.query) ?? "",
   menuId: () => {
     const menuId = parseQueryParam(route.query.menuId);
