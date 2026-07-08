@@ -86,7 +86,7 @@ onMounted(() => {
   width: 100%;
   height: var(--header-height);
 
-  padding: 8px 20px;
+  padding: 8px 20px 8px 12px;
 
   display: flex;
   justify-content: space-between;
@@ -96,6 +96,13 @@ onMounted(() => {
   border-bottom: solid 1px var(--color-gray-02);
 
   z-index: 10;
+
+  @include md {
+    padding-left: 16px;
+  }
+  @include lg {
+    padding-left: 20px;
+  }
 }
 .icon {
   width: fit-content;
@@ -127,8 +134,8 @@ onMounted(() => {
   }
 }
 .text {
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--font-rix);
+  font-size: 12px;
   background: none;
   border: none;
   padding: 0;
@@ -147,10 +154,10 @@ onMounted(() => {
   }
 
   @include md {
-    font-size: 16px;
+    font-size: 14px;
   }
   @include lg {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 </style>

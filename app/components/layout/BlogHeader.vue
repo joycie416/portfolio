@@ -18,12 +18,7 @@
         <PanelLeft />
       </Button>
     </div>
-    <Button v-if="isAuthenticated" type="button" @click="handleSignOut">
-      로그아웃
-    </Button>
-    <Button v-else type="button" @click="navigateTo('/blog/admin/login')">
-      로그인
-    </Button>
+    <NuxtLink class="font-rix" to="/">Portfolio</NuxtLink>
   </header>
 </template>
 
@@ -41,12 +36,6 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: "toggleSidebar"): void;
 }>();
-
-const { isAuthenticated, signOut } = useAuth();
-
-const handleSignOut = async () => {
-  await signOut();
-};
 </script>
 
 <style lang="scss" scoped>
