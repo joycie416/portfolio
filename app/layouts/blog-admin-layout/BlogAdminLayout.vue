@@ -5,12 +5,6 @@
         <SimpleLogo class="size-5 md:size-7 lg:size-8" />
         블로그 관리
       </button>
-      <Button v-if="isAuthenticated" type="button" @click="handleSignOut">
-        로그아웃
-      </Button>
-      <Button v-else type="button" @click="navigateTo('/blog/admin/login')">
-        로그인
-      </Button>
     </header>
     <main
       class="w-full max-w-[1024px] min-h-[calc(100vh-var(--header-height))] mx-auto flex flex-col py-5 px-5 space-y-6 lg:py-8 lg:space-y-10"
@@ -37,19 +31,12 @@
 
 <script setup lang="ts">
 import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/common";
 
 const runtimeConfig = useRuntimeConfig();
 const siteUrl = runtimeConfig.public.siteUrl;
 
 const route = useRoute();
-
-const { isAuthenticated, signOut } = useAuth();
-
-const handleSignOut = async () => {
-  await signOut();
-};
 
 interface AdminMenu {
   label: string;
@@ -72,7 +59,9 @@ const ADMIN_MENUS: AdminMenu[] = [
 ];
 
 const currentMenu = computed<AdminMenu>(
-  () => ADMIN_MENUS.find((menu) => menu.path === route.path) || ADMIN_MENUS[0]!
+  () =>
+    ADMIN_MENUS.find((menu) => route.path.startsWith(menu.path)) ||
+    ADMIN_MENUS[0]!
 );
 
 useSeoMeta({
@@ -95,7 +84,7 @@ useGetAllMenus();
   width: 100%;
   height: var(--header-height);
 
-  padding: 8px 20px;
+  padding: 8px 20px 8px 12px;
 
   display: flex;
   justify-content: space-between;
@@ -105,6 +94,13 @@ useGetAllMenus();
   border-bottom: solid 1px var(--color-gray-02);
 
   z-index: 10;
+
+  @include md {
+    padding-left: 16px;
+  }
+  @include lg {
+    padding-left: 20px;
+  }
 }
 .icon {
   width: fit-content;

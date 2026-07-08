@@ -17,12 +17,16 @@
           <slot />
         </div>
       </main>
+      <NuxtLink to="/blog/admin/posts/new" class="create-post-button">
+        <Plus />
+      </NuxtLink>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { BlogHeader, Sidebar } from "@/components/layout";
+import { Plus } from "@lucide/vue";
 
 const runtimeConfig = useRuntimeConfig();
 const siteUrl = runtimeConfig.public.siteUrl;
@@ -95,6 +99,22 @@ const closeSidebar = () => {
       padding: 32px 20px;
       gap: 40px;
     }
+  }
+}
+.create-post-button {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 5;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: 50%;
+  padding: 10px;
+
+  @include md {
+    bottom: 20px;
+    right: 20px;
+    padding: 12px;
   }
 }
 </style>
