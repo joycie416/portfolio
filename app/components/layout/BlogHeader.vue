@@ -1,9 +1,23 @@
 <template>
   <header class="header">
-    <button type="button" class="icon" @click="navigateTo('/blog')">
-      <SimpleLogo class="size-5 md:size-7 lg:size-8" />
-      Haein
-    </button>
+    <div class="sidebar__top" :data-open="props.isSidebarOpen">
+      <Button
+        variant="ghost"
+        class="logo__button w-fit h-fit px-2 py-1 md:px-2 md:py-1 gap-2 font-rix text-primary-800 text-base md:text-xl lg:text-2xl"
+        @click="navigateTo('/blog')"
+      >
+        <SimpleLogo class="size-5 md:size-7 lg:size-8" />
+        Haein
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        class="size-9 md:size-10 ml-auto text-text-gray-02"
+        @click="emit('toggleSidebar')"
+      >
+        <PanelLeft />
+      </Button>
+    </div>
     <Button v-if="isAuthenticated" type="button" @click="handleSignOut">
       로그아웃
     </Button>
@@ -16,6 +30,17 @@
 <script setup lang="ts">
 import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
 import { Button } from "@/components/ui/button";
+import { PanelLeft } from "@lucide/vue";
+
+interface Props {
+  isSidebarOpen: boolean;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: "toggleSidebar"): void;
+}>();
 
 const { isAuthenticated, signOut } = useAuth();
 
@@ -32,7 +57,7 @@ const handleSignOut = async () => {
   width: 100%;
   height: var(--header-height);
 
-  padding: 8px 20px;
+  padding-right: 20px;
 
   display: flex;
   justify-content: space-between;
@@ -42,35 +67,6 @@ const handleSignOut = async () => {
   border-bottom: solid 1px var(--color-gray-02);
 
   z-index: 10;
-}
-.icon {
-  width: fit-content;
-  height: fit-content;
-  padding: 4px 8px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-
-  border-radius: 8px;
-  transition: background-color 0.2s;
-
-  font-family: var(--font-rix);
-  font-size: 16px;
-  color: var(--color-primary-800);
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--color-gray-01);
-  }
-
-  @include md {
-    font-size: 20px;
-  }
-  @include lg {
-    font-size: 24px;
-  }
 }
 .text {
   font-size: 14px;
@@ -97,6 +93,67 @@ const handleSignOut = async () => {
   }
   @include lg {
     font-size: 18px;
+  }
+}
+.sidebar {
+  &__top {
+    height: 100%;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-right: solid 1px var(--color-gray-02);
+
+    transition: all 200ms ease-in-out;
+
+    @include md {
+      padding: 0 6px;
+    }
+    @include lg {
+      padding: 0 10px;
+    }
+
+    &[data-open="true"] {
+      width: 80vw;
+
+      @include md {
+        width: 240px;
+      }
+    }
+
+    &[data-open="false"] {
+      width: 45px;
+
+      @include md {
+        width: 53px;
+      }
+      @include lg {
+        width: 63px;
+      }
+    }
+  }
+
+  &__top[data-open="true"] .logo__button {
+    animation: hide-logo-button 200ms reverse forwards;
+  }
+  &__top[data-open="false"] .logo__button {
+    opacity: 0;
+    display: none;
+    animation: hide-logo-button 200ms forwards;
+  }
+}
+@keyframes hide-logo-button {
+  0% {
+    opacity: 1;
+    display: flex;
+  }
+  60% {
+    opacity: 0;
+    display: none;
+  }
+  100% {
+    opacity: 0;
+    display: none;
   }
 }
 </style>

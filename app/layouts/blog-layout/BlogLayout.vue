@@ -1,5 +1,28 @@
+<template>
+  <div class="layout">
+    <BlogHeader
+      :is-sidebar-open="isSidebarOpen"
+      @toggle-sidebar="toggleSidebar"
+    />
+    <div class="layout__body">
+      <Sidebar :open="isSidebarOpen" />
+      <!-- 사이드바 오버레이 -->
+      <div
+        v-if="isSidebarOpen"
+        class="layout__backdrop"
+        @click="closeSidebar"
+      />
+      <main class="layout__main">
+        <div class="layout__content">
+          <slot />
+        </div>
+      </main>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
-import { BlogHeader } from "@/components/layout";
+import { BlogHeader, Sidebar } from "@/components/layout";
 
 const runtimeConfig = useRuntimeConfig();
 const siteUrl = runtimeConfig.public.siteUrl;
@@ -12,11 +35,66 @@ useSeoMeta({
   // ogImage: `${siteUrl}/og-image-blog.png`,
   ogUrl: siteUrl,
 });
+
+const isSidebarOpen = ref(false);
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value;
+};
+const closeSidebar = () => {
+  isSidebarOpen.value = false;
+};
 </script>
 
-<template>
-  <div class="w-full min-h-screen pt-(--header-height)">
-    <BlogHeader />
-    <slot />
-  </div>
-</template>
+<style scoped lang="scss">
+.layout {
+  width: 100%;
+  min-height: 100vh;
+  padding-top: var(--header-height);
+
+  &__body {
+    width: 100%;
+    min-height: calc(100vh - var(--header-height));
+
+    display: flex;
+    align-items: stretch;
+  }
+
+  &__backdrop {
+    position: fixed;
+    inset: var(--header-height) 0 0 0;
+    z-index: 4;
+
+    background: color-mix(in srgb, var(--color-gray-10) 60%, transparent);
+
+    // 데스크톱에서는 사이드바가 오버레이가 아니므로 backdrop 불필요
+    @include md {
+      display: none;
+    }
+  }
+
+  &__main {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__content {
+    width: 100%;
+    max-width: 1024px;
+    margin: 0 auto;
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    @include lg {
+      padding: 32px 20px;
+      gap: 40px;
+    }
+  }
+}
+</style>
