@@ -1,26 +1,36 @@
 <template>
   <aside class="sidebar" :data-open="props.open">
     <div class="sidebar__content">
+      <div class="sidebar__header">
+        <NuxtLink class="font-rix" to="/">Portfolio</NuxtLink>
+      </div>
       <div class="sidebar__footer">
         <NuxtLink
           v-if="!isAuthenticated"
-          class="admin-login"
+          class="admin__button"
           to="/blog/admin/login"
         >
           <LockKeyhole class="size-5" />
-          <span class="admin-login__text">관리자 로그인</span>
+          <span class="admin__button__text">관리자 로그인</span>
         </NuxtLink>
-        <button v-else class="admin-login cursor-pointer" @click="signOut">
-          <LogOut class="size-5" />
-          <span class="admin-login__text">로그아웃</span>
-        </button>
+        <div v-else class="admin">
+          <NuxtLink class="admin__button" to="/blog/admin">
+            <Settings class="size-5" />
+            <span class="admin__button__text">설정</span>
+          </NuxtLink>
+
+          <button class="admin__button cursor-pointer" @click="signOut">
+            <LogOut class="size-5" />
+            <span class="admin__button__text">로그아웃</span>
+          </button>
+        </div>
       </div>
     </div>
   </aside>
 </template>
 
 <script setup lang="ts">
-import { LockKeyhole, LogOut } from "@lucide/vue";
+import { LockKeyhole, LogOut, Settings } from "@lucide/vue";
 
 interface Props {
   open: boolean;
@@ -93,6 +103,15 @@ const { isAuthenticated, signOut } = useAuth();
     flex-direction: column;
   }
 
+  &__header {
+    padding: 8px 12px;
+    border-bottom: solid 1px var(--color-gray-02);
+
+    @include md {
+      display: none;
+    }
+  }
+
   &__footer {
     padding: 8px 12px;
     border-top: solid 1px var(--color-gray-02);
@@ -104,23 +123,28 @@ const { isAuthenticated, signOut } = useAuth();
     }
   }
 }
-.admin-login {
+.admin {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
 
-  font-size: 12px;
-  color: var(--color-text-gray-04);
+  &__button {
+    display: flex;
+    gap: 8px;
 
-  &__text {
-    white-space: nowrap;
-  }
-
-  .sidebar[data-open="false"] & {
-    margin-inline: auto;
+    font-size: 12px;
+    color: var(--color-text-gray-04);
 
     &__text {
-      display: none;
+      white-space: nowrap;
+    }
+
+    .sidebar[data-open="false"] & {
+      margin-inline: auto;
+
+      &__text {
+        display: none;
+      }
     }
   }
 }

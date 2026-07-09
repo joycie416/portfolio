@@ -18,7 +18,7 @@
         <PanelLeft />
       </Button>
     </div>
-    <NuxtLink class="font-rix" to="/">Portfolio</NuxtLink>
+    <NuxtLink class="font-rix max-md:hidden" to="/">Portfolio</NuxtLink>
   </header>
 </template>
 

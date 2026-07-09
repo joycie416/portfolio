@@ -110,6 +110,7 @@ const closeSidebar = () => {
   color: var(--color-white);
   border-radius: 50%;
   padding: 10px;
+  z-index: 3;
 
   @include md {
     bottom: 20px;
