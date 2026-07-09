@@ -92,6 +92,8 @@ const emit = defineEmits<{
     align-items: center;
     justify-content: space-between;
     border-right: solid 1px var(--color-gray-02);
+    box-shadow: 0 0 4px 0
+      color-mix(in srgb, var(--color-gray-09) 10%, transparent);
 
     transition: all 200ms ease-in-out;
 

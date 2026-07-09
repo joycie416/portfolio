@@ -44,6 +44,8 @@ const { isAuthenticated, signOut } = useAuth();
   overflow: hidden;
 
   background: white;
+  box-shadow: 0 0 4px 0
+    color-mix(in srgb, var(--color-gray-09) 10%, transparent);
 
   transition: width 200ms ease-in-out;
 
