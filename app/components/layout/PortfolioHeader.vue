@@ -34,6 +34,7 @@
       >
         Projects
       </button>
+      <NuxtLink type="button" class="text" to="/blog">Blog</NuxtLink>
     </div>
   </header>
 </template>
@@ -47,8 +48,8 @@ const sectionIds = ["profile", "skills", "projects"] as const;
 const activeSection = ref<(typeof sectionIds)[number] | null>(null);
 
 const scrollToSection = async (id: (typeof sectionIds)[number]) => {
-  if (route.path !== "/") {
-    await navigateTo("/");
+  if (route.path !== "/portfolio") {
+    await navigateTo("/portfolio");
   }
   await nextTick();
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });

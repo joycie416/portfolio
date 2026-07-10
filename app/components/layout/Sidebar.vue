@@ -2,7 +2,7 @@
   <aside class="sidebar" :data-open="props.open">
     <div class="sidebar__content">
       <div class="sidebar__header">
-        <NuxtLink class="font-rix" to="/">Portfolio</NuxtLink>
+        <NuxtLink class="font-rix" to="/portfolio">Portfolio</NuxtLink>
       </div>
       <div class="sidebar__footer">
         <NuxtLink

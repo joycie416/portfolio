@@ -18,7 +18,9 @@
         <PanelLeft />
       </Button>
     </div>
-    <NuxtLink class="font-rix max-md:hidden" to="/">Portfolio</NuxtLink>
+    <NuxtLink class="text font-rix max-md:hidden" to="/portfolio">
+      Portfolio
+    </NuxtLink>
   </header>
 </template>
 
@@ -58,8 +60,8 @@ const emit = defineEmits<{
   z-index: 10;
 }
 .text {
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--font-rix);
+  font-size: 12px;
   background: none;
   border: none;
   padding: 0;
@@ -69,19 +71,11 @@ const emit = defineEmits<{
     color: var(--color-primary-400);
   }
 
-  &[data-current="true"] {
-    color: var(--color-primary-600);
-
-    &:hover {
-      color: var(--color-primary-600);
-    }
-  }
-
   @include md {
-    font-size: 16px;
+    font-size: 14px;
   }
   @include lg {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 .sidebar {

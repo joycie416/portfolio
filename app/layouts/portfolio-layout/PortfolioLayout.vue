@@ -10,7 +10,7 @@ useSeoMeta({
   ogTitle: "Haein's Portfolio",
   ogDescription: "Haein's Portfolio",
   ogImage: `${siteUrl}/og-image-portfolio.png`,
-  ogUrl: siteUrl,
+  ogUrl: `${siteUrl}/portfolio`,
 });
 </script>
 

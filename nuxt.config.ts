@@ -59,6 +59,9 @@ export default defineNuxtConfig({
 
   routeRules: {
     "/": {
+      redirect: "/blog",
+    },
+    "/portfolio": {
       prerender: true,
       appLayout: "portfolio-layout",
     },
