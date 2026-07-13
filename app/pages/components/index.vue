@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-10 pb-30">
+  <div class="w-[600px] flex flex-col gap-10 pb-30">
     <div class="flex flex-col gap-3">
       <h2>버튼</h2>
       <div class="space-y-1">
@@ -104,6 +104,10 @@
         hint="드롭다운을 선택해주세요."
       />
     </div>
+    <div class="flex flex-col gap-3">
+      <h2>Tiptap</h2>
+      <TiptapEditor v-model="tiptapContent" />
+    </div>
   </div>
 </template>
 
@@ -112,6 +116,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable, type Columns } from "@/components/ui/data-table";
 import { Card, InputGroup } from "@/components/common";
 import type { InputOption } from "@/types/common";
+import { TiptapEditor } from "@/components/tiptap";
 
 type SampleDataType = {
   id: string;
@@ -222,4 +227,6 @@ const dropdownOptions = ref<InputOption<string>[]>([
   { label: "옵션 R", value: "optionR" },
   { label: "옵션 S", value: "optionS" },
 ]);
+
+const tiptapContent = ref("");
 </script>
