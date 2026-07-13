@@ -80,6 +80,13 @@
   --color-red-04: var(--red-04);
   --color-red-05: var(--red-05);
 
+  --color-yellow: var(--yellow-04);
+  --color-yellow-01: var(--yellow-01);
+  --color-yellow-02: var(--yellow-02);
+  --color-yellow-03: var(--yellow-03);
+  --color-yellow-04: var(--yellow-04);
+  --color-yellow-05: var(--yellow-05);
+
   --color-text-gray-01: var(--gray-10);
   --color-text-gray-02: var(--gray-08);
   --color-text-gray-03: var(--gray-06);
@@ -110,6 +117,12 @@
   --color-skill-group-data-state: var(--skill-group-data-state);
   --color-skill-group-ui-styling: var(--skill-group-ui-styling);
   --color-skill-group-forms-utilities: var(--skill-group-forms-utilities);
+
+  /* tiptap 관련 */
+  --color-highlight-blue: var(--highlight-blue);
+  --color-highlight-red: var(--highlight-red);
+  --color-highlight-yellow: var(--highlight-yellow);
+  --color-highlight-gray: var(--highlight-gray);
 }
 
 :root {
@@ -180,6 +193,12 @@
   --red-04: #f5485d;
   --red-05: #b92e43;
 
+  --yellow-01: #fff8e1;
+  --yellow-02: #ffefb3;
+  --yellow-03: #ffe083;
+  --yellow-04: #ffd24d;
+  --yellow-05: #b8860b;
+
   /* 스킬 색상 */
   --skill-typescript: #3178c6;
   --skill-javascript: #f7df1e;
@@ -205,6 +224,12 @@
   --skill-group-data-state: #8b5cf6;
   --skill-group-ui-styling: #ec4899;
   --skill-group-forms-utilities: #f97316;
+
+  /* tiptap 관련 */
+  --highlight-blue: var(--primary-300);
+  --highlight-red: var(--red-03);
+  --highlight-yellow: var(--yellow-03);
+  --highlight-gray: var(--gray-03);
 }
 
 @media (width >= theme(--breakpoint-md)) {
@@ -283,6 +308,12 @@
   --red-04: #f5485d;
   --red-05: #b92e43;
 
+  --yellow-01: #fff8e1;
+  --yellow-02: #ffefb3;
+  --yellow-03: #ffe083;
+  --yellow-04: #ffd24d;
+  --yellow-05: #b8860b;
+
   /* 스킬 색상 */
   --skill-typescript: #3178c6;
   --skill-javascript: #f7df1e;
@@ -308,6 +339,12 @@
   --skill-group-data-state: #8b5cf6;
   --skill-group-ui-styling: #ec4899;
   --skill-group-forms-utilities: #f97316;
+
+  /* tiptap 관련 */
+  --highlight-blue: var(--primary-300);
+  --highlight-red: var(--red-03);
+  --highlight-yellow: var(--yellow-03);
+  --highlight-gray: var(--gray-03);
 }
 
 @layer base {

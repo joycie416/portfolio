@@ -1,92 +1,158 @@
 <template>
   <div class="tiptap__container">
     <div class="tiptap__toolbar">
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" class="tiptap__toolbar__button">
+            <Pilcrow />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" class="min-w-fit">
+          <DropdownMenuItem
+            @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
+            class="text-[1.4rem] font-semibold"
+          >
+            제목 1
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
+            class="text-[1.2rem] font-semibold"
+          >
+            제목 2
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
+            class="text-[1.1rem] font-semibold"
+          >
+            제목 3
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            @click="editor?.chain().focus().setParagraph().run()"
+          >
+            본문
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <Button
         @click="editor?.chain().focus().toggleBold().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('bold') }"
-      >
-        <Pilcrow />
-      </Button>
-      <Button
-        @click="editor?.chain().focus().toggleBold().run()"
-        variant="icon"
-        class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('bold') }"
       >
         <Bold />
       </Button>
       <Button
         @click="editor?.chain().focus().toggleItalic().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('italic') }"
       >
         <Italic />
       </Button>
       <Button
         @click="editor?.chain().focus().toggleUnderline().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('underline') }"
       >
         <Underline />
       </Button>
       <Button
         @click="editor?.chain().focus().toggleStrike().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('strike') }"
       >
         <Strikethrough />
       </Button>
       <Button
         @click="editor?.chain().focus().toggleBold().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
       >
         <Type />
       </Button>
 
-      <Button
-        @click="editor?.chain().focus().toggleBold().run()"
-        variant="icon"
-        class="tiptap__toolbar__button"
-      >
-        <Highlighter />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" class="tiptap__toolbar__button">
+            <Highlighter />
+          </Button>
+          <DropdownMenuContent align="start" class="min-w-fit flex">
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="
+                editor
+                  ?.chain()
+                  .focus()
+                  .toggleHighlight({ color: 'var(--color-highlight-yellow)' })
+                  .run()
+              "
+            >
+              <span class="bg-highlight-yellow size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="
+                editor
+                  ?.chain()
+                  .focus()
+                  .toggleHighlight({ color: 'var(--color-highlight-red)' })
+                  .run()
+              "
+            >
+              <span class="bg-highlight-red size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="
+                editor
+                  ?.chain()
+                  .focus()
+                  .toggleHighlight({ color: 'var(--color-highlight-blue)' })
+                  .run()
+              "
+            >
+              <span class="bg-highlight-blue size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="
+                editor
+                  ?.chain()
+                  .focus()
+                  .toggleHighlight({ color: 'var(--color-highlight-gray)' })
+                  .run()
+              "
+            >
+              <span class="bg-highlight-gray size-4 rounded-full" />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenuTrigger>
+      </DropdownMenu>
       <div class="tiptap__toolbar__divider" />
 
       <Button
         @click="editor?.chain().focus().setTextAlign('left').run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('textAlign', 'left') }"
       >
         <TextAlignStart />
       </Button>
       <Button
         @click="editor?.chain().focus().setTextAlign('center').run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('textAlign', 'center') }"
       >
         <TextAlignCenter />
       </Button>
       <Button
         @click="editor?.chain().focus().setTextAlign('right').run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('textAlign', 'right') }"
       >
         <TextAlignEnd />
       </Button>
       <Button
         @click="editor?.chain().focus().setTextAlign('justify').run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('textAlign', 'justify') }"
       >
         <TextAlignJustify />
       </Button>
@@ -94,67 +160,66 @@
 
       <Button
         @click="editor?.chain().focus().toggleBlockquote().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('blockquote') }"
       >
         <TextQuote />
       </Button>
       <Button
         @click="editor?.chain().focus().toggleBulletList().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('bulletList') }"
       >
         <List />
       </Button>
       <Button
         @click="editor?.chain().focus().toggleOrderedList().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
-        :class="{ 'is-active': editor?.isActive('orderedList') }"
       >
         <ListOrdered />
       </Button>
       <div class="tiptap__toolbar__divider" />
       <Button
         @click="editor?.chain().focus().setHorizontalRule().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
       >
         <Minus />
       </Button>
+      <Button
+        @click="editor?.chain().focus().toggleCode().run()"
+        variant="ghost"
+        class="tiptap__toolbar__button"
+      >
+        <CodeXml />
+      </Button>
+
       <!-- TODO: 링크 입력 창 추가 -->
       <Button
-        @click="
-          editor
-            ?.chain()
-            .focus()
-            .setLink({ href: 'https://www.google.com' })
-            .run()
-        "
-        variant="icon"
+        @click="openHyperlinkModal"
+        variant="ghost"
         class="tiptap__toolbar__button"
       >
         <Link />
       </Button>
       <Button
         @click="editor?.chain().focus().setHorizontalRule().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
       >
         <Table />
       </Button>
       <Button
         @click="editor?.chain().focus().setHorizontalRule().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
       >
         <Image />
       </Button>
       <Button
         @click="editor?.chain().focus().setHorizontalRule().run()"
-        variant="icon"
+        variant="ghost"
         class="tiptap__toolbar__button"
       >
         <Paperclip />
@@ -162,14 +227,21 @@
     </div>
     <editor-content :editor="editor" class="tiptap__editor" />
   </div>
+  <TiptapHyperlinkModal
+    :editor="editor"
+    :open="hyperlinkModalOpen"
+    @close="hyperlinkModalOpen = false"
+    @update:set-link="setLink"
+  />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import { Button } from "@/components/ui/button";
 import StarterKit from "@tiptap/starter-kit";
 import Blockquote from "@tiptap/extension-blockquote";
 // import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import Highlight from "@tiptap/extension-highlight";
 import TiptapImage from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
 import { TextStyleKit } from "@tiptap/extension-text-style";
@@ -194,7 +266,15 @@ import {
   Image,
   Table,
   Pilcrow,
+  CodeXml,
 } from "@lucide/vue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { TiptapHyperlinkModal } from ".";
 
 const model = defineModel({
   type: String,
@@ -211,9 +291,15 @@ const editor = useEditor({
       orderedList: {
         keepMarks: true,
       },
+      heading: {
+        levels: [1, 2, 3],
+      },
     }),
     Blockquote,
     // CodeBlockLowlight,
+    Highlight.configure({
+      multicolor: true,
+    }),
     TiptapImage,
     TextAlign.configure({
       types: ["heading", "paragraph"],
@@ -221,12 +307,22 @@ const editor = useEditor({
     TextStyleKit,
     TableKit,
   ],
-  // Don't render on the server, only on the client after hydration
-  immediatelyRender: false,
-  // onUpdate: ({ editor }) => {
-  //   model.value = editor.getHTML();
-  // },
 });
+
+onBeforeUnmount(() => {
+  editor.value?.destroy();
+});
+
+const hyperlinkModalOpen = ref(false);
+
+const openHyperlinkModal = () => {
+  hyperlinkModalOpen.value = true;
+};
+
+const setLink = (url: string) => {
+  editor.value?.chain().focus().setLink({ href: url }).run();
+  hyperlinkModalOpen.value = false;
+};
 </script>
 
 <style lang="scss">
@@ -250,6 +346,7 @@ const editor = useEditor({
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-height: 400px;
   }
 
   &__container {
@@ -291,14 +388,19 @@ const editor = useEditor({
   h2,
   h3 {
     line-height: 1.1;
-    margin-top: 2.5rem;
     text-wrap: pretty;
+    font-weight: 600;
   }
 
   h1,
   h2 {
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
+    margin-top: 3.3rem;
+    margin-bottom: 1.2rem;
+  }
+
+  h3 {
+    margin-top: 2.5rem;
+    margin-bottom: 1.2rem;
   }
 
   h1 {
@@ -324,6 +426,22 @@ const editor = useEditor({
 
   ul {
     list-style-type: disc;
+  }
+
+  code {
+    background-color: var(--color-gray-02);
+    border-radius: 0.4rem;
+    color: var(--color-red-04);
+    padding: 0.25em 0.3em;
+  }
+
+  a {
+    color: var(--color-primary-600);
+    text-decoration: underline;
+    cursor: pointer;
+    &:hover {
+      color: var(--color-primary-700);
+    }
   }
 }
 </style>
