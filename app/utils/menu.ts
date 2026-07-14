@@ -51,7 +51,10 @@ export const flattenMenuGroups = (
  * @param menus - 메뉴 데이터
  * @returns 드롭다운용 메뉴 목록
  */
-export const toMenuOptions = (menus: Menu[]): InputOption<string>[] => {
+export const toMenuOptions = (
+  menus: Menu[],
+  withAll: boolean = true
+): InputOption<string>[] => {
   const sortByOrder = (a: Menu, b: Menu) => a.order_idx - b.order_idx;
 
   const parents = menus.filter((menu) => !menu.parent_id).sort(sortByOrder);
@@ -66,7 +69,9 @@ export const toMenuOptions = (menus: Menu[]): InputOption<string>[] => {
       childrenByParent.set(child.parent_id!, siblings);
     });
 
-  const options: InputOption<string>[] = [{ label: "전체", value: "all" }];
+  const options: InputOption<string>[] = withAll
+    ? [{ label: "전체", value: "all" }]
+    : [];
 
   parents.forEach((parent) => {
     options.push({ label: parent.name, value: parent.id });

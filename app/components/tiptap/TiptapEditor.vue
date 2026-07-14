@@ -1,5 +1,5 @@
 <template>
-  <div class="tiptap__container">
+  <div class="tiptap__container" :class="props.class">
     <div class="tiptap__toolbar">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
@@ -376,11 +376,29 @@ import {
 import { toast } from "vue-sonner";
 import { TiptapHyperlinkModal } from ".";
 import { FileItem } from "@/components/common";
+import type { HTMLAttributes } from "vue";
 
-const model = defineModel({
-  type: String,
-  required: true,
-});
+const props = defineProps<{
+  class?: HTMLAttributes["class"];
+}>();
+
+const model = defineModel<string | undefined>();
+
+// 폼 리셋/수정 모드 등 외부에서 값이 바뀌면 에디터에 반영한다.
+// (emitUpdate: false로 onUpdate 재호출에 의한 무한 루프를 방지)
+watch(
+  () => model.value,
+  (value) => {
+    const current = editor.value;
+    if (!current) return;
+
+    const next = value ?? "";
+    if (current.getHTML() === next) return;
+    if (current.isEmpty && next === "") return;
+
+    current.commands.setContent(next, { emitUpdate: false });
+  }
+);
 
 // ------------ 파일 ------------
 
@@ -592,7 +610,9 @@ const editor = useEditor({
     }),
   ],
   onUpdate: ({ editor: updatedEditor }) => {
-    model.value = updatedEditor.getHTML();
+    // 내용이 없을 때 Tiptap은 `<p></p>`를 반환하므로,
+    // 폼 검증(min(1))이 동작하도록 빈 값은 빈 문자열로 정규화한다.
+    model.value = updatedEditor.isEmpty ? "" : updatedEditor.getHTML();
   },
 });
 
@@ -658,6 +678,7 @@ const setLink = (url: string) => {
   flex: 1;
   padding: 8px;
   min-height: 400px;
+  max-height: 800px;
 
   &:focus,
   &:focus-visible {
@@ -668,7 +689,8 @@ const setLink = (url: string) => {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 400px;
+    min-height: 0;
+    overflow-y: auto;
   }
 
   &__container {
