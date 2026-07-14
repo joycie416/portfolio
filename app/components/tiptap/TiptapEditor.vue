@@ -194,8 +194,6 @@
       >
         <CodeXml />
       </Button>
-
-      <!-- TODO: 링크 입력 창 추가 -->
       <Button
         @click="openHyperlinkModal"
         variant="ghost"
@@ -203,13 +201,80 @@
       >
         <Link />
       </Button>
-      <Button
-        @click="editor?.chain().focus().setHorizontalRule().run()"
-        variant="ghost"
-        class="tiptap__toolbar__button"
-      >
-        <Table />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" class="tiptap__toolbar__button">
+            <Table />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="start"
+          class="min-w-fit grid grid-cols-5 grid-rows-2"
+        >
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="
+              editor?.chain().focus().insertTable({ rows: 3, cols: 3 }).run()
+            "
+          >
+            <Grid2X2Plus title="테이블 추가" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().addColumnAfter().run()"
+          >
+            <BetweenVerticalStart title="행 추가" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().addRowAfter().run()"
+          >
+            <BetweenHorizontalStart title="열 추가" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().deleteColumn().run()"
+          >
+            <TableColumnsSplit title="열 제거" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().deleteRow().run()"
+          >
+            <TableRowsSplit title="행 제거" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().mergeCells().run()"
+          >
+            <TableCellsMerge title="셀 병합" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().splitCell().run()"
+          >
+            <TableCellsSplit title="셀 분할" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().toggleHeaderRow().run()"
+          >
+            <Sheet title="행 헤더" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().toggleHeaderColumn().run()"
+          >
+            <Sheet title="열 헤더" class="rotate-270" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().deleteTable().run()"
+          >
+            <Grid2X2X title="테이블 제거" />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <Button
         @click="openImagePicker"
         variant="ghost"
@@ -272,6 +337,8 @@ import TextAlign from "@tiptap/extension-text-align";
 import { TextStyleKit } from "@tiptap/extension-text-style";
 import { TableKit } from "@tiptap/extension-table";
 import {
+  BetweenHorizontalStart,
+  BetweenVerticalStart,
   Bold,
   Italic,
   Underline,
@@ -292,6 +359,13 @@ import {
   Table,
   Pilcrow,
   CodeXml,
+  TableColumnsSplit,
+  TableRowsSplit,
+  TableCellsMerge,
+  TableCellsSplit,
+  Sheet,
+  Grid2X2Plus,
+  Grid2X2X,
 } from "@lucide/vue";
 import {
   DropdownMenu,
@@ -307,6 +381,8 @@ const model = defineModel({
   type: String,
   required: true,
 });
+
+// ------------ 파일 ------------
 
 // inline 이미지로 허용하는 확장자/타입 (첨부파일은 제한 없음)
 const INLINE_IMAGE_MIME_TYPES = [
@@ -402,7 +478,7 @@ const insertInlineImage = (targetEditor: Editor, file: File) => {
 };
 
 // 첨부파일: 본문에 넣지 않고 files 맵에만 등록 (별도 목록으로 표시)
-const addAttachment = (file: File) => {
+const addAttachment = (file: File): void => {
   registerFile(file);
   // ref 내부 Map 변경을 반응형으로 반영하기 위해 재할당
   files.value = new Map(files.value);
@@ -480,6 +556,7 @@ const onFileInputChange = (event: Event) => {
   input.value = "";
 };
 
+// ------------ 에디터 ------------
 const editor = useEditor({
   content: model.value,
   extensions: [
@@ -510,7 +587,9 @@ const editor = useEditor({
       types: ["heading", "paragraph"],
     }),
     TextStyleKit,
-    TableKit,
+    TableKit.configure({
+      table: { resizable: true },
+    }),
   ],
   onUpdate: ({ editor: updatedEditor }) => {
     model.value = updatedEditor.getHTML();
@@ -559,6 +638,7 @@ defineExpose({
   },
 });
 
+// ------------ 하이퍼링크 ------------
 const hyperlinkModalOpen = ref(false);
 
 const openHyperlinkModal = () => {
@@ -569,6 +649,8 @@ const setLink = (url: string) => {
   editor.value?.chain().focus().setLink({ href: url }).run();
   hyperlinkModalOpen.value = false;
 };
+
+// ------------ 테이블 ------------
 </script>
 
 <style lang="scss">
@@ -581,7 +663,7 @@ const setLink = (url: string) => {
   &:focus-visible {
     outline: none;
   }
-  
+
   &__editor {
     flex: 1;
     display: flex;
@@ -697,6 +779,66 @@ const setLink = (url: string) => {
     border-left: 3px solid var(--color-gray-04);
     margin: 1.5rem 0 1.5rem 1rem;
     padding-left: 1rem;
+  }
+
+  table {
+    border-collapse: collapse;
+    margin: 0;
+    overflow: hidden;
+    table-layout: fixed;
+    width: 100%;
+
+    td,
+    th {
+      border: 1px solid var(--color-gray-03);
+      box-sizing: border-box;
+      min-width: 1em;
+      padding: 6px 8px;
+      position: relative;
+      vertical-align: top;
+
+      > * {
+        margin-bottom: 0;
+      }
+    }
+
+    th {
+      background-color: var(--color-gray-01);
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .selectedCell:after {
+      background: var(--color-gray-02);
+      content: "";
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: 2;
+    }
+
+    .column-resize-handle {
+      background-color: var(--color-primary-600);
+      bottom: -2px;
+      pointer-events: none;
+      position: absolute;
+      right: -2px;
+      top: 0;
+      width: 4px;
+    }
+  }
+
+  .tableWrapper {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+  }
+
+  &.resize-cursor {
+    cursor: ew-resize;
+    cursor: col-resize;
   }
 }
 </style>
