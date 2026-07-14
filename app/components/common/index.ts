@@ -7,3 +7,4 @@ export { default as Dialog } from "./Dialog.vue";
 export { default as ConfirmDialog } from "./ConfirmDialog.vue";
 export { default as Empty } from "./Empty.vue";
 export { default as Pagination } from "./Pagination.vue";
+export { default as FileItem } from "./FileItem.vue";

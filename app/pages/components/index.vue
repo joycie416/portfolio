@@ -107,6 +107,7 @@
     <div class="flex flex-col gap-3">
       <h2>Tiptap</h2>
       <TiptapEditor v-model="tiptapContent" />
+      <FileItem :file="sampleFile" href="https://www.google.com" />
     </div>
   </div>
 </template>
@@ -114,7 +115,7 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { DataTable, type Columns } from "@/components/ui/data-table";
-import { Card, InputGroup } from "@/components/common";
+import { Card, FileItem, InputGroup } from "@/components/common";
 import type { InputOption } from "@/types/common";
 import { TiptapEditor } from "@/components/tiptap";
 
@@ -229,4 +230,10 @@ const dropdownOptions = ref<InputOption<string>[]>([
 ]);
 
 const tiptapContent = ref("");
+
+// FileItem 미리보기용 임시 txt 파일 (크기가 보이도록 내용 채움)
+const sampleFile = new File(
+  [new Uint8Array(1536)],
+  "메모 아주 긴 이름으로 짓고 싶은데 이게 되려나 언제까지 작성해야 할까 이름좀 줄여줘봐.txt"
+);
 </script>
