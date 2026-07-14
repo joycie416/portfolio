@@ -208,6 +208,8 @@ export type Database = {
           title: string;
         }[];
       };
+      reserve_post_id: { Args: never; Returns: number };
+      reserve_temp_post_id: { Args: never; Returns: number };
       search_posts_or_title_phrase_or_tags_any: {
         Args: { q?: string };
         Returns: {
