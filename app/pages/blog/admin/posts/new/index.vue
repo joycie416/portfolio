@@ -100,8 +100,10 @@ const { setValues, defineField, meta } = useForm({
 
 const [title, titleProps] = defineField("title", (state) => ({
   props: {
-    state: (state.errors[0] ? "error" : "success") as InputGroupState,
-    hint: state.errors[0],
+    state: (state.touched && state.errors[0]
+      ? "error"
+      : "success") as InputGroupState,
+    hint: state.touched ? state.errors[0] : undefined,
   },
 }));
 const [menuId] = defineField("menuId", (state) => ({
@@ -146,9 +148,10 @@ watch(
     const defaultOption = menuOptions.value.find(
       (option) => option.label === "미분류"
     );
-    setValues({
-      menuId: defaultOption?.value ?? menuOptions.value[0]?.value ?? "",
-    });
+    setValues(
+      { menuId: defaultOption?.value ?? menuOptions.value[0]?.value ?? "" },
+      false
+    );
   },
   { immediate: true }
 );
