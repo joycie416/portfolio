@@ -145,7 +145,7 @@ const handleUpdateHidden = async (data: MenuGroup) => {
   try {
     await updateHidden({ id, hidden: !hidden });
     await refreshMenus?.();
-    toast.success(`메뉴가 ${hidden? '비공개' : '공개'} 상태로 변경되었습니다.`);
+    toast.success(`메뉴가 ${hidden? '공개' : '비공개'} 상태로 변경되었습니다.`);
   } catch (error) {
     if (error instanceof PostgrestError) {
       toast.error(error.message);
