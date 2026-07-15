@@ -316,6 +316,7 @@
     </div>
   </div>
   <TiptapHyperlinkModal
+    v-if="editor"
     :editor="editor"
     :open="hyperlinkModalOpen"
     @close="hyperlinkModalOpen = false"
@@ -432,14 +433,22 @@ const InlineImage = TiptapImage.extend({
 const inlineImages = ref<Map<string, File>>(new Map());
 // 첨부 파일
 const files = ref<Map<string, File>>(new Map());
+const MAX_FILE_SIZE = 1024 * 1024 * 10; // 10MB
+const MAX_FULL_ATTACHMENT_SIZE = 1024 * 1024 * 50; // 50MB
 
-// inline 이미지로 허용되는 타입인지 판별 (jpg/jpeg/png/gif만)
-const isInlineImageFile = (file: File): boolean =>
+// inline 이미지로 삽입 가능한 타입인지 판별 (jpg/jpeg/png/gif만)
+const isInlineInsertable = (file: File): boolean =>
   (INLINE_IMAGE_MIME_TYPES as readonly string[]).includes(file.type);
 
-// 파일을 지정한 맵에 등록하고 매핑에 사용할 key를 반환한다.
-// 동일 파일(이름/크기/수정시각)은 기존 key를 재사용해 중복 저장을 방지하고,
-// 이름이 겹치면 접미사를 붙여 충돌을 피한다.
+// 파일명 확장자를 추출한다 (없으면 빈 문자열)
+const getFileExtension = (filename: string): string => {
+  const dotIndex = filename.lastIndexOf(".");
+  return dotIndex === -1 ? "" : filename.slice(dotIndex);
+};
+
+// 파일을 지정한 맵에 등록하고 매핑에 사용할 key를 반환
+// 동일 파일(이름/크기/수정시각)은 기존 key를 재사용해 중복 저장을 방지
+// key는 원본 파일명이 아닌 UUID로 생성: 원본 파일명 사용시 비-ASCII 문자 오류 발생 방지
 const registerFileInMap = (target: Map<string, File>, file: File): string => {
   for (const [existingKey, storedFile] of target) {
     if (
@@ -451,17 +460,21 @@ const registerFileInMap = (target: Map<string, File>, file: File): string => {
     }
   }
 
-  let key = file.name;
-  let counter = 1;
-  while (target.has(key)) {
-    const dotIndex = file.name.lastIndexOf(".");
-    key =
-      dotIndex === -1
-        ? `${file.name}-${counter}`
-        : `${file.name.slice(0, dotIndex)}-${counter}${file.name.slice(dotIndex)}`;
-    counter += 1;
+  if (file.size > MAX_FILE_SIZE) {
+    toast.error("각 파일은 최대 10MB까지 업로드 가능합니다.");
+    return "";
   }
 
+  const totalSize = Array.from(target.values()).reduce(
+    (acc, file) => acc + file.size,
+    0
+  );
+  if (totalSize + file.size > MAX_FULL_ATTACHMENT_SIZE) {
+    toast.error("첨부파일은 게시글 당 최대 50MB까지 업로드 가능합니다.");
+    return "";
+  }
+
+  const key = `${crypto.randomUUID()}${getFileExtension(file.name)}`;
   target.set(key, file);
   return key;
 };
@@ -519,13 +532,13 @@ const onFilePaste = (
   _pasteContent?: string | undefined
 ) => {
   pastedFiles.forEach((file) => {
-    if (isInlineImageFile(file)) insertInlineImage(editor, file);
+    if (isInlineInsertable(file)) insertInlineImage(editor, file);
   });
 };
 
 const onFileDrop = (editor: Editor, droppedFiles: File[], _pos: number) => {
   droppedFiles.forEach((file) => {
-    if (isInlineImageFile(file)) insertInlineImage(editor, file);
+    if (isInlineInsertable(file)) insertInlineImage(editor, file);
   });
 };
 
@@ -542,7 +555,7 @@ const onImageInputChange = (event: Event) => {
 
   Array.from(input.files).forEach((file) => {
     // 이미지 버튼은 jpg/jpeg/png/gif만 허용
-    if (!isInlineImageFile(file)) {
+    if (!isInlineInsertable(file)) {
       toast.error(
         `${file.name}은(는) 지원하지 않는 이미지 형식입니다. (jpg, jpeg, png, gif만 가능)`
       );
@@ -697,7 +710,7 @@ const setLink = (url: string) => {
     display: flex;
     flex-direction: column;
     background-color: white;
-    border: 1px solid var(--color-gray-03);
+    border: 1px solid var(--color-border);
     border-radius: 12px;
     overflow: hidden;
   }

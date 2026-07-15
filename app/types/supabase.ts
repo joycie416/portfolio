@@ -42,6 +42,14 @@ export type TransformedPost = Post & {
   menu_full_name: string;
 };
 
+/*
+ key: TiptapEditor에서 부여한 고유 key (본문의 data-inline-key와 매핑됨)
+ */
+export type PostFile = {
+  inlineImages: Record<string, File>;
+  attachments: Record<string, File>;
+};
+
 // 임시 게시글 타입
 export type TempPost = Tables<"temp_posts">;
 export type TempPostInsertType = OmitDefaultColumns<TablesInsert<"temp_posts">>;

@@ -1,6 +1,12 @@
 import { posts, type PostVisibility } from "@/utils/supabase/posts";
 import { postsTransformer } from "@/utils/post";
-import type { Post, TransformedPost, PostBulkFailure } from "@/types/supabase";
+import type {
+  Post,
+  TransformedPost,
+  PostBulkFailure,
+  PostInsertType,
+  PostFile,
+} from "@/types/supabase";
 
 export const POSTS_PAGE_SIZE = 10;
 
@@ -128,4 +134,16 @@ export const useBulkPostActions = () => {
   };
 
   return { bulkDelete, bulkUpdateHidden, bulkMoveMenu };
+};
+
+export const useCreatePost = () => {
+  const supabase = useSupabaseClient();
+
+  const createPost = (
+    formData: PostInsertType,
+    files: PostFile,
+    temp: boolean = false
+  ) => posts(supabase).create(formData, files, temp);
+
+  return { createPost };
 };
