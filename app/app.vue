@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import { Toaster } from "@/components/ui/sonner";
-</script>
-
 <template>
   <div class="app">
     <NuxtLayout>
@@ -19,8 +15,16 @@ import { Toaster } from "@/components/ui/sonner";
         },
       }"
     />
+    <LoadingOverlay :loading="loading" />
   </div>
 </template>
+
+<script setup lang="ts">
+import { Toaster } from "@/components/ui/sonner";
+import { LoadingOverlay } from "@/components/common";
+
+const { loading } = useLoading();
+</script>
 
 <style>
 .app {
