@@ -10,7 +10,7 @@
       class="w-full max-w-[1024px] min-h-[calc(100vh-var(--header-height))] mx-auto flex flex-col py-5 px-5 space-y-6 lg:py-8 lg:space-y-10"
     >
       <div class="flex-1 flex flex-col">
-        <div class="flex items-end">
+        <div class="flex items-end gap-1">
           <NuxtLink
             v-for="menu in ADMIN_MENUS"
             :key="menu.path"
@@ -135,16 +135,15 @@ useGetAllMenus();
   display: inline-block;
   padding: 6px 12px 4px 12px;
 
-  background-color: var(--color-white);
-  border: solid 1px var(--color-gray-02);
-  border-bottom: none;
+  background-color: var(--color-primary-300);
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 
   font-size: 14px;
-  font-weight: 600;
-  color: var(--color-gray-07);
+  font-weight: 500;
+  color: var(--color-white);
 
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
 
   &:hover {
@@ -157,9 +156,13 @@ useGetAllMenus();
 
   &[data-current="true"] {
     padding-top: 8px;
+    font-weight: 600;
     color: var(--color-primary-600);
     position: relative;
     overflow: hidden;
+
+    background-color: var(--color-white);
+    box-shadow: none;
 
     &::before {
       content: "";

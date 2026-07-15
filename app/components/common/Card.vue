@@ -2,7 +2,9 @@
   <div
     :class="
       cn(
-        'p-5 bg-white border border-gray-02 rounded-[20px] md:p-7 md:rounded-3xl',
+        'p-5 bg-white rounded-[20px] md:p-7 md:rounded-3xl',
+        props.border && 'border border-border',
+        !props.border && 'shadow-sm',
         props.title && 'pt-4 md:pt-6',
         props.class
       )
@@ -27,5 +29,6 @@ import { cn } from "@/lib/utils";
 const props = defineProps<{
   title?: string;
   class?: HTMLAttributes["class"];
+  border?: boolean;
 }>();
 </script>
