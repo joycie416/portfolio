@@ -630,7 +630,15 @@ const editor = useEditor({
     Highlight.configure({
       multicolor: true,
     }),
-    InlineImage.configure({ onToggleThumbnail: setThumbnail }),
+    InlineImage.configure({
+      onToggleThumbnail: setThumbnail,
+      resize: {
+        enabled: true,
+        minWidth: 100,
+        minHeight: 100,
+        alwaysPreserveAspectRatio: true,
+      },
+    }),
     TextAlign.configure({
       types: ["heading", "paragraph"],
     }),
