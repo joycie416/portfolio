@@ -31,7 +31,7 @@ export type Post = Tables<"posts">;
 export type PostInsertType = OmitDefaultColumns<
   RequiredFields<
     TablesInsert<"posts">,
-    "title" | "content" | "menu_id" | "hidden" | "tags" | "title_image"
+    "title" | "content" | "menu_id" | "hidden" | "tags" | "thumbnail"
   >,
   true
 >;

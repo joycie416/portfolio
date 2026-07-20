@@ -86,7 +86,7 @@ const { setValues, defineField, meta } = useForm({
     content: "",
     hidden: false,
     tags: [],
-    titleImage: "",
+    thumbnail: "",
   },
   initialTouched: {
     title: false,
@@ -94,7 +94,7 @@ const { setValues, defineField, meta } = useForm({
     content: true,
     hidden: true,
     tags: true,
-    titleImage: true,
+    thumbnail: true,
   },
 });
 
@@ -120,7 +120,7 @@ const [content] = defineField("content", (state) => ({
 }));
 const [isHidden] = defineField("hidden");
 const [tags] = defineField("tags");
-const [titleImage, titleImageProps] = defineField("titleImage");
+const [thumbnail] = defineField("thumbnail");
 
 // ------------ 태그 ------------
 const tag = ref("");
@@ -174,7 +174,7 @@ const savePost = async () => {
     content: content.value ?? "",
     hidden: isHidden.value ?? false,
     tags: tags.value ?? [],
-    title_image: titleImage.value || null,
+    thumbnail: thumbnail.value || null,
   };
 
   // 본문 inline 이미지(key -> File)와 첨부파일(key -> File)을 posts().create()가
