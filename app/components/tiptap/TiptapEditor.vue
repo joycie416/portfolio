@@ -330,12 +330,13 @@ import type { Editor } from "@tiptap/core";
 import { Button } from "@/components/ui/button";
 import StarterKit from "@tiptap/starter-kit";
 import Blockquote from "@tiptap/extension-blockquote";
-// import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import FileHandler from "@tiptap/extension-file-handler";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import { TextStyleKit } from "@tiptap/extension-text-style";
 import { TableKit } from "@tiptap/extension-table";
+import { all, createLowlight } from "lowlight";
 import {
   BetweenHorizontalStart,
   BetweenVerticalStart,
@@ -605,6 +606,9 @@ const setThumbnail = (key: string | null) => {
 };
 
 // ------------ 에디터 ------------
+// create a lowlight instance
+const lowlight = createLowlight(all);
+
 const editor = useEditor({
   content: model.value,
   extensions: [
@@ -620,7 +624,9 @@ const editor = useEditor({
       },
     }),
     Blockquote,
-    // CodeBlockLowlight,
+    CodeBlockLowlight.configure({
+      lowlight,
+    }),
     FileHandler.configure({
       // 붙여넣기/드롭은 inline 이미지(jpg/jpeg/png/gif)만 허용
       allowedMimeTypes: [...INLINE_IMAGE_MIME_TYPES],
@@ -848,6 +854,74 @@ const setLink = (url: string) => {
     border-radius: 0.4rem;
     color: var(--color-red-04);
     padding: 0.25em 0.3em;
+  }
+
+  pre {
+    background: var(--color-gray-02);
+    border-radius: 0.5rem;
+    color: var(--color-text-gray-02);
+    margin: 1.5rem 0;
+    padding: 0.75rem 1rem;
+
+    code {
+      background: none;
+      color: inherit;
+      font-size: 0.8rem;
+      padding: 0;
+    }
+
+    /* Code styling */
+    .hljs-comment,
+    .hljs-quote {
+      color: var(--color-gray-05);
+    }
+
+    // .hljs-tag,
+    // .hljs-name,
+    // .hljs-attr,
+    .hljs-variable,
+    .hljs-subst,
+    .hljs-template-variable,
+    .hljs-regexp,
+    .hljs-link,
+    .hljs-selector-id,
+    .hljs-selector-class {
+      color: var(--color-red-03);
+    }
+
+    .hljs-number,
+    .hljs-meta,
+    .hljs-built_in,
+    .hljs-builtin-name,
+    .hljs-literal,
+    .hljs-type,
+    .hljs-params {
+      color: var(--color-yellow-05);
+    }
+
+    .hljs-string,
+    .hljs-symbol,
+    .hljs-bullet {
+      color: var(--color-primary-700);
+    }
+
+    .hljs-title,
+    .hljs-section {
+      color: var(--color-primary-500);
+    }
+
+    .hljs-keyword,
+    .hljs-selector-tag {
+      color: var(--color-purple-500);
+    }
+
+    .hljs-emphasis {
+      font-style: italic;
+    }
+
+    .hljs-strong {
+      font-weight: 700;
+    }
   }
 
   a {
