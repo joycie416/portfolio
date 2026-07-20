@@ -6,6 +6,7 @@
     :data-state="state"
     :class="class"
     :data-toggle="model ? 'on' : 'off'"
+    :data-size="size"
   >
     <label
       v-if="label || $slots.default"
@@ -53,6 +54,7 @@ const props = withDefaults(
     label?: string;
     disabled?: boolean;
     state?: InputGroupState;
+    size?: "sm" | "default";
     class?: HTMLAttributes["class"];
     classes?: {
       label?: HTMLAttributes["class"];
@@ -63,6 +65,7 @@ const props = withDefaults(
   {
     state: "success",
     disabled: false,
+    size: "default",
   }
 );
 const toggleId = useId();
@@ -83,6 +86,13 @@ const handleClick = () => {
     align-items: center;
     gap: 8px;
 
+    &[data-size="default"] {
+      @include toggle-sizes(16px, 40px, 20px);
+    }
+    &[data-size="sm"] {
+      @include toggle-sizes(12px, 30px, 16px);
+    }
+
     &__label {
       font-size: 14px;
 
@@ -91,8 +101,8 @@ const handleClick = () => {
       }
     }
     &__track {
-      width: 40px;
-      height: 20px;
+      width: var(--toggle-track-width);
+      height: var(--toggle-track-height);
       border-radius: 999px;
       background-color: var(--color-gray-02);
       position: relative;
@@ -114,19 +124,22 @@ const handleClick = () => {
       }
     }
     &__thumb {
-      width: 16px;
-      height: 16px;
+      width: var(--toggle-thumb-size);
+      height: var(--toggle-thumb-size);
       border-radius: 999px;
       background-color: white;
       position: absolute;
-      top: 2px;
-      left: 2px;
+      top: var(--toggle-thumb-gap);
+      left: var(--toggle-thumb-gap);
 
       transition: left 0.1s ease-in-out;
       cursor: pointer;
 
       .toggle[data-toggle="on"] & {
-        left: 22px;
+        left: calc(
+          var(--toggle-track-width) - var(--toggle-thumb-size) -
+            var(--toggle-thumb-gap)
+        );
       }
 
       .toggle[data-state="error"][data-toggle="off"] & {

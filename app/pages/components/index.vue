@@ -112,6 +112,7 @@
     <div class="flex flex-col gap-3">
       <h2>토글</h2>
       <Toggle v-model="toggle" />
+      <Toggle v-model="toggle" label="Small Size" size="sm" />
       <Toggle
         v-model="toggle"
         label="라벨 있음"
