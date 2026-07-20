@@ -9,3 +9,4 @@ export { default as FileItem } from "./FileItem.vue";
 export { default as InputGroup } from "./InputGroup.vue";
 export { default as LoadingOverlay } from "./LoadingOverlay.vue";
 export { default as Pagination } from "./Pagination.vue";
+export { default as Toggle } from "./Toggle.vue";

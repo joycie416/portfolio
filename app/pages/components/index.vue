@@ -109,13 +109,28 @@
       <TiptapEditor v-model="tiptapContent" />
       <FileItem :file="sampleFile" href="https://www.google.com" />
     </div>
+    <div class="flex flex-col gap-3">
+      <h2>토글</h2>
+      <Toggle v-model="toggle" />
+      <Toggle
+        v-model="toggle"
+        label="라벨 있음"
+        :classes="{ track: 'bg-yellow' }"
+      />
+      <Toggle v-model="toggle">slot</Toggle>
+      <Toggle v-model="toggle" label="Disabled" disabled />
+      <Toggle v-model="toggle" label="Error" state="error" />
+      <Toggle :model-value="toggle" @update:model-value="handleToggleChange">
+        업데이트 이벤트 핸들러
+      </Toggle>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { DataTable, type Columns } from "@/components/ui/data-table";
-import { Card, FileItem, InputGroup } from "@/components/common";
+import { Card, FileItem, InputGroup, Toggle } from "@/components/common";
 import type { InputOption } from "@/types/common";
 import { TiptapEditor } from "@/components/tiptap";
 
@@ -236,4 +251,13 @@ const sampleFile = new File(
   [new Uint8Array(1536)],
   "메모 아주 긴 이름으로 짓고 싶은데 이게 되려나 언제까지 작성해야 할까 이름좀 줄여줘봐.txt"
 );
+
+const toggle = ref(false);
+
+const handleToggleChange = (next: boolean) => {
+  const isConfirmed = confirm("정말 변경하시겠습니까?");
+  if (isConfirmed) {
+    toggle.value = next;
+  }
+};
 </script>
