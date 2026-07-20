@@ -21,11 +21,11 @@ export type InputGroupProps<TValue extends string | number = string | number> =
   | (CommonInputGroupProps & { type: "password"; enableToggle?: boolean })
   | (CommonInputGroupProps & {
       type: "dropdown";
-      options: InputOption<TValue>[];
+      options?: InputOption<TValue>[];
     })
   | (CommonInputGroupProps & {
       type: "checkbox";
-      options: InputOption<TValue>[];
+      options?: InputOption<TValue>[];
       direction?: CheckboxDirection;
     });
 

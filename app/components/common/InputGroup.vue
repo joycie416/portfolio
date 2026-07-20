@@ -85,6 +85,7 @@ const props = withDefaults(defineProps<InputGroupProps<TValue>>(), {
   type: "text",
   state: "success",
   enableToggle: true,
+  options: () => [],
 });
 
 const model = defineModel<TValue | TValue[] | undefined>();
