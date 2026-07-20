@@ -15,7 +15,7 @@ export const postSchema = z.object({
   content: z.string().min(1, { message: "내용을 입력해주세요." }),
   hidden: z.boolean(),
   tags: z.array(z.string()).default([]),
-  thumbnail: z.string().optional(),
+  thumbnail: z.string().nullable().default(null),
 });
 
 export type PostForm = z.infer<typeof postSchema>;

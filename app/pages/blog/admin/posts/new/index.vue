@@ -19,7 +19,12 @@
         container-class="w-full md:w-50"
       />
     </div>
-    <TiptapEditor ref="editorRef" v-model="content" class="flex-1" />
+    <TiptapEditor
+      ref="editorRef"
+      v-model="content"
+      v-model:thumbnail="thumbnail"
+      class="flex-1"
+    />
     <Checkbox v-model="isHidden" label="숨김" class="w-fit" />
     <div class="space-y-2">
       <InputGroup
@@ -86,7 +91,7 @@ const { setValues, defineField, meta } = useForm({
     content: "",
     hidden: false,
     tags: [],
-    thumbnail: "",
+    thumbnail: null,
   },
   initialTouched: {
     title: false,

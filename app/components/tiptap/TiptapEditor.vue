@@ -333,7 +333,6 @@ import Blockquote from "@tiptap/extension-blockquote";
 // import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import FileHandler from "@tiptap/extension-file-handler";
 import Highlight from "@tiptap/extension-highlight";
-import TiptapImage from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
 import { TextStyleKit } from "@tiptap/extension-text-style";
 import { TableKit } from "@tiptap/extension-table";
@@ -376,6 +375,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "vue-sonner";
 import { TiptapHyperlinkModal } from ".";
+import { InlineImage } from "./extensions";
 import { FileItem } from "@/components/common";
 import type { HTMLAttributes } from "vue";
 
@@ -384,6 +384,10 @@ const props = defineProps<{
 }>();
 
 const model = defineModel<string | undefined>();
+// 대표이미지로 지정된 inline 이미지의 key (없으면 null). 부모 폼의 thumbnail 필드와 동기화된다.
+const thumbnailKey = defineModel<string | null>("thumbnail", {
+  default: null,
+});
 
 // 폼 리셋/수정 모드 등 외부에서 값이 바뀌면 에디터에 반영한다.
 // (emitUpdate: false로 onUpdate 재호출에 의한 무한 루프를 방지)
@@ -410,23 +414,6 @@ const INLINE_IMAGE_MIME_TYPES = [
   "image/gif",
 ] as const;
 const INLINE_IMAGE_ACCEPT = ".jpg,.jpeg,.png,.gif";
-
-// inlineImages의 key를 본문 이미지 노드(HTML)에 보존해 저장 시 매핑에 사용
-const InlineImage = TiptapImage.extend({
-  addAttributes() {
-    return {
-      ...this.parent?.(),
-      "data-inline-key": {
-        default: null,
-        parseHTML: (element) => element.getAttribute("data-inline-key"),
-        renderHTML: (attributes) => {
-          if (!attributes["data-inline-key"]) return {};
-          return { "data-inline-key": attributes["data-inline-key"] };
-        },
-      },
-    };
-  },
-});
 
 // 파일 업로드 관리
 // 게시글 내 이미지
@@ -587,6 +574,36 @@ const onFileInputChange = (event: Event) => {
   input.value = "";
 };
 
+// ------------ 썸네일 ------------
+// 문서 내 이미지 노드의 data-thumbnail 사용
+// key가 있으면 해당 이미지만 켜고 나머지는 모두 끄며, key가 null이면 전부 끔
+const setThumbnail = (key: string | null) => {
+  const currentEditor = editor.value;
+  if (!currentEditor) return;
+
+  currentEditor
+    .chain()
+    .command(({ tr }) => {
+      currentEditor.state.doc.descendants((node, pos) => {
+        if (node.type.name !== "image") return;
+
+        const nodeKey =
+          (node.attrs["data-inline-key"] as string | null) ?? null;
+        const shouldBeThumbnail = key !== null && nodeKey === key;
+        if (Boolean(node.attrs["data-thumbnail"]) === shouldBeThumbnail) return;
+
+        tr.setNodeMarkup(pos, undefined, {
+          ...node.attrs,
+          "data-thumbnail": shouldBeThumbnail,
+        });
+      });
+      return true;
+    })
+    .run();
+
+  thumbnailKey.value = key;
+};
+
 // ------------ 에디터 ------------
 const editor = useEditor({
   content: model.value,
@@ -613,7 +630,7 @@ const editor = useEditor({
     Highlight.configure({
       multicolor: true,
     }),
-    InlineImage,
+    InlineImage.configure({ onToggleThumbnail: setThumbnail }),
     TextAlign.configure({
       types: ["heading", "paragraph"],
     }),
@@ -622,10 +639,34 @@ const editor = useEditor({
       table: { resizable: true },
     }),
   ],
+  onCreate: ({ editor: createdEditor }) => {
+    // 기존 콘텐츠(수정 모드 등)에 이미 썸네일이 표시돼 있으면 그 값을 초기값으로 사용
+    createdEditor.state.doc.descendants((node) => {
+      if (node.type.name === "image" && node.attrs["data-thumbnail"]) {
+        thumbnailKey.value =
+          (node.attrs["data-inline-key"] as string | null) ?? null;
+      }
+    });
+  },
   onUpdate: ({ editor: updatedEditor }) => {
     // 내용이 없을 때 Tiptap은 `<p></p>`를 반환하므로,
     // 폼 검증(min(1))이 동작하도록 빈 값은 빈 문자열로 정규화한다.
     model.value = updatedEditor.isEmpty ? "" : updatedEditor.getHTML();
+
+    // 썸네일로 지정된 이미지가 본문에서 삭제된 경우
+    // 썸네일 정보도 함께 제거
+    if (thumbnailKey.value) {
+      let stillExists = false;
+      updatedEditor.state.doc.descendants((node) => {
+        if (
+          node.type.name === "image" &&
+          node.attrs["data-inline-key"] === thumbnailKey.value
+        ) {
+          stillExists = true;
+        }
+      });
+      if (!stillExists) thumbnailKey.value = null;
+    }
   },
 });
 

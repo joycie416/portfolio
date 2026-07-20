@@ -116,10 +116,15 @@ export const posts = (client: SupabaseClient<Database>) => ({
       // 3. inline image의 url을 publicUrl로 변경
       const content = replaceInlineImageUrls(formData.content, inlineUrlByKey);
 
+      // 업로드된 publicUrl로 썸네일 경로 변경
+      const thumbnail = formData.thumbnail
+        ? (inlineUrlByKey[formData.thumbnail] ?? formData.thumbnail)
+        : formData.thumbnail;
+
       // 4. 게시글을 table에 업로드
       const { error: postInsertError } = await client
         .from(table)
-        .insert({ ...formData, id: postId, content });
+        .insert({ ...formData, id: postId, content, thumbnail });
       if (postInsertError) throw postInsertError;
 
       return postId;
