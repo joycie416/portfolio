@@ -55,8 +55,15 @@
       </div>
     </div>
     <div class="flex flex-col md:flex-row gap-2">
-      <Button type="button" variant="outline" class="w-full">
-        임시저장 | 0
+      <Button type="button" variant="outline" class="w-full gap-0">
+        임시저장
+        <span class="w-px h-4 ml-3 mr-2 bg-text-gray-01" />
+        <span
+          class="px-1 hover:text-primary-600"
+          @click.stop="openTempPostModal"
+        >
+          0
+        </span>
       </Button>
       <Button
         type="button"
@@ -68,6 +75,7 @@
       </Button>
     </div>
   </div>
+  <TempPostModal :open="tempPostModalOpen" @close="closeTempPostModal" />
 </template>
 
 <script setup lang="ts">
@@ -82,6 +90,7 @@ import type { PostFile, PostInsertType } from "@/types/supabase";
 import { TiptapEditor } from "@/components/tiptap";
 import { Button } from "~/components/ui/button";
 import { X } from "@lucide/vue";
+import TempPostModal from "@/components/features/post/TempPostModal.vue";
 
 const { setValues, defineField, meta } = useForm({
   validationSchema: toTypedSchema(postSchema),
@@ -203,5 +212,16 @@ const savePost = async () => {
   } finally {
     setLoading(false);
   }
+};
+
+// ------------ 임시저장 ------------
+const tempPostModalOpen = ref(false);
+
+const openTempPostModal = () => {
+  tempPostModalOpen.value = true;
+};
+
+const closeTempPostModal = () => {
+  tempPostModalOpen.value = false;
 };
 </script>
