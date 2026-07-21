@@ -11,11 +11,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Empty } from "~/components/common";
 
 const props = defineProps<{
   tableId: string;
   columns: Columns<TData, TValue>;
   data: TData[];
+  classNames?: {
+    tableContainer?: HTMLDivElement["className"];
+    tableHeader?: HTMLTableSectionElement["className"];
+    emptyRow?: HTMLTableCellElement["className"];
+  };
 }>();
 
 const table = useVueTable({
@@ -31,9 +37,9 @@ const table = useVueTable({
 </script>
 
 <template>
-  <div>
-    <Table class="bg-transparent">
-      <TableHeader class="border-b-red">
+  <div :class="cn(classNames?.tableContainer)">
+    <Table class="bg-transparent table-fixed">
+      <TableHeader :class="cn(classNames?.tableHeader)">
         <TableRow
           v-for="headerGroup in table.getHeaderGroups()"
           :key="headerGroup.id"
@@ -84,8 +90,11 @@ const table = useVueTable({
         </template>
         <template v-else>
           <TableRow>
-            <TableCell :colspan="columns.length" class="h-24 text-center">
-              No results.
+            <TableCell
+              :colspan="columns.length"
+              :class="cn(classNames?.emptyRow)"
+            >
+              <Empty message="데이터가 없습니다." />
             </TableCell>
           </TableRow>
         </template>
