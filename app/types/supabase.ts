@@ -35,8 +35,12 @@ export type PostInsertType = OmitDefaultColumns<
   >,
   true
 >;
+// 게시글 수정 폼에서 사용하는 타입 (create와 동일하게 필수 필드를 강제하고, id도 함께 필요)
 export type PostUpdateType = OmitDefaultColumns<
-  RequiredFields<TablesUpdate<"posts">, "id">
+  RequiredFields<
+    TablesUpdate<"posts">,
+    "id" | "title" | "content" | "menu_id" | "hidden" | "tags" | "thumbnail"
+  >
 >;
 export type TransformedPost = Post & {
   menu_full_name: string;
@@ -48,6 +52,27 @@ export type TransformedPost = Post & {
 export type PostFile = {
   inlineImages: Record<string, File>;
   attachments: Record<string, File>;
+};
+
+// 게시글 수정 시 사용하는 파일 정보
+// - inlineImages/attachments: 새로 추가된 파일만 담음 (기존 파일은 그대로 유지되므로 다시 전달할 필요 없음)
+// - removedAttachmentKeys: 기존 첨부파일 중 사용자가 삭제한 파일의 key 목록 (스토리지에서도 함께 제거됨)
+//   (기존 inline 이미지는 본문에서 삭제되면 자동으로 감지되어 정리되므로 별도로 전달하지 않음)
+export type PostUpdateFile = PostFile & {
+  removedAttachmentKeys: string[];
+};
+
+// 스토리지에 저장된 게시글 파일(inline 이미지/첨부파일) 정보
+export type PostStorageFile = {
+  key: string;
+  path: string;
+  size?: number;
+  url: string;
+};
+
+export type PostStorageFiles = {
+  inlineImages: PostStorageFile[];
+  attachments: PostStorageFile[];
 };
 
 // 임시 게시글 타입

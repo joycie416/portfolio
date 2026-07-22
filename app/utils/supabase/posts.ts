@@ -1,9 +1,21 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
-import type { PostFile, PostInsertType } from "@/types/supabase";
+import type {
+  PostBulkFailure,
+  PostFile,
+  PostInsertType,
+  PostStorageFiles,
+  PostUpdateFile,
+  PostUpdateType,
+} from "@/types/supabase";
 
 export const POST_VISIBILITIES = ["all", "public", "private"] as const;
 export type PostVisibility = (typeof POST_VISIBILITIES)[number];
+
+const POST = "posts" as const;
+const TEMP_POST = "temp_posts" as const;
+const INLINE = "inline" as const;
+const ATTACHMENTS = "attachments" as const;
 
 export interface GetPostListParams {
   page: number;
@@ -35,6 +47,60 @@ const replaceInlineImageUrls = (
     );
   }, html);
 
+// 본문(HTML) 안에서 특정 data-inline-key를 가진 이미지의 현재 src를 찾음
+// (신규/기존 이미지 모두 본문에 실제 url이 반영돼 있으므로 key -> url 조회에 사용)
+const findInlineImageSrc = (html: string, key: string): string | null => {
+  const tagPattern = new RegExp(
+    `<img\\b[^>]*data-inline-key=["']${escapeRegExp(key)}["'][^>]*>`,
+    "i"
+  );
+  const tag = html.match(tagPattern)?.[0];
+  if (!tag) return null;
+
+  return tag.match(/src=["']([^"']*)["']/i)?.[1] ?? null;
+};
+
+// 본문(HTML) 안에서 현재 사용 중인 모든 inline 이미지의 data-inline-key 값을 추출
+const extractInlineImageKeys = (html: string): Set<string> => {
+  const keys = new Set<string>();
+  for (const match of html.matchAll(/data-inline-key=["']([^"']+)["']/gi)) {
+    if (match[1]) keys.add(match[1]);
+  }
+  return keys;
+};
+
+// 스토리지 폴더 안에서 keepKeys에 포함되지 않은(더 이상 쓰이지 않는) 파일의 경로를 찾음
+const listStalePaths = async (
+  client: SupabaseClient<Database>,
+  bucket: string,
+  folderPath: string,
+  keepKeys: Set<string>
+): Promise<string[]> => {
+  const { data, error } = await client.storage.from(bucket).list(folderPath);
+  if (error) throw error;
+
+  return (data ?? [])
+    .filter((file) => !keepKeys.has(file.name))
+    .map((file) => `${folderPath}/${file.name}`);
+};
+
+// 게시글에 연결된 스토리지 파일(inline 이미지, 첨부파일)을 전부 삭제
+const removePostFiles = async (
+  client: SupabaseClient<Database>,
+  dbName: string,
+  postId: number
+): Promise<void> => {
+  const [inlinePaths, attachmentPaths] = await Promise.all([
+    listStalePaths(client, dbName, `${postId}/${INLINE}`, new Set()),
+    listStalePaths(client, dbName, `${postId}/${ATTACHMENTS}`, new Set()),
+  ]);
+  const paths = [...inlinePaths, ...attachmentPaths];
+  if (!paths.length) return;
+
+  const { error } = await client.storage.from(dbName).remove(paths);
+  if (error) throw error;
+};
+
 export const posts = (client: SupabaseClient<Database>) => ({
   getList: async ({
     page,
@@ -55,7 +121,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
           { q: keyword },
           { count: "exact" }
         )
-      : client.from("posts").select("*", { count: "exact" });
+      : client.from(POST).select("*", { count: "exact" });
 
     if (menuId) query = query.eq("menu_id", menuId);
     if (visibility === "public") query = query.eq("hidden", false);
@@ -78,8 +144,8 @@ export const posts = (client: SupabaseClient<Database>) => ({
     files: PostFile,
     temp: boolean = false
   ) => {
-    const bucket = `${temp ? "temp_" : ""}posts`;
-    const table: "posts" | "temp_posts" = temp ? "temp_posts" : "posts";
+    // 테이블, 버켓 이름
+    const dbName = temp ? TEMP_POST : POST;
 
     // 1. postId를 미리 받아옴 (본문/스토리지 경로에 사용)
     const { data: postId, error: postIdError } = await client.rpc(
@@ -91,26 +157,26 @@ export const posts = (client: SupabaseClient<Database>) => ({
     const uploadedPaths: string[] = [];
 
     const uploadFile = async (
-      folder: "inline" | "attachments",
+      folder: typeof INLINE | typeof ATTACHMENTS,
       key: string,
       file: File
     ) => {
       const path = `${postId}/${folder}/${key}`;
-      const { error } = await client.storage.from(bucket).upload(path, file);
+      const { error } = await client.storage.from(dbName).upload(path, file);
       if (error) throw error;
       uploadedPaths.push(path);
 
-      return client.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+      return client.storage.from(dbName).getPublicUrl(path).data.publicUrl;
     };
 
     try {
       // 2. 이미지와 첨부파일을 미리 업로드해서 publicUrl을 받음
       const inlineUrlByKey: Record<string, string> = {};
       for (const [key, file] of Object.entries(files.inlineImages)) {
-        inlineUrlByKey[key] = await uploadFile("inline", key, file);
+        inlineUrlByKey[key] = await uploadFile(INLINE, key, file);
       }
       for (const [key, file] of Object.entries(files.attachments)) {
-        await uploadFile("attachments", key, file);
+        await uploadFile(ATTACHMENTS, key, file);
       }
 
       // 3. inline image의 url을 publicUrl로 변경
@@ -118,12 +184,13 @@ export const posts = (client: SupabaseClient<Database>) => ({
 
       // 업로드된 publicUrl로 썸네일 경로 변경
       const thumbnail = formData.thumbnail
-        ? (inlineUrlByKey[formData.thumbnail] ?? formData.thumbnail)
+        ? (findInlineImageSrc(content, formData.thumbnail) ??
+          formData.thumbnail)
         : formData.thumbnail;
 
-      // 4. 게시글을 table에 업로드
+      // 4. 게시글을 테이블에 업로드
       const { error: postInsertError } = await client
-        .from(table)
+        .from(dbName)
         .insert({ ...formData, id: postId, content, thumbnail });
       if (postInsertError) throw postInsertError;
 
@@ -131,9 +198,194 @@ export const posts = (client: SupabaseClient<Database>) => ({
     } catch (error) {
       // 위 과정 중 하나라도 실패하면 이미 업로드된 파일을 모두 삭제
       if (uploadedPaths.length) {
-        await client.storage.from(bucket).remove(uploadedPaths);
+        await client.storage.from(dbName).remove(uploadedPaths);
       }
       throw error;
     }
+  },
+  /*
+   게시글 상세 조회
+  */
+  getById: async (id: number, temp: boolean = false) => {
+    const table = temp ? TEMP_POST : POST;
+
+    const { data, error } = await client
+      .from(table)
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (error) throw error;
+
+    return data;
+  },
+  /*
+   게시글에 첨부된 파일(inline 이미지, 첨부파일) 목록 조회
+   수정 화면에서 기존 파일을 보여주고, 삭제 대상을 판단하는 데 사용
+  */
+  getFiles: async (
+    postId: number,
+    temp: boolean = false
+  ): Promise<PostStorageFiles> => {
+    const bucket = temp ? TEMP_POST : POST;
+
+    const listFiles = async (folder: typeof INLINE | typeof ATTACHMENTS) => {
+      const folderPath = `${postId}/${folder}`;
+      const { data, error } = await client.storage
+        .from(bucket)
+        .list(folderPath);
+      if (error) throw error;
+
+      return (data ?? []).map((file) => {
+        const path = `${folderPath}/${file.name}`;
+        return {
+          key: file.name,
+          path,
+          size: file.metadata?.size as number | undefined,
+          url: client.storage.from(bucket).getPublicUrl(path).data.publicUrl,
+        };
+      });
+    };
+
+    const [inlineImages, attachments] = await Promise.all([
+      listFiles(INLINE),
+      listFiles(ATTACHMENTS),
+    ]);
+
+    return { inlineImages, attachments };
+  },
+  update: async (
+    formData: PostUpdateType,
+    files: PostUpdateFile,
+    temp: boolean = false
+  ) => {
+    // 테이블, 버켓 이름
+    const dbName = temp ? TEMP_POST : POST;
+    const postId = formData.id;
+
+    // 실패 시 롤백을 위해 새로 업로드에 성공한 스토리지 경로를 기록
+    // (기존 파일은 이 시점에 건드리지 않으므로 롤백 대상에서 제외)
+    const uploadedPaths: string[] = [];
+
+    const uploadFile = async (
+      folder: typeof INLINE | typeof ATTACHMENTS,
+      key: string,
+      file: File
+    ) => {
+      const path = `${postId}/${folder}/${key}`;
+      const { error } = await client.storage.from(dbName).upload(path, file);
+      if (error) throw error;
+      uploadedPaths.push(path);
+
+      return client.storage.from(dbName).getPublicUrl(path).data.publicUrl;
+    };
+
+    try {
+      // 1. 새로 추가된 이미지/첨부파일만 업로드 (기존 파일은 이미 스토리지에 있으므로 그대로 둠)
+      const inlineUrlByKey: Record<string, string> = {};
+      for (const [key, file] of Object.entries(files.inlineImages)) {
+        inlineUrlByKey[key] = await uploadFile(INLINE, key, file);
+      }
+      for (const [key, file] of Object.entries(files.attachments)) {
+        await uploadFile(ATTACHMENTS, key, file);
+      }
+
+      // 2. 새로 추가된 inline 이미지의 src만 publicUrl로 치환
+      // 기존에 남아있는 inline 이미지는 그대로 유지
+      const content = replaceInlineImageUrls(formData.content, inlineUrlByKey);
+
+      // 썸네일도 본문에 반영된 실제 url 기준으로 업데이트
+      const thumbnail = formData.thumbnail
+        ? (findInlineImageSrc(content, formData.thumbnail) ??
+          formData.thumbnail)
+        : formData.thumbnail;
+
+      // 3. 게시글 업데이트
+      // 기존 파일 삭제보다 먼저 수행해, 업데이트 실패 시 기존 파일이 살아있도록 함
+      const { error: postUpdateError } = await client
+        .from(dbName)
+        .update({ ...formData, content, thumbnail })
+        .eq("id", postId);
+      if (postUpdateError) throw postUpdateError;
+
+      // 4. 업데이트 성공 후, 더 이상 쓰이지 않는 기존 파일 정리
+      //  - inline 이미지: 본문에서 삭제된(더 이상 참조되지 않는) 이미지
+      //  - 첨부파일: 사용자가 명시적으로 삭제한 파일(removedAttachmentKeys)
+      // 게시글은 이미 정상적으로 업데이트됐으므로, 실패 시 기존, 신규 파일 모두 유지
+      try {
+        const keepInlineKeys = extractInlineImageKeys(content);
+        const stalePaths = [
+          ...(await listStalePaths(
+            client,
+            dbName,
+            `${postId}/${INLINE}`,
+            keepInlineKeys
+          )),
+          ...files.removedAttachmentKeys.map(
+            (key) => `${postId}/${ATTACHMENTS}/${key}`
+          ),
+        ];
+
+        if (stalePaths.length) {
+          const { error: removeError } = await client.storage
+            .from(dbName)
+            .remove(stalePaths);
+          if (removeError) throw removeError;
+        }
+      } catch (cleanupError) {
+        console.error("불필요한 파일 정리 실패:", cleanupError);
+      }
+
+      return postId;
+    } catch (error) {
+      // 업데이트 실패 시, 새로 업로드한 파일은 게시글 모두 삭제 (기존 파일은 그대로 유지)
+      if (uploadedPaths.length) {
+        await client.storage.from(dbName).remove(uploadedPaths);
+      }
+      throw error;
+    }
+  },
+  delete: async (id: number, temp: boolean = false) => {
+    const dbName = temp ? TEMP_POST : POST;
+
+    const { error: postError } = await client
+      .from(dbName)
+      .delete()
+      .eq("id", id);
+    if (postError) throw postError;
+
+    try {
+      await removePostFiles(client, dbName, id);
+    } catch (cleanupError) {
+      console.error(`게시글(${id}) 파일 정리 실패:`, cleanupError);
+    }
+
+    return id;
+  },
+  /*
+   체크한 게시글을 일괄 삭제
+   1. RPC(posts_bulk_delete)로 게시글 본문 삭제
+   2. 삭제에 성공한 게시글에 대해서만 스토리지 파일을 삭제
+  */
+  bulkDelete: async (postIds: number[]): Promise<PostBulkFailure[]> => {
+    const { data, error } = await client.rpc("posts_bulk_delete", {
+      post_ids: postIds,
+    });
+    if (error) throw error;
+
+    const failures = data ?? [];
+    const failedIds = new Set(failures.map((failure) => failure.post_id));
+    const succeededIds = postIds.filter((id) => !failedIds.has(id));
+
+    await Promise.all(
+      succeededIds.map(async (id) => {
+        try {
+          await removePostFiles(client, POST, id);
+        } catch (cleanupError) {
+          console.error(`게시글(${id}) 파일 정리 실패:`, cleanupError);
+        }
+      })
+    );
+
+    return failures;
   },
 });

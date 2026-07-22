@@ -5,7 +5,10 @@ import type {
   TransformedPost,
   PostBulkFailure,
   PostInsertType,
+  PostUpdateType,
   PostFile,
+  PostUpdateFile,
+  PostStorageFiles,
 } from "@/types/supabase";
 
 export const POSTS_PAGE_SIZE = 10;
@@ -101,13 +104,9 @@ export const useGetPosts = (params: UseGetPostsParams) => {
 export const useBulkPostActions = () => {
   const supabase = useSupabaseClient();
 
-  const bulkDelete = async (postIds: number[]): Promise<PostBulkFailure[]> => {
-    const { data, error } = await supabase.rpc("posts_bulk_delete", {
-      post_ids: postIds,
-    });
-    if (error) throw error;
-    return data ?? [];
-  };
+  // RPC로 행을 삭제하고, 성공한 게시글의 스토리지 파일까지 정리 (posts(client).bulkDelete 참고)
+  const bulkDelete = (postIds: number[]): Promise<PostBulkFailure[]> =>
+    posts(supabase).bulkDelete(postIds);
 
   const bulkUpdateHidden = async (
     postIds: number[],
@@ -146,4 +145,57 @@ export const useCreatePost = () => {
   ) => posts(supabase).create(formData, files, temp);
 
   return { createPost };
+};
+
+export interface UseGetPostParams {
+  id: MaybeRefOrGetter<number>;
+  temp?: MaybeRefOrGetter<boolean>;
+}
+
+// 수정 화면 등에서 단일 게시글(또는 임시저장 게시글)을 조회
+export const useGetPost = ({ id, temp }: UseGetPostParams) => {
+  const supabase = useSupabaseClient();
+
+  return useAsyncData<Post | null>(
+    () => `post:${toValue(temp) ? "temp" : "post"}:${toValue(id)}`,
+    () => posts(supabase).getById(toValue(id), toValue(temp) ?? false),
+    { default: () => null }
+  );
+};
+
+export interface UseGetPostFilesParams {
+  postId: MaybeRefOrGetter<number>;
+  temp?: MaybeRefOrGetter<boolean>;
+}
+
+// 스토리지 데이터 조회
+export const useGetPostFiles = ({ postId, temp }: UseGetPostFilesParams) => {
+  const supabase = useSupabaseClient();
+
+  return useAsyncData<PostStorageFiles>(
+    () => `post-files:${toValue(temp) ? "temp" : "post"}:${toValue(postId)}`,
+    () => posts(supabase).getFiles(toValue(postId), toValue(temp) ?? false),
+    { default: () => ({ inlineImages: [], attachments: [] }) }
+  );
+};
+
+export const useUpdatePost = () => {
+  const supabase = useSupabaseClient();
+
+  const updatePost = (
+    formData: PostUpdateType,
+    files: PostUpdateFile,
+    temp: boolean = false
+  ) => posts(supabase).update(formData, files, temp);
+
+  return { updatePost };
+};
+
+export const useDeletePost = () => {
+  const supabase = useSupabaseClient();
+
+  const deletePost = (id: number, temp: boolean = false) =>
+    posts(supabase).delete(id, temp);
+
+  return { deletePost };
 };
