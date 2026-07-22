@@ -12,17 +12,26 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Empty } from "~/components/common";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const props = defineProps<{
+interface Props {
   tableId: string;
   columns: Columns<TData, TValue>;
   data: TData[];
+  loading?: boolean;
+  loadingRows?: number;
   classNames?: {
     tableContainer?: HTMLDivElement["className"];
     tableHeader?: HTMLTableSectionElement["className"];
     emptyRow?: HTMLTableCellElement["className"];
   };
-}>();
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  loading: false,
+  loadingRows: 3,
+  classNames: () => ({}),
+});
 
 const table = useVueTable({
   get data() {
@@ -64,7 +73,7 @@ const table = useVueTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        <template v-if="table.getRowModel().rows?.length">
+        <template v-if="!loading && table.getRowModel().rows?.length">
           <TableRow
             v-for="row in table.getRowModel().rows"
             :key="row.id"
@@ -88,13 +97,20 @@ const table = useVueTable({
             </TableCell>
           </TableRow>
         </template>
-        <template v-else>
+        <template v-else-if="!loading && !table.getRowModel().rows?.length">
           <TableRow>
             <TableCell
               :colspan="columns.length"
               :class="cn(classNames?.emptyRow)"
             >
               <Empty message="데이터가 없습니다." />
+            </TableCell>
+          </TableRow>
+        </template>
+        <template v-else-if="loading">
+          <TableRow v-for="i in loadingRows || 4" :key="i" class="border-b-0">
+            <TableCell v-for="i in columns.length" :key="i" class="px-1.5 py-1">
+              <Skeleton class="w-full h-7" />
             </TableCell>
           </TableRow>
         </template>
