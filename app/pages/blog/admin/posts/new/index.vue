@@ -239,6 +239,7 @@ const savePost = async () => {
   try {
     await createPost(formData, files);
     toast.success("게시글이 저장되었습니다.");
+    allowLeave.value = true;
     await navigateTo("/blog/admin/posts");
   } catch (error) {
     toast.error(
@@ -340,4 +341,31 @@ const openTempPostModal = () => {
 const closeTempPostModal = () => {
   tempPostModalOpen.value = false;
 };
+
+// ---------- 페이지 이동 전 경고 ----------
+// 저장 성공 후 navigateTo 시 confirm을 건너뛰기 위한 플래그
+const allowLeave = ref(false);
+
+onBeforeRouteLeave(() => {
+  if (allowLeave.value) return;
+  const isConfirmed = confirm(
+    "저장되지 않은 내용이 있습니다. 정말 나가시겠습니까?"
+  );
+  // false를 반환해야 진행 중인 네비게이션이 취소됨
+  if (!isConfirmed) return false;
+});
+
+const onBeforeUnload = (e: BeforeUnloadEvent) => {
+  if (allowLeave.value) return;
+  // beforeunload에서는 confirm 사용 불가
+  // preventDefault만 하면 기본 이탈 경고 띄움
+  e.preventDefault();
+};
+
+onMounted(() => {
+  window.addEventListener("beforeunload", onBeforeUnload);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("beforeunload", onBeforeUnload);
+});
 </script>
