@@ -737,8 +737,6 @@ const setLink = (url: string) => {
   editor.value?.chain().focus().setLink({ href: url }).run();
   hyperlinkModalOpen.value = false;
 };
-
-// ------------ 테이블 ------------
 </script>
 
 <style lang="scss">
