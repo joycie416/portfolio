@@ -23,6 +23,7 @@
       ref="editorRef"
       v-model="content"
       v-model:thumbnail="thumbnail"
+      :existing-attachments="existingAttachments"
       class="flex-1"
     />
     <Checkbox v-model="isHidden" label="숨김" class="w-fit" />
@@ -55,7 +56,12 @@
       </div>
     </div>
     <div class="flex flex-col md:flex-row gap-2">
-      <Button type="button" variant="outline" class="w-full gap-0">
+      <Button
+        type="button"
+        variant="outline"
+        class="w-full gap-0"
+        @click="saveTempPost"
+      >
         임시저장
         <span class="w-px h-4 ml-3 mr-2 bg-text-gray-01" />
         <span
@@ -71,7 +77,7 @@
         class="w-full"
         @click="savePost"
       >
-        저장
+        등록
       </Button>
     </div>
   </div>
@@ -86,11 +92,20 @@ import { toast } from "vue-sonner";
 import { Checkbox, InputGroup } from "@/components/common";
 import { postSchema } from "@/schemas/post";
 import type { InputGroupState } from "@/types/input-group";
-import type { PostFile, PostInsertType } from "@/types/supabase";
+import type {
+  PostFile,
+  PostInsertType,
+  PostStorageFile,
+  PostUpdateFile,
+  PostUpdateType,
+} from "@/types/supabase";
 import { TiptapEditor } from "@/components/tiptap";
 import { Button } from "~/components/ui/button";
 import { X } from "@lucide/vue";
 import TempPostModal from "@/components/features/post/TempPostModal.vue";
+
+const route = useRoute();
+const router = useRouter();
 
 const { setValues, defineField, meta } = useForm({
   validationSchema: toTypedSchema(postSchema),
@@ -175,11 +190,34 @@ watch(
 const editorRef =
   useTemplateRef<InstanceType<typeof TiptapEditor>>("editorRef");
 
+// 이미 스토리지에 올라간 첨부파일 (임시저장 이후/수정 시)
+const existingAttachments = ref<PostStorageFile[]>([]);
+
 const { setLoading } = useLoading();
 const { createPost } = useCreatePost();
+const { updatePost } = useUpdatePost();
+
+// 임시저장 성공 후: 본문/첨부 상태를 저장 결과에 맞추고 pending File 맵을 비움
+const syncAfterTempSave = (saved: {
+  content: string;
+  thumbnail: string | null;
+  attachments: PostStorageFile[];
+}) => {
+  setValues(
+    {
+      content: saved.content,
+      thumbnail: saved.thumbnail,
+    },
+    false
+  );
+  existingAttachments.value = saved.attachments;
+  editorRef.value?.clearPendingFiles();
+};
 
 const savePost = async () => {
   if (!meta.value.valid) return;
+
+  setLoading(true);
 
   // 이미 defineField를 사용하고 있으므로, values를 사용하지 않았음
   const formData: PostInsertType = {
@@ -198,7 +236,6 @@ const savePost = async () => {
     attachments: Object.fromEntries(editorRef.value?.files ?? []),
   };
 
-  setLoading(true);
   try {
     await createPost(formData, files);
     toast.success("게시글이 저장되었습니다.");
@@ -215,6 +252,85 @@ const savePost = async () => {
 };
 
 // ------------ 임시저장 ------------
+const saveTempPost = async () => {
+  const tempPostId = route.query.temp;
+
+  // 최초 임시 저장인 경우
+  if (!tempPostId) {
+    if (!meta.value.valid) {
+      toast.error("제목과 내용을 입력해주세요.");
+      return;
+    }
+
+    setLoading(true);
+
+    const formData: PostInsertType = {
+      title: title.value ?? "",
+      menu_id: menuId.value ?? "",
+      content: content.value ?? "",
+      hidden: isHidden.value ?? false,
+      tags: tags.value ?? [],
+      thumbnail: thumbnail.value || null,
+    };
+
+    const files: PostFile = {
+      inlineImages: Object.fromEntries(editorRef.value?.inlineImages ?? []),
+      attachments: Object.fromEntries(editorRef.value?.files ?? []),
+    };
+
+    try {
+      const saved = await createPost(formData, files, true);
+      syncAfterTempSave(saved);
+      toast.success("임시저장되었습니다.");
+      router.replace({ query: { temp: saved.id } });
+    } catch (error) {
+      toast.error(
+        error instanceof PostgrestError
+          ? error.message
+          : "임시저장에 실패했습니다."
+      );
+    } finally {
+      setLoading(false);
+    }
+  } else {
+    // 이미 저장된 임시 게시글의 경우
+    setLoading(true);
+
+    const formData: PostUpdateType = {
+      id: Number(tempPostId),
+      title: title.value ?? "",
+      menu_id: menuId.value ?? "",
+      content: content.value ?? "",
+      hidden: isHidden.value ?? false,
+      tags: tags.value ?? [],
+      thumbnail: thumbnail.value || null,
+    };
+
+    const files: PostUpdateFile = {
+      inlineImages: Object.fromEntries(editorRef.value?.inlineImages ?? []),
+      attachments: Object.fromEntries(editorRef.value?.files ?? []),
+      removedAttachmentKeys: [
+        ...(editorRef.value?.removedAttachmentKeys ?? []),
+      ],
+    };
+
+    try {
+      const saved = await updatePost(formData, files, true);
+      syncAfterTempSave(saved);
+      toast.success("임시저장되었습니다.");
+    } catch (error) {
+      toast.error(
+        error instanceof PostgrestError
+          ? error.message
+          : "임시저장에 실패했습니다."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+};
+
+// ------------ 임시저장 모달 ------------
 const tempPostModalOpen = ref(false);
 
 const openTempPostModal = () => {

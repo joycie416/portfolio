@@ -59,7 +59,8 @@ import { formatFileSize, getFileType } from "~/utils/format-file";
 
 const props = withDefaults(
   defineProps<{
-    file: File;
+    /** 새 파일(File) 또는 기존 스토리지 파일의 name/size */
+    file: Pick<File, "name" | "size">;
     /** 업로드 완료 후 다운로드 URL. 있으면 다운로드 링크를 노출 */
     href?: string;
     /** 삭제(x) 버튼 노출 여부 */

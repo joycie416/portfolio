@@ -9,6 +9,7 @@ import type {
   PostFile,
   PostUpdateFile,
   PostStorageFiles,
+  PostSaveResult,
 } from "@/types/supabase";
 
 export const POSTS_PAGE_SIZE = 10;
@@ -142,7 +143,7 @@ export const useCreatePost = () => {
     formData: PostInsertType,
     files: PostFile,
     temp: boolean = false
-  ) => posts(supabase).create(formData, files, temp);
+  ): Promise<PostSaveResult> => posts(supabase).create(formData, files, temp);
 
   return { createPost };
 };
@@ -186,7 +187,7 @@ export const useUpdatePost = () => {
     formData: PostUpdateType,
     files: PostUpdateFile,
     temp: boolean = false
-  ) => posts(supabase).update(formData, files, temp);
+  ): Promise<PostSaveResult> => posts(supabase).update(formData, files, temp);
 
   return { updatePost };
 };

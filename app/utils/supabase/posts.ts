@@ -4,6 +4,8 @@ import type {
   PostBulkFailure,
   PostFile,
   PostInsertType,
+  PostSaveResult,
+  PostStorageFile,
   PostStorageFiles,
   PostUpdateFile,
   PostUpdateType,
@@ -84,6 +86,26 @@ const listStalePaths = async (
     .map((file) => `${folderPath}/${file.name}`);
 };
 
+// 스토리지 폴더의 파일 목록을 PostStorageFile[]로 변환
+const listStorageFiles = async (
+  client: SupabaseClient<Database>,
+  bucket: string,
+  folderPath: string
+): Promise<PostStorageFile[]> => {
+  const { data, error } = await client.storage.from(bucket).list(folderPath);
+  if (error) throw error;
+
+  return (data ?? []).map((file) => {
+    const path = `${folderPath}/${file.name}`;
+    return {
+      key: file.name,
+      path,
+      size: file.metadata?.size as number | undefined,
+      url: client.storage.from(bucket).getPublicUrl(path).data.publicUrl,
+    };
+  });
+};
+
 // 게시글에 연결된 스토리지 파일(inline 이미지, 첨부파일)을 전부 삭제
 const removePostFiles = async (
   client: SupabaseClient<Database>,
@@ -143,7 +165,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
     formData: PostInsertType,
     files: PostFile,
     temp: boolean = false
-  ) => {
+  ): Promise<PostSaveResult> => {
     // 테이블, 버켓 이름
     const dbName = temp ? TEMP_POST : POST;
 
@@ -194,7 +216,13 @@ export const posts = (client: SupabaseClient<Database>) => ({
         .insert({ ...formData, id: postId, content, thumbnail });
       if (postInsertError) throw postInsertError;
 
-      return postId;
+      const attachments = await listStorageFiles(
+        client,
+        dbName,
+        `${postId}/${ATTACHMENTS}`
+      );
+
+      return { id: postId, content, thumbnail, attachments };
     } catch (error) {
       // 위 과정 중 하나라도 실패하면 이미 업로드된 파일을 모두 삭제
       if (uploadedPaths.length) {
@@ -228,27 +256,9 @@ export const posts = (client: SupabaseClient<Database>) => ({
   ): Promise<PostStorageFiles> => {
     const bucket = temp ? TEMP_POST : POST;
 
-    const listFiles = async (folder: typeof INLINE | typeof ATTACHMENTS) => {
-      const folderPath = `${postId}/${folder}`;
-      const { data, error } = await client.storage
-        .from(bucket)
-        .list(folderPath);
-      if (error) throw error;
-
-      return (data ?? []).map((file) => {
-        const path = `${folderPath}/${file.name}`;
-        return {
-          key: file.name,
-          path,
-          size: file.metadata?.size as number | undefined,
-          url: client.storage.from(bucket).getPublicUrl(path).data.publicUrl,
-        };
-      });
-    };
-
     const [inlineImages, attachments] = await Promise.all([
-      listFiles(INLINE),
-      listFiles(ATTACHMENTS),
+      listStorageFiles(client, bucket, `${postId}/${INLINE}`),
+      listStorageFiles(client, bucket, `${postId}/${ATTACHMENTS}`),
     ]);
 
     return { inlineImages, attachments };
@@ -257,7 +267,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
     formData: PostUpdateType,
     files: PostUpdateFile,
     temp: boolean = false
-  ) => {
+  ): Promise<PostSaveResult> => {
     // 테이블, 버켓 이름
     const dbName = temp ? TEMP_POST : POST;
     const postId = formData.id;
@@ -266,16 +276,37 @@ export const posts = (client: SupabaseClient<Database>) => ({
     // (기존 파일은 이 시점에 건드리지 않으므로 롤백 대상에서 제외)
     const uploadedPaths: string[] = [];
 
+    // 이미 스토리지에 있는 key는 재업로드하지 않음 (이전 임시저장 등)
+    const [existingInlineFiles, existingAttachmentFiles] = await Promise.all([
+      listStorageFiles(client, dbName, `${postId}/${INLINE}`),
+      listStorageFiles(client, dbName, `${postId}/${ATTACHMENTS}`),
+    ]);
+    const existingInlineKeys = new Set(
+      existingInlineFiles.map((file) => file.key)
+    );
+    const existingAttachmentKeys = new Set(
+      existingAttachmentFiles.map((file) => file.key)
+    );
+
     const uploadFile = async (
       folder: typeof INLINE | typeof ATTACHMENTS,
       key: string,
       file: File
     ) => {
       const path = `${postId}/${folder}/${key}`;
+      const existingKeys =
+        folder === INLINE ? existingInlineKeys : existingAttachmentKeys;
+
+      // 이미 저장된 key면 업로드를 건너뛰고 publicUrl만 반환
+      if (existingKeys.has(key)) {
+        return client.storage.from(dbName).getPublicUrl(path).data.publicUrl;
+      }
+
       const { error } = await client.storage.from(dbName).upload(path, file);
       if (error) throw error;
-      uploadedPaths.push(path);
 
+      uploadedPaths.push(path);
+      existingKeys.add(key);
       return client.storage.from(dbName).getPublicUrl(path).data.publicUrl;
     };
 
@@ -335,7 +366,13 @@ export const posts = (client: SupabaseClient<Database>) => ({
         console.error("불필요한 파일 정리 실패:", cleanupError);
       }
 
-      return postId;
+      const attachments = await listStorageFiles(
+        client,
+        dbName,
+        `${postId}/${ATTACHMENTS}`
+      );
+
+      return { id: postId, content, thumbnail, attachments };
     } catch (error) {
       // 업데이트 실패 시, 새로 업로드한 파일은 게시글 모두 삭제 (기존 파일은 그대로 유지)
       if (uploadedPaths.length) {

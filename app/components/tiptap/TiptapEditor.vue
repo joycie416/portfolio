@@ -311,6 +311,7 @@
         v-for="attachment in attachmentList"
         :key="attachment.key"
         :file="attachment.file"
+        :href="attachment.href"
         @remove="removeAttachment(attachment.key)"
       />
     </div>
@@ -378,10 +379,12 @@ import { toast } from "vue-sonner";
 import { TiptapHyperlinkModal } from ".";
 import { InlineImage } from "./extensions";
 import { FileItem } from "@/components/common";
+import type { PostStorageFile } from "@/types/supabase";
 import type { HTMLAttributes } from "vue";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
+  existingAttachments?: PostStorageFile[];
 }>();
 
 const model = defineModel<string | undefined>();
@@ -419,10 +422,20 @@ const INLINE_IMAGE_ACCEPT = ".jpg,.jpeg,.png,.gif";
 // 파일 업로드 관리
 // 게시글 내 이미지
 const inlineImages = ref<Map<string, File>>(new Map());
-// 첨부 파일
+// 첨부 파일 (새로 추가된 File만 — 저장 시 업로드 대상)
 const files = ref<Map<string, File>>(new Map());
+// 기존 첨부파일 중 사용자가 삭제한 key (업데이트 시 스토리지 정리에 사용)
+const removedAttachmentKeys = ref<string[]>([]);
 const MAX_FILE_SIZE = 1024 * 1024 * 10; // 10MB
 const MAX_FULL_ATTACHMENT_SIZE = 1024 * 1024 * 50; // 50MB
+
+// 기존 첨부 목록이 바뀌면(임시글/수정글 로드 등) 삭제 추적도 초기화
+watch(
+  () => props.existingAttachments,
+  () => {
+    removedAttachmentKeys.value = [];
+  }
+);
 
 // inline 이미지로 삽입 가능한 타입인지 판별 (jpg/jpeg/png/gif만)
 const isInlineInsertable = (file: File): boolean =>
@@ -503,14 +516,44 @@ const addAttachment = (file: File): void => {
   files.value = new Map(files.value);
 };
 
-// 첨부파일 목록 (템플릿에서 FileItem으로 렌더)
-const attachmentList = computed(() =>
-  Array.from(files.value, ([key, file]) => ({ key, file }))
-);
+// 첨부파일 목록: 기존(스토리지) + 새로 추가한 파일
+const attachmentList = computed(() => {
+  const existing = (props.existingAttachments ?? [])
+    .filter(
+      (attachment) => !removedAttachmentKeys.value.includes(attachment.key)
+    )
+    .map((attachment) => ({
+      key: attachment.key,
+      file: { name: attachment.key, size: attachment.size ?? 0 },
+      href: attachment.url,
+    }));
+
+  const added = Array.from(files.value, ([key, file]) => ({
+    key,
+    file: { name: file.name, size: file.size },
+    href: undefined as string | undefined,
+  }));
+
+  return [...existing, ...added];
+});
 
 const removeAttachment = (key: string) => {
-  files.value.delete(key);
-  files.value = new Map(files.value);
+  // 새로 추가한 파일: 맵에서만 제거 (아직 스토리지에 없으므로 removed 추적 불필요)
+  if (files.value.has(key)) {
+    files.value.delete(key);
+    files.value = new Map(files.value);
+    return;
+  }
+
+  // 기존 첨부파일: 삭제 목록에 기록해 업데이트 시 스토리지에서도 제거
+  if (
+    (props.existingAttachments ?? []).some(
+      (attachment) => attachment.key === key
+    ) &&
+    !removedAttachmentKeys.value.includes(key)
+  ) {
+    removedAttachmentKeys.value = [...removedAttachmentKeys.value, key];
+  }
 };
 
 // 붙여넣기/드롭: 허용 이미지(jpg/jpeg/png/gif)만 inline 삽입, 그 외 파일은 무시
@@ -689,12 +732,20 @@ onBeforeUnmount(() => {
 });
 
 // 저장 시 사용할 데이터/헬퍼를 부모에 노출
-// - files: 첨부파일(key -> File). 본문과 분리되어 별도 목록으로 관리되므로 개별 업로드 후 저장
+// - files: 새로 추가된 첨부파일(key -> File). 본문과 분리되어 별도 목록으로 관리되므로 개별 업로드 후 저장
 // - inlineImages: 본문 이미지(key -> File). 본문에는 key만 저장되므로 업로드 후 src 치환에 사용
+// - removedAttachmentKeys: 기존 첨부파일 중 삭제한 key 목록 (업데이트 시 스토리지 정리)
 defineExpose({
   files,
   inlineImages,
+  removedAttachmentKeys,
   getHTML: () => editor.value?.getHTML() ?? "",
+  /** 저장 성공 후 호출: 이미 업로드된 pending File 맵을 비워 재업로드(duplicate)를 방지 */
+  clearPendingFiles: () => {
+    inlineImages.value = new Map();
+    files.value = new Map();
+    removedAttachmentKeys.value = [];
+  },
   /**
    * key -> URL 매핑으로 본문 inline 이미지의 src를 실제 URL로 치환한다.
    * 이미지 업로드가 끝난 뒤 저장 직전에 호출한다.

@@ -62,6 +62,15 @@ export type PostUpdateFile = PostFile & {
   removedAttachmentKeys: string[];
 };
 
+// create/update 성공 시 반환값 (본문은 업로드된 publicUrl로 치환된 최종값)
+export type PostSaveResult = {
+  id: number;
+  content: string;
+  thumbnail: string | null;
+  /** 저장 후 스토리지에 남아 있는 첨부파일 목록 */
+  attachments: PostStorageFile[];
+};
+
 // 스토리지에 저장된 게시글 파일(inline 이미지/첨부파일) 정보
 export type PostStorageFile = {
   key: string;
