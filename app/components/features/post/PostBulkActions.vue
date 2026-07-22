@@ -110,12 +110,19 @@ const isDisabled = computed(
   () => loading.value || props.selectedIds.length === 0
 );
 
+const modeName = {
+  delete: "삭제",
+  move: "이동",
+  hidden: "변경",
+};
+
 /**
  * bulk 액션 공통 실행 래퍼.
  * RPC는 실패(못 찾은)한 행만 반환하므로, 있으면 안내 후에도 목록은 갱신한다.
  */
 const runAction = async (
-  action: (ids: number[]) => Promise<PostBulkFailure[]>
+  action: (ids: number[]) => Promise<PostBulkFailure[]>,
+  mode: keyof typeof modeName
 ) => {
   if (props.selectedIds.length === 0 || loading.value) return;
 
@@ -124,11 +131,11 @@ const runAction = async (
     const failures = await action([...props.selectedIds]);
     if (failures.length > 0) {
       toast.error(
-        `${props.selectedIds.length}개 중 ${failures.length}개 게시글 변경에 실패했습니다.`
+        `${props.selectedIds.length}개 중 ${failures.length}개 게시글 ${modeName[mode]}에 실패했습니다.`
       );
     } else {
       toast.success(
-        `${props.selectedIds.length}개 게시글 변경에 성공했습니다.`
+        `${props.selectedIds.length}개 게시글 ${modeName[mode]}에 성공했습니다.`
       );
     }
     emit("done");
@@ -136,7 +143,9 @@ const runAction = async (
     if (error instanceof PostgrestError) {
       toast.error(error.message);
     } else {
-      toast.error("게시글 처리에 실패했습니다.");
+      toast.error(
+        `${props.selectedIds.length}개 게시글 ${modeName[mode]}에 실패했습니다.`
+      );
     }
   } finally {
     loading.value = false;
@@ -144,13 +153,13 @@ const runAction = async (
 };
 
 const handleMoveMenu = (menuId: string) =>
-  runAction((ids) => bulkMoveMenu(ids, menuId));
+  runAction((ids) => bulkMoveMenu(ids, menuId), "move");
 
 const handleUpdateHidden = (hidden: boolean) =>
-  runAction((ids) => bulkUpdateHidden(ids, hidden));
+  runAction((ids) => bulkUpdateHidden(ids, hidden), "hidden");
 
 const handleDelete = async () => {
-  await runAction(bulkDelete);
+  await runAction(bulkDelete, "delete");
   confirmOpen.value = false;
 };
 </script>

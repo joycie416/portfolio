@@ -31,6 +31,7 @@
           :key="post.id"
           :post="post"
           :checked="checkedPosts.includes(post.id.toString())"
+          :show-delete-button="checkedIds.length === 0"
           @update:checked="handleChecked"
         />
       </div>
