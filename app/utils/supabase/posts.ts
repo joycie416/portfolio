@@ -161,6 +161,17 @@ export const posts = (client: SupabaseClient<Database>) => ({
       count: count ?? 0,
     };
   },
+  getTempList: async () => {
+    const { data, count, error } = await client
+      .from(TEMP_POST)
+      .select("id, title, created_at", { count: "exact" });
+    if (error) throw error;
+
+    return {
+      data: data ?? [],
+      count: count ?? 0,
+    };
+  },
   create: async (
     formData: PostInsertType,
     files: PostFile,

@@ -10,6 +10,7 @@ import type {
   PostUpdateFile,
   PostStorageFiles,
   PostSaveResult,
+  SimpleTempPost,
 } from "@/types/supabase";
 
 export const POSTS_PAGE_SIZE = 10;
@@ -199,4 +200,18 @@ export const useDeletePost = () => {
     posts(supabase).delete(id, temp);
 
   return { deletePost };
+};
+
+export const TEMP_POST_LIST_KEY = "temp-posts";
+export const useGetTempPosts = () => {
+  const supabase = useSupabaseClient();
+
+  return useAsyncData<{
+    data: SimpleTempPost[];
+    count: number;
+  }>(
+    () => TEMP_POST_LIST_KEY,
+    () => posts(supabase).getTempList(),
+    { default: () => ({ data: [], count: 0 }) }
+  );
 };

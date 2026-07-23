@@ -8,7 +8,8 @@
       <DataTable
         table-id="temp-post-table"
         :columns="columns"
-        :data="data"
+        :data="data.data"
+        :status="tableStatus"
         :class-names="{
           tableContainer: 'rounded-t-[4px] overflow-hidden',
           tableHeader: 'bg-gray-02',
@@ -27,8 +28,13 @@ import { Dialog } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import type { Columns } from "@/components/ui/data-table";
-import type { TempPost } from "@/types/supabase";
+import type { SimpleTempPost } from "@/types/supabase";
 import { Trash2 } from "@lucide/vue";
+import { toast } from "vue-sonner";
+import { useGetTempPosts } from "~/composables/usePost";
+
+const route = useRoute();
+const router = useRouter();
 
 const props = defineProps<{ open: boolean }>();
 
@@ -40,23 +46,35 @@ const close = () => {
   emit("close");
 };
 
-const data = ref<TempPost[]>([
-  {
-    id: 123,
-    menu_id: "123",
-    title: "임시 제목입니다.asddddddddddddddddddddddddddddddddddddddddddddd",
-    content: "내용",
-    created_at: "2026-01-01",
-    modified_at: "2026-01-01",
-    hidden: false,
-    tags: ["tag1", "tag2"],
-    thumbnail: "https://example.com/thumbnail.jpg",
-  },
-]);
+const { data, status, refresh } = useGetTempPosts();
 
-const handleDelete = async (id: number) => {};
+const deleteStatus = ref<"loading" | "success">("success");
 
-const columns = computed<Columns<TempPost>>(() => [
+const tableStatus = computed(() => {
+  if (status.value === "pending" || deleteStatus.value === "loading")
+    return "loading";
+  if (status.value === "error") return "error";
+  return "success";
+});
+
+const { deletePost } = useDeletePost();
+const handleDelete = async (id: number) => {
+  try {
+    deleteStatus.value = "loading";
+    await deletePost(id, true);
+    await refresh();
+    // 현재 수정 중인 임시저장 게시글을 삭제한 경우 query도 제거
+    if (route.query.temp === id.toString()) {
+      router.replace({ query: { temp: undefined } });
+    }
+  } catch {
+    toast.error("임시저장 삭제에 실패했습니다.");
+  } finally {
+    deleteStatus.value = "success";
+  }
+};
+
+const columns = computed<Columns<SimpleTempPost>>(() => [
   {
     accessorKey: "created_at",
     header: "작성일",

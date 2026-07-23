@@ -18,7 +18,7 @@ interface Props {
   tableId: string;
   columns: Columns<TData, TValue>;
   data: TData[];
-  loading?: boolean;
+  status?: "loading" | "success" | "error";
   loadingRows?: number;
   classNames?: {
     tableContainer?: HTMLDivElement["className"];
@@ -28,7 +28,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  loading: false,
+  status: "success",
   loadingRows: 3,
   classNames: () => ({}),
 });
@@ -73,7 +73,9 @@ const table = useVueTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        <template v-if="!loading && table.getRowModel().rows?.length">
+        <template
+          v-if="status === 'success' && table.getRowModel().rows?.length"
+        >
           <TableRow
             v-for="row in table.getRowModel().rows"
             :key="row.id"
@@ -97,7 +99,9 @@ const table = useVueTable({
             </TableCell>
           </TableRow>
         </template>
-        <template v-else-if="!loading && !table.getRowModel().rows?.length">
+        <template
+          v-else-if="status === 'success' && !table.getRowModel().rows?.length"
+        >
           <TableRow>
             <TableCell
               :colspan="columns.length"
@@ -107,7 +111,17 @@ const table = useVueTable({
             </TableCell>
           </TableRow>
         </template>
-        <template v-else-if="loading">
+        <template v-else-if="status === 'error'">
+          <TableRow>
+            <TableCell
+              :colspan="columns.length"
+              :class="cn(classNames?.emptyRow)"
+            >
+              <Empty message="오류가 발생했습니다." />
+            </TableCell>
+          </TableRow>
+        </template>
+        <template v-else-if="status === 'loading'">
           <TableRow v-for="i in loadingRows || 4" :key="i" class="border-b-0">
             <TableCell v-for="i in columns.length" :key="i" class="px-1.5 py-1">
               <Skeleton class="w-full h-7" />

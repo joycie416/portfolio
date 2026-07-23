@@ -68,7 +68,7 @@
           class="px-1 hover:text-primary-600"
           @click.stop="openTempPostModal"
         >
-          0
+          {{ tempPostCount.toLocaleString() }}
         </span>
       </Button>
       <Button
@@ -283,6 +283,7 @@ const saveTempPost = async () => {
       const saved = await createPost(formData, files, true);
       syncAfterTempSave(saved);
       toast.success("임시저장되었습니다.");
+      await refreshNuxtData(TEMP_POST_LIST_KEY);
       router.replace({ query: { temp: saved.id } });
     } catch (error) {
       toast.error(
@@ -319,6 +320,7 @@ const saveTempPost = async () => {
       const saved = await updatePost(formData, files, true);
       syncAfterTempSave(saved);
       toast.success("임시저장되었습니다.");
+      await refreshNuxtData(TEMP_POST_LIST_KEY);
     } catch (error) {
       toast.error(
         error instanceof PostgrestError
@@ -341,6 +343,10 @@ const openTempPostModal = () => {
 const closeTempPostModal = () => {
   tempPostModalOpen.value = false;
 };
+
+// ------------ 임시저장 목록 ------------
+const { data: tempPostData } = useGetTempPosts();
+const tempPostCount = computed(() => tempPostData.value?.count ?? 0);
 
 // ---------- 페이지 이동 전 경고 ----------
 // 저장 성공 후 navigateTo 시 confirm을 건너뛰기 위한 플래그

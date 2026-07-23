@@ -86,7 +86,15 @@ export type PostStorageFiles = {
 
 // 임시 게시글 타입
 export type TempPost = Tables<"temp_posts">;
-export type TempPostInsertType = OmitDefaultColumns<TablesInsert<"temp_posts">>;
+// 임시 게시글 목록용 타입
+export type SimpleTempPost = Pick<
+  Tables<"temp_posts">,
+  "id" | "title" | "created_at"
+>;
+export type TempPostInsertType = OmitDefaultColumns<
+  TablesInsert<"temp_posts">,
+  true
+>;
 
 export type Comment = Tables<"comments">;
 export type CommentInsertType = OmitDefaultColumns<
