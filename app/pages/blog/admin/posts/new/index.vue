@@ -81,7 +81,11 @@
       </Button>
     </div>
   </div>
-  <TempPostModal :open="tempPostModalOpen" @close="closeTempPostModal" />
+  <TempPostModal
+    :open="tempPostModalOpen"
+    @close="closeTempPostModal"
+    @resetForm="resetForm"
+  />
 </template>
 
 <script setup lang="ts">
@@ -107,6 +111,7 @@ import TempPostModal from "@/components/features/post/TempPostModal.vue";
 const route = useRoute();
 const router = useRouter();
 
+// ------------ 폼 ------------
 const { setValues, defineField, meta } = useForm({
   validationSchema: toTypedSchema(postSchema),
   initialValues: {
@@ -150,6 +155,22 @@ const [content] = defineField("content", (state) => ({
 const [isHidden] = defineField("hidden");
 const [tags] = defineField("tags");
 const [thumbnail] = defineField("thumbnail");
+
+const resetForm = () => {
+  const defaultMenu = menuOptions.value.find(
+    (option) => option.label === "미분류"
+  );
+  setValues({
+    title: "",
+    menuId: defaultMenu?.value ?? menuOptions.value[0]?.value ?? "",
+    content: "",
+    hidden: false,
+    tags: [],
+    thumbnail: null,
+  });
+  existingAttachments.value = [];
+  editorRef.value?.clearPendingFiles();
+};
 
 // ------------ 태그 ------------
 const tag = ref("");
@@ -344,7 +365,7 @@ const closeTempPostModal = () => {
   tempPostModalOpen.value = false;
 };
 
-// ------------ 임시저장 목록 ------------
+// ------------ 임시저장 목록 개수 ------------
 const { data: tempPostData } = useGetTempPosts();
 const tempPostCount = computed(() => tempPostData.value?.count ?? 0);
 

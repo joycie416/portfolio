@@ -40,6 +40,7 @@ const props = defineProps<{ open: boolean }>();
 
 const emit = defineEmits<{
   (e: "close"): void;
+  (e: "resetForm"): void;
 }>();
 
 const close = () => {
@@ -59,13 +60,22 @@ const tableStatus = computed(() => {
 
 const { deletePost } = useDeletePost();
 const handleDelete = async (id: number) => {
+  const tempPostId = route.query.temp?.toString() ?? "";
+
+  if (tempPostId === id.toString()) {
+    const isConfirmed = confirm(
+      "현재 작성 중인 글입니다. 삭제하면 작성 중인 내용이 삭제됩니다. 정말 삭제하시겠습니까?"
+    );
+    if (!isConfirmed) return;
+  }
   try {
     deleteStatus.value = "loading";
     await deletePost(id, true);
     await refresh();
-    // 현재 수정 중인 임시저장 게시글을 삭제한 경우 query도 제거
-    if (route.query.temp === id.toString()) {
+    // 현재 수정 중인 임시저장 게시글을 삭제한 경우 query도 제거 및 폼 초기화
+    if (tempPostId === id.toString()) {
       router.replace({ query: { temp: undefined } });
+      emit("resetForm");
     }
   } catch {
     toast.error("임시저장 삭제에 실패했습니다.");
