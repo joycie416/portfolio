@@ -38,7 +38,6 @@
       <div class="flex flex-wrap gap-1">
         <div
           v-for="tag in tags"
-          d
           :key="tag"
           class="min-w-0 pl-2 pr-1 py-0.5 flex items-center gap-1 rounded-full bg-gray-02"
         >
@@ -57,6 +56,7 @@
     </div>
     <div class="flex flex-col md:flex-row gap-2">
       <Button
+        v-if="editTarget?.temp || !editTarget"
         type="button"
         variant="outline"
         class="w-full gap-0"
@@ -74,7 +74,10 @@
       <Button
         type="button"
         :disabled="!meta.valid"
-        class="w-full"
+        :class="{
+          'w-full': !editTarget || editTarget?.temp,
+          'w-full md:w-1/2 md:mx-auto': editTarget && !editTarget?.temp,
+        }"
         @click="savePost"
       >
         등록
@@ -107,6 +110,10 @@ import { TiptapEditor } from "@/components/tiptap";
 import { Button } from "~/components/ui/button";
 import { X } from "@lucide/vue";
 import TempPostModal from "@/components/features/post/TempPostModal.vue";
+
+definePageMeta({
+  middleware: "validate-post",
+});
 
 const route = useRoute();
 const router = useRouter();
@@ -206,7 +213,6 @@ watch(
   { immediate: true }
 );
 
-// ------------ 저장 ------------
 // TiptapEditor가 defineExpose로 노출하는 inlineImages/files(Map)에 접근하기 위한 템플릿 ref
 const editorRef =
   useTemplateRef<InstanceType<typeof TiptapEditor>>("editorRef");
@@ -217,7 +223,9 @@ const existingAttachments = ref<PostStorageFile[]>([]);
 const { setLoading } = useLoading();
 const { createPost } = useCreatePost();
 const { updatePost } = useUpdatePost();
+const { deletePost } = useDeletePost();
 
+// ------------ 임시저장 ------------
 // 임시저장 성공 후: 본문/첨부 상태를 저장 결과에 맞추고 pending File 맵을 비움
 const syncAfterTempSave = (saved: {
   content: string;
@@ -235,45 +243,6 @@ const syncAfterTempSave = (saved: {
   editorRef.value?.clearPendingFiles();
 };
 
-const savePost = async () => {
-  if (!meta.value.valid) return;
-
-  setLoading(true);
-
-  // 이미 defineField를 사용하고 있으므로, values를 사용하지 않았음
-  const formData: PostInsertType = {
-    title: title.value ?? "",
-    menu_id: menuId.value ?? "",
-    content: content.value ?? "",
-    hidden: isHidden.value ?? false,
-    tags: tags.value ?? [],
-    thumbnail: thumbnail.value || null,
-  };
-
-  // 본문 inline 이미지(key -> File)와 첨부파일(key -> File)을 posts().create()가
-  // 요구하는 Record 형태로 변환 (key는 본문의 data-inline-key와 매핑에 사용됨)
-  const files: PostFile = {
-    inlineImages: Object.fromEntries(editorRef.value?.inlineImages ?? []),
-    attachments: Object.fromEntries(editorRef.value?.files ?? []),
-  };
-
-  try {
-    await createPost(formData, files);
-    toast.success("게시글이 저장되었습니다.");
-    allowLeave.value = true;
-    await navigateTo("/blog/admin/posts");
-  } catch (error) {
-    toast.error(
-      error instanceof PostgrestError
-        ? error.message
-        : "게시글 저장에 실패했습니다."
-    );
-  } finally {
-    setLoading(false);
-  }
-};
-
-// ------------ 임시저장 ------------
 const saveTempPost = async () => {
   const tempPostId = route.query.temp;
 
@@ -368,6 +337,96 @@ const closeTempPostModal = () => {
 // ------------ 임시저장 목록 개수 ------------
 const { data: tempPostData } = useGetTempPosts();
 const tempPostCount = computed(() => tempPostData.value?.count ?? 0);
+
+// ------------ 글 불러오기 ------------
+// create면 null, 등록글 수정이면 temp:false, 임시저장 이어서면 temp:true
+const parseRouteId = (raw: unknown): number | null => {
+  if (raw == null || Array.isArray(raw) || raw === "") return null;
+  const n = Number(raw);
+  return Number.isSafeInteger(n) ? n : null;
+};
+
+const editTarget = computed(() => {
+  const id = parseRouteId(route.params.id);
+  if (id != null) return { id, temp: false } as const;
+
+  const tempId = parseRouteId(route.query.temp);
+  if (tempId != null) return { id: tempId, temp: true } as const;
+
+  return null;
+});
+
+const { data: postData, execute: loadPost } = useGetPost({
+  // .value 스냅샷이 아니라 getter로 넘겨야 route 변경에 반응함
+  id: () => editTarget.value?.id ?? null,
+  temp: () => editTarget.value?.temp ?? false,
+  immediate: false,
+});
+
+watch(
+  editTarget,
+  async (target) => {
+    if (!target) return;
+
+    await loadPost();
+
+    const loaded = postData.value;
+    if (!loaded) return;
+
+    setValues(
+      {
+        title: loaded.post.title,
+        menuId: loaded.post.menu_id,
+        content: loaded.post.content,
+        hidden: loaded.post.hidden,
+        tags: loaded.post.tags ?? [],
+        thumbnail: loaded.post.thumbnail,
+      },
+      false
+    );
+    existingAttachments.value = loaded.files.attachments;
+  },
+  { immediate: true }
+);
+
+// ------------ 저장 ------------
+const savePost = async () => {
+  if (!meta.value.valid) return;
+
+  setLoading(true);
+
+  // 이미 defineField를 사용하고 있으므로, values를 사용하지 않았음
+  const formData: PostInsertType = {
+    title: title.value ?? "",
+    menu_id: menuId.value ?? "",
+    content: content.value ?? "",
+    hidden: isHidden.value ?? false,
+    tags: tags.value ?? [],
+    thumbnail: thumbnail.value || null,
+  };
+
+  // 본문 inline 이미지(key -> File)와 첨부파일(key -> File)을 posts().create()가
+  // 요구하는 Record 형태로 변환 (key는 본문의 data-inline-key와 매핑에 사용됨)
+  const files: PostFile = {
+    inlineImages: Object.fromEntries(editorRef.value?.inlineImages ?? []),
+    attachments: Object.fromEntries(editorRef.value?.files ?? []),
+  };
+
+  try {
+    await createPost(formData, files);
+    toast.success("게시글이 저장되었습니다.");
+    allowLeave.value = true;
+    await navigateTo("/blog/admin/posts");
+  } catch (error) {
+    toast.error(
+      error instanceof PostgrestError
+        ? error.message
+        : "게시글 저장에 실패했습니다."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
 // ---------- 페이지 이동 전 경고 ----------
 // 저장 성공 후 navigateTo 시 confirm을 건너뛰기 위한 플래그

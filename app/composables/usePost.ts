@@ -149,35 +149,43 @@ export const useCreatePost = () => {
   return { createPost };
 };
 
-export interface UseGetPostParams {
-  id: MaybeRefOrGetter<number>;
-  temp?: MaybeRefOrGetter<boolean>;
-}
-
-// 수정 화면 등에서 단일 게시글(또는 임시저장 게시글)을 조회
-export const useGetPost = ({ id, temp }: UseGetPostParams) => {
-  const supabase = useSupabaseClient();
-
-  return useAsyncData<Post | null>(
-    () => `post:${toValue(temp) ? "temp" : "post"}:${toValue(id)}`,
-    () => posts(supabase).getById(toValue(id), toValue(temp) ?? false),
-    { default: () => null }
-  );
+export type GetPostResult = {
+  post: Post;
+  files: PostStorageFiles;
 };
 
-export interface UseGetPostFilesParams {
-  postId: MaybeRefOrGetter<number>;
+export interface UseGetPostParams {
+  id: MaybeRefOrGetter<number | null>;
   temp?: MaybeRefOrGetter<boolean>;
+  immediate?: boolean;
 }
 
-// 스토리지 데이터 조회
-export const useGetPostFiles = ({ postId, temp }: UseGetPostFilesParams) => {
+// 수정 화면 등에서 단일 게시글(또는 임시저장 게시글)과 첨부파일 조회
+export const useGetPost = ({
+  id,
+  temp,
+  immediate = true,
+}: UseGetPostParams) => {
   const supabase = useSupabaseClient();
 
-  return useAsyncData<PostStorageFiles>(
-    () => `post-files:${toValue(temp) ? "temp" : "post"}:${toValue(postId)}`,
-    () => posts(supabase).getFiles(toValue(postId), toValue(temp) ?? false),
-    { default: () => ({ inlineImages: [], attachments: [] }) }
+  return useAsyncData<GetPostResult | null>(
+    () => `post:${toValue(temp) ? "temp" : "post"}:${toValue(id) ?? "none"}`,
+    async () => {
+      const postId = toValue(id);
+      if (postId == null) return null;
+
+      const isTemp = toValue(temp) ?? false;
+      const [post, files] = await Promise.all([
+        posts(supabase).getById(postId, isTemp),
+        posts(supabase).getFiles(postId, isTemp),
+      ]);
+      return { post, files };
+    },
+    {
+      default: () => null,
+      immediate,
+      watch: [() => toValue(id), () => toValue(temp)],
+    }
   );
 };
 

@@ -84,6 +84,15 @@ const handleDelete = async (id: number) => {
   }
 };
 
+const confirmBeforeEdit = (id: number) => {
+  const isConfirmed = confirm(
+    "변경사항이 적용되지 않을 수 있습니다. 정말 이어서 수정하시겠습니까?"
+  );
+  if (!isConfirmed) return;
+  close();
+  router.replace({ query: { temp: undefined } });
+};
+
 const columns = computed<Columns<SimpleTempPost>>(() => [
   {
     accessorKey: "created_at",
@@ -99,12 +108,13 @@ const columns = computed<Columns<SimpleTempPost>>(() => [
   },
   {
     accessorKey: "title",
-    header: () =>
+    header: "제목",
+    cell: ({ row }) =>
       h("span", {
-        class: "text-sm text-text-gray-01",
-        innerHTML: "제목",
+        innerText: row.original.title,
+        class: "cursor-pointer hover:underline",
+        onClick: () => confirmBeforeEdit(row.original.id),
       }),
-    cell: ({ row }) => row.original.title,
     meta: {
       classNames: { header: "w-full", cell: "truncate" },
     },
