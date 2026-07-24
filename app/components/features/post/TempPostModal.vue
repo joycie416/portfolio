@@ -76,6 +76,7 @@ const handleDelete = async (id: number) => {
     if (tempPostId === id.toString()) {
       router.replace({ query: { temp: undefined } });
       emit("resetForm");
+      close();
     }
   } catch {
     toast.error("임시저장 삭제에 실패했습니다.");
@@ -90,7 +91,7 @@ const confirmBeforeEdit = (id: number) => {
   );
   if (!isConfirmed) return;
   close();
-  router.replace({ query: { temp: undefined } });
+  router.replace({ query: { temp: id } });
 };
 
 const columns = computed<Columns<SimpleTempPost>>(() => [

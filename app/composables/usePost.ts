@@ -149,6 +149,19 @@ export const useCreatePost = () => {
   return { createPost };
 };
 
+export const usePublishTempPost = () => {
+  const supabase = useSupabaseClient();
+
+  const publishTempPost = (
+    tempId: number,
+    formData: PostInsertType,
+    files: PostUpdateFile
+  ): Promise<PostSaveResult> =>
+    posts(supabase).publishFromTemp(tempId, formData, files);
+
+  return { publishTempPost };
+};
+
 export type GetPostResult = {
   post: Post;
   files: PostStorageFiles;

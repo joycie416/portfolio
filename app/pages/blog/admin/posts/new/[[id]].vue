@@ -223,7 +223,7 @@ const existingAttachments = ref<PostStorageFile[]>([]);
 const { setLoading } = useLoading();
 const { createPost } = useCreatePost();
 const { updatePost } = useUpdatePost();
-const { deletePost } = useDeletePost();
+const { publishTempPost } = usePublishTempPost();
 
 // ------------ 임시저장 ------------
 // 임시저장 성공 후: 본문/첨부 상태를 저장 결과에 맞추고 pending File 맵을 비움
@@ -396,7 +396,7 @@ const savePost = async () => {
   setLoading(true);
 
   // 이미 defineField를 사용하고 있으므로, values를 사용하지 않았음
-  const formData: PostInsertType = {
+  const formData = {
     title: title.value ?? "",
     menu_id: menuId.value ?? "",
     content: content.value ?? "",
@@ -405,15 +405,34 @@ const savePost = async () => {
     thumbnail: thumbnail.value || null,
   };
 
-  // 본문 inline 이미지(key -> File)와 첨부파일(key -> File)을 posts().create()가
-  // 요구하는 Record 형태로 변환 (key는 본문의 data-inline-key와 매핑에 사용됨)
-  const files: PostFile = {
+  // 본문 inline 이미지/첨부파일 (key는 본문 data-inline-key와 매핑)
+  const pendingFiles: PostFile = {
     inlineImages: Object.fromEntries(editorRef.value?.inlineImages ?? []),
     attachments: Object.fromEntries(editorRef.value?.files ?? []),
   };
+  // 수정·임시글 발행 시: 새로 추가된 파일 + 삭제한 기존 첨부 key
+  const updateFiles: PostUpdateFile = {
+    ...pendingFiles,
+    removedAttachmentKeys: [...(editorRef.value?.removedAttachmentKeys ?? [])],
+  };
 
   try {
-    await createPost(formData, files);
+    if (editTarget.value && !editTarget.value.temp) {
+      // 등록글 수정
+      await updatePost(
+        { id: editTarget.value.id, ...formData },
+        updateFiles,
+        false
+      );
+    } else if (editTarget.value?.temp) {
+      // 임시저장 글 등록: posts에 새로 저장한 뒤 temp_posts 삭제
+      await publishTempPost(editTarget.value.id, formData, updateFiles);
+      await refreshNuxtData(TEMP_POST_LIST_KEY);
+    } else {
+      // 새 글 등록
+      await createPost(formData, pendingFiles);
+    }
+
     toast.success("게시글이 저장되었습니다.");
     allowLeave.value = true;
     await navigateTo("/blog/admin/posts");

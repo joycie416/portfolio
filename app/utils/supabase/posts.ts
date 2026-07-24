@@ -164,7 +164,8 @@ export const posts = (client: SupabaseClient<Database>) => ({
   getTempList: async () => {
     const { data, count, error } = await client
       .from(TEMP_POST)
-      .select("id, title, created_at", { count: "exact" });
+      .select("id, title, created_at", { count: "exact" })
+      .order("created_at", { ascending: false });
     if (error) throw error;
 
     return {
@@ -408,6 +409,74 @@ export const posts = (client: SupabaseClient<Database>) => ({
     }
 
     return id;
+  },
+  /*
+   임시저장 글을 정식 게시글로 등록
+   1. temp_posts 스토리지에 남아 있는 파일을 내려받아 신규 posts 업로드 대상에 합침
+   2. posts 테이블/버킷에 새로 저장
+   3. 성공 후 임시저장 글(및 파일) 삭제
+  */
+  publishFromTemp: async (
+    tempId: number,
+    formData: PostInsertType,
+    files: PostUpdateFile
+  ): Promise<PostSaveResult> => {
+    const api = posts(client);
+    const existing = await api.getFiles(tempId, true);
+    const keepInlineKeys = extractInlineImageKeys(formData.content);
+    const removedAttachmentKeys = new Set(files.removedAttachmentKeys);
+
+    const downloadAsFile = async (
+      storageFile: PostStorageFile
+    ): Promise<File> => {
+      const { data, error } = await client.storage
+        .from(TEMP_POST)
+        .download(storageFile.path);
+      if (error) throw error;
+      return new File([data], storageFile.key, {
+        type: data.type || undefined,
+      });
+    };
+
+    const inlineImages: Record<string, File> = { ...files.inlineImages };
+    for (const storageFile of existing.inlineImages) {
+      if (
+        !keepInlineKeys.has(storageFile.key) ||
+        inlineImages[storageFile.key]
+      ) {
+        continue;
+      }
+      inlineImages[storageFile.key] = await downloadAsFile(storageFile);
+    }
+
+    const attachments: Record<string, File> = { ...files.attachments };
+    for (const storageFile of existing.attachments) {
+      if (
+        removedAttachmentKeys.has(storageFile.key) ||
+        attachments[storageFile.key]
+      ) {
+        continue;
+      }
+      attachments[storageFile.key] = await downloadAsFile(storageFile);
+    }
+
+    const saved = await api.create(
+      formData,
+      { inlineImages, attachments },
+      false
+    );
+
+    try {
+      await api.delete(tempId, true);
+    } catch (cleanupError) {
+      // 등록은 이미 성공했으므로, 임시글 삭제 실패는 로그만 남기고 결과는 반환
+      console.error(
+        `임시저장 글(${tempId}) 삭제 실패 (게시글 ${saved.id}는 등록됨):`,
+        cleanupError
+      );
+    }
+
+    return saved;
   },
   /*
    체크한 게시글을 일괄 삭제
