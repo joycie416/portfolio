@@ -125,7 +125,15 @@ const handleCreate = async (data: MenuInsertType) => {
     toast.success("메뉴가 추가되었습니다.");
   } catch (error) {
     if (error instanceof PostgrestError) {
+      if (
+        error.message.includes("duplicate key value") &&
+        error.message.includes("menus_slug_key")
+      ) {
+        toast.error("이미 존재하는 slug입니다.");
+        return;
+      }
       toast.error(error.message);
+      return;
     }
     toast.error("메뉴 추가에 실패했습니다.");
   }
@@ -140,7 +148,15 @@ const handleEdit = async (data: MenuUpdateType) => {
     toast.success("메뉴가 수정되었습니다.");
   } catch (error) {
     if (error instanceof PostgrestError) {
+      if (
+        error.message.includes("duplicate key value") &&
+        error.message.includes("menus_slug_key")
+      ) {
+        toast.error("이미 존재하는 slug입니다.");
+        return;
+      }
       toast.error(error.message);
+      return;
     }
     toast.error("메뉴 수정에 실패했습니다.");
   }

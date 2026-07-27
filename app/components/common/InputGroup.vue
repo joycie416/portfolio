@@ -19,6 +19,7 @@
       :placeholder="props.placeholder"
       :required="props.required"
       :disabled="props.disabled"
+      :maxlength="props.maxlength"
       :class="cn(props.class, stateStyle)"
     />
     <!-- 드롭다운 -->

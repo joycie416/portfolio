@@ -9,6 +9,16 @@
       :state="errors.name ? 'error' : 'success'"
       :hint="errors.name"
     />
+    <InputGroup
+      v-model="slug"
+      type="text"
+      label="Slug"
+      placeholder="Slug를 입력해주세요."
+      :maxlength="16"
+      required
+      :state="errors.slug ? 'error' : 'success'"
+      :hint="errors.slug || 'slug는 가급적 변경하지 않는 것이 좋습니다.'"
+    />
     <Checkbox v-model="hidden" label="숨김" />
     <template #footer>
       <Button variant="destructive" @click="close">취소</Button>
@@ -44,11 +54,13 @@ const { defineField, errors, meta, handleSubmit, resetForm } = useForm({
   validationSchema: toTypedSchema(menuSchema),
   initialValues: {
     name: props.menu?.name ?? "",
+    slug: props.menu?.slug ?? "",
     hidden: props.menu?.hidden ?? false,
   },
 });
 
 const [name] = defineField("name");
+const [slug] = defineField("slug");
 const [hidden] = defineField("hidden");
 
 watch(
@@ -82,11 +94,13 @@ const save = handleSubmit((values) => {
       parent_id,
       order_idx,
       name: values.name,
+      slug: values.slug,
       hidden: values.hidden,
     });
   } else {
     emit("create", {
       name: values.name,
+      slug: values.slug,
       parent_id: null,
       order_idx: 0,
       hidden: values.hidden,

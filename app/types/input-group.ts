@@ -17,7 +17,7 @@ export interface CommonInputGroupProps {
 }
 
 export type InputGroupProps<TValue extends string | number = string | number> =
-  | (CommonInputGroupProps & { type: "text" })
+  | (CommonInputGroupProps & { type: "text"; maxlength?: number })
   | (CommonInputGroupProps & { type: "password"; enableToggle?: boolean })
   | (CommonInputGroupProps & {
       type: "dropdown";
