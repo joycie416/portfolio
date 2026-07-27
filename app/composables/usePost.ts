@@ -15,31 +15,51 @@ import type {
 
 export const POSTS_PAGE_SIZE = 10;
 
-export interface UseGetPostsParams {
+type UseGetPostsBase = {
   page: MaybeRefOrGetter<number>;
-  menuId?: MaybeRefOrGetter<string | undefined>;
   query?: MaybeRefOrGetter<string | undefined>;
   visibility?: MaybeRefOrGetter<PostVisibility>;
   perPage?: number;
-}
+};
+
+// menuId / slug 중 하나만 전달 (둘 다 없으면 전체 조회)
+export type UseGetPostsParams =
+  | (UseGetPostsBase & {
+      menuId?: MaybeRefOrGetter<string | undefined>;
+      slug?: never;
+    })
+  | (UseGetPostsBase & {
+      slug?: MaybeRefOrGetter<string | undefined>;
+      menuId?: never;
+    });
 
 export const useGetPosts = (params: UseGetPostsParams) => {
   const supabase = useSupabaseClient();
   const pageSize = params.perPage ?? POSTS_PAGE_SIZE;
 
-  const page = computed(() => toValue(params.page));
-  const menuId = computed(() => toValue(params.menuId));
-  const query = computed(() => toValue(params.query));
-  const visibility = computed<PostVisibility>(
-    () => toValue(params.visibility) ?? "all"
-  );
-
-  // 메뉴 목록 (메뉴 이름 매핑용) - "menus" 키로 앱 전체에서 캐시 공유
+  // 메뉴 목록 (메뉴 이름 매핑, slug -> id 매핑) - "menus" 키로 앱 전체에서 캐시 공유
   const {
     data: menus,
     pending: menusPending,
     error: menusError,
   } = useGetAllMenus();
+
+  const page = computed(() => toValue(params.page));
+  const slug = computed(() =>
+    "slug" in params ? toValue(params.slug) : undefined
+  );
+  const menuId = computed(() => {
+    if ("menuId" in params) return toValue(params.menuId);
+
+    const currentSlug = slug.value;
+    if (!currentSlug) return undefined;
+
+    return menus.value?.find((menu) => menu.slug === currentSlug)?.id;
+  });
+  const query = computed(() => toValue(params.query));
+  const visibility = computed<PostVisibility>(
+    () => toValue(params.visibility) ?? "all"
+  );
 
   // 페이지/필터 조합마다 별도 캐시 키 -> 같은 조건으로 돌아오면 재요청 없음
   const result = useAsyncData<{
@@ -47,15 +67,21 @@ export const useGetPosts = (params: UseGetPostsParams) => {
     count: number;
   }>(
     () =>
-      `posts:${page.value}:${menuId.value ?? "all"}:${visibility.value}:${query.value?.trim() ?? ""}`,
-    () =>
-      posts(supabase).getList({
+      `posts:${page.value}:${pageSize}:${menuId.value ?? (slug.value ? `slug:${slug.value}` : "all")}:${visibility.value}:${query.value?.trim() ?? ""}`,
+    () => {
+      // slug로 조회했는데 아직 id를 못 찾은 경우(메뉴 로딩 중/없는 slug) 전체 조회를 막음
+      if (slug.value && !menuId.value) {
+        return Promise.resolve({ data: [], count: 0 });
+      }
+
+      return posts(supabase).getList({
         page: page.value,
         perPage: pageSize,
         menuId: menuId.value,
         query: query.value,
         visibility: visibility.value,
-      }),
+      });
+    },
     { default: () => ({ data: [], count: 0 }) }
   );
 
