@@ -163,6 +163,9 @@
 
   /* 커스텀 변수 */
   --header-height: 40px;
+  --animate-sidebar-content-fade-out: sidebar-content-fade-out 200ms forwards;
+  --animate-sidebar-content-fade-in: sidebar-content-fade-out 200ms reverse
+    forwards;
 
   --primary-45: #f8fcff;
   --primary-50: #f2f8fd;
@@ -363,6 +366,21 @@
 
   /* Edge 비밀번호 눈버튼 제거 */
   input[type="password"]::-ms-reveal {
+    display: none;
+  }
+}
+
+@keyframes sidebar-content-fade-out {
+  0% {
+    opacity: 1;
+    display: flex;
+  }
+  60% {
+    opacity: 0;
+    display: none;
+  }
+  100% {
+    opacity: 0;
     display: none;
   }
 }

@@ -119,26 +119,10 @@ const emit = defineEmits<{
   }
 
   &__top[data-open="true"] .logo__button {
-    animation: hide-logo-button 200ms reverse forwards;
+    animation: var(--animate-sidebar-content-fade-in);
   }
   &__top[data-open="false"] .logo__button {
-    opacity: 0;
-    display: none;
-    animation: hide-logo-button 200ms forwards;
-  }
-}
-@keyframes hide-logo-button {
-  0% {
-    opacity: 1;
-    display: flex;
-  }
-  60% {
-    opacity: 0;
-    display: none;
-  }
-  100% {
-    opacity: 0;
-    display: none;
+    animation: var(--animate-sidebar-content-fade-out);
   }
 }
 </style>
