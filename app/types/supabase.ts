@@ -15,7 +15,7 @@ type OmitDefaultColumns<T, ExcludeId extends boolean = false> = Omit<
 >;
 type RequiredFields<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
-export type Menu = Tables<"menus">;
+export type Menu = Tables<"menus"> & { posts: { count: number }[] };
 export type MenuInsertType = OmitDefaultColumns<
   RequiredFields<
     TablesInsert<"menus">,

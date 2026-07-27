@@ -18,11 +18,11 @@
         >
           <NuxtLink
             v-if="parent.children.length === 0"
-            :to="`/blog/${parent.id}`"
+            :to="`/blog/${parent.slug}`"
             prefetch-on="interaction"
             class="menu__parent"
           >
-            {{ parent.name }}
+            {{ parent.name }} ({{ parent.postCount.toLocaleString() }})
           </NuxtLink>
           <AccordionTrigger
             v-else
@@ -33,22 +33,22 @@
             }"
           >
             <NuxtLink
-              :to="`/blog/${parent.id}`"
+              :to="`/blog/${parent.slug}`"
               prefetch-on="interaction"
               class="block w-1/2 shrink-0 truncate hover:underline"
             >
-              {{ parent.name }}
+              {{ parent.name }} ({{ parent.postCount.toLocaleString() }})
             </NuxtLink>
           </AccordionTrigger>
           <AccordionContent v-if="parent.children.length > 0" class="pl-6">
             <ul>
               <li v-for="child in parent.children" :key="child.id">
                 <NuxtLink
-                  :to="`/blog/${child.id}`"
+                  :to="`/blog/${child.slug}`"
                   prefetch-on="interaction"
                   class="menu__child"
                 >
-                  {{ child.name }}
+                  {{ child.name }} ({{ child.postCount.toLocaleString() }})
                 </NuxtLink>
               </li>
             </ul>
@@ -85,7 +85,7 @@
             <span class="admin__button__text">설정</span>
           </NuxtLink>
 
-          <button class="admin__button cursor-pointer" @click="signOut">
+          <button class="admin__button cursor-pointer" @click="handleSignOut">
             <LogOut class="size-5" />
             <span class="admin__button__text">로그아웃</span>
           </button>
@@ -116,6 +116,12 @@ const { isAuthenticated, signOut } = useAuth();
 const { data, status, refresh } = useGetAllMenus();
 
 const menus = computed(() => buildMenuTree(data.value ?? []));
+
+const handleSignOut = async () => {
+  await signOut();
+  // 로그아웃 후 새로고침해 데이터에 rls가 다시 적용되도록 함
+  reloadNuxtApp();
+};
 </script>
 
 <style lang="scss" scoped>

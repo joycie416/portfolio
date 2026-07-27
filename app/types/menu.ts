@@ -1,12 +1,14 @@
 import type { Menu } from "./supabase";
 
 /**
- * 드래그앤드롭 모드에서 사용하는 메뉴 그룹
+ * 드래그앤드롭, 사이드바에서 사용하는 메뉴 그룹
  */
 export type MenuGroup = {
   id: string;
   name: string;
+  slug: string;
   hidden: boolean;
+  postCount: number;
   children: MenuGroup[];
 };
 

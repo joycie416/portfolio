@@ -4,7 +4,9 @@ import type { MenuInsertType, MenuUpdateType } from "~/types/supabase";
 
 export const menus = (client: SupabaseClient<Database>) => ({
   getAll: async () => {
-    const { data, error } = await client.from("menus").select();
+    const { data, error } = await client
+      .from("menus")
+      .select("*, posts(count)");
     if (error) throw error;
     return data;
   },

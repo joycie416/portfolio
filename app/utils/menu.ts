@@ -12,6 +12,8 @@ export const buildMenuTree = (menus: Menu[]): MenuGroup[] => {
       parentMap.set(menu.id, {
         id: menu.id,
         name: menu.name,
+        slug: menu.slug,
+        postCount: menu.posts?.[0]?.count ?? 0,
         hidden: menu.hidden,
         children: [],
       });
@@ -21,9 +23,16 @@ export const buildMenuTree = (menus: Menu[]): MenuGroup[] => {
     .filter((menu) => menu.parent_id)
     .sort((a, b) => a.order_idx - b.order_idx)
     .forEach((child) => {
-      parentMap.get(child.parent_id!)?.children.push({
+      const parent = parentMap.get(child.parent_id!);
+      if (!parent) return;
+
+      const postCount = child.posts?.[0]?.count ?? 0;
+      parent.postCount += postCount;
+      parent.children.push({
         id: child.id,
         name: child.name,
+        slug: child.slug,
+        postCount,
         hidden: child.hidden,
         children: [],
       });
