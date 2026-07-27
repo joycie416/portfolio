@@ -94,7 +94,7 @@ const emit = defineEmits<{
   done: [];
 }>();
 
-const { data: menus } = useGetAllMenus();
+const { data: menus } = useGetMenus();
 
 // 메뉴 필터의 menuOptions와 동일한 값을 사용하되, 이동 대상으로 무효한 "전체"는 제외
 const menuMoveOptions = computed(() =>

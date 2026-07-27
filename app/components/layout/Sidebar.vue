@@ -113,7 +113,7 @@ const props = defineProps<Props>();
 
 const { isAuthenticated, signOut } = useAuth();
 
-const { data, status, refresh } = useGetAllMenus();
+const { data, status, refresh } = useGetMenus();
 
 const menus = computed(() => buildMenuTree(data.value ?? []));
 

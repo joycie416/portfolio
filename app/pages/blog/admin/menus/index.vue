@@ -59,7 +59,7 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { toast } from "vue-sonner";
 
 // 메뉴 목록
-const { data: menus, status, refresh } = useGetAllMenus();
+const { data: menus, status, refresh } = useGetMenus();
 
 // 순서 변경
 const {

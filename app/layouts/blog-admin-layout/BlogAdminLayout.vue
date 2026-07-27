@@ -73,7 +73,7 @@ useSeoMeta({
 });
 
 // 관리자 페이지 접근 시 메뉴 목록 조회: 1회만 조회해 공유하기 위함
-useGetAllMenus();
+useGetMenus();
 </script>
 
 <style lang="scss" scoped>

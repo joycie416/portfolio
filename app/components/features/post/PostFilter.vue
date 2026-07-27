@@ -63,7 +63,7 @@ const props = defineProps<{
   class?: HTMLAttributes["class"];
 }>();
 
-const { data: menus } = useGetAllMenus();
+const { data: menus } = useGetMenus();
 const menuOptions = computed(() => toMenuOptions(menus.value ?? []));
 
 const visibilityOptions = getVisibilityOptions();

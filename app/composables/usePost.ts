@@ -42,7 +42,7 @@ export const useGetPosts = (params: UseGetPostsParams) => {
     data: menus,
     pending: menusPending,
     error: menusError,
-  } = useGetAllMenus();
+  } = useGetMenus();
 
   const page = computed(() => toValue(params.page));
   const slug = computed(() =>

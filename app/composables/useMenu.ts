@@ -3,7 +3,7 @@ import type { Menu, MenuInsertType, MenuUpdateType } from "@/types/supabase";
 import type { FlatMenu } from "@/types/menu";
 import type { PostgrestError } from "@supabase/supabase-js";
 
-export const useGetAllMenus = () => {
+export const useGetMenus = () => {
   const supabase = useSupabaseClient();
   return useAsyncData<Menu[], PostgrestError>("menus", () =>
     menus(supabase).getAll()
