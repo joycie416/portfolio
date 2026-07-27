@@ -61,6 +61,7 @@ export type Database = {
           name: string
           order_idx: number
           parent_id: string | null
+          slug: string
         }
         Insert: {
           created_at?: string
@@ -70,6 +71,7 @@ export type Database = {
           name?: string
           order_idx?: number
           parent_id?: string | null
+          slug?: string
         }
         Update: {
           created_at?: string
@@ -79,6 +81,7 @@ export type Database = {
           name?: string
           order_idx?: number
           parent_id?: string | null
+          slug?: string
         }
         Relationships: [
           {
