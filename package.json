@@ -15,7 +15,7 @@
     "gen:types": "npx supabase gen types typescript --project-id ajnazdloqylmrmqnrkvb > app/types/database.types.ts"
   },
   "dependencies": {
-    "@lucide/vue": "^1.23.0",
+    "@lucide/vue": "^1.26.0",
     "@nuxt/image": "^2.0.0",
     "@nuxtjs/sitemap": "^8.1.0",
     "@supabase/ssr": "^0.12.0",
@@ -39,7 +39,7 @@
     "dayjs": "^1.11.21",
     "lowlight": "^3.3.0",
     "nuxt": "^4.4.6",
-    "reka-ui": "^2.9.10",
+    "reka-ui": "^2.10.1",
     "shadcn-nuxt": "^2.7.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.0",
