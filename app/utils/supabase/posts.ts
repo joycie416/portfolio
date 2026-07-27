@@ -1,4 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { PostgrestError, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
 import type {
   PostBulkFailure,
@@ -154,7 +154,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
       .order("created_at", { ascending: false })
       .range(from, to);
 
-    if (error) throw error;
+    if (error) throw new PostgrestError(error);
 
     return {
       data: data ?? [],
@@ -166,7 +166,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
       .from(TEMP_POST)
       .select("id, title, created_at", { count: "exact" })
       .order("created_at", { ascending: false });
-    if (error) throw error;
+    if (error) throw new PostgrestError(error);
 
     return {
       data: data ?? [],
@@ -185,7 +185,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
     const { data: postId, error: postIdError } = await client.rpc(
       `reserve_${temp ? "temp_" : ""}post_id`
     );
-    if (postIdError) throw postIdError;
+    if (postIdError) throw new PostgrestError(postIdError);
 
     // 실패 시 롤백을 위해 업로드에 성공한 스토리지 경로를 기록
     const uploadedPaths: string[] = [];
@@ -226,7 +226,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
       const { error: postInsertError } = await client
         .from(dbName)
         .insert({ ...formData, id: postId, content, thumbnail });
-      if (postInsertError) throw postInsertError;
+      if (postInsertError) throw new PostgrestError(postInsertError);
 
       const attachments = await listStorageFiles(
         client,
@@ -254,7 +254,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
       .select("*")
       .eq("id", id)
       .single();
-    if (error) throw error;
+    if (error) throw new PostgrestError(error);
 
     return data;
   },
@@ -348,7 +348,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
         .from(dbName)
         .update({ ...formData, content, thumbnail })
         .eq("id", postId);
-      if (postUpdateError) throw postUpdateError;
+      if (postUpdateError) throw new PostgrestError(postUpdateError);
 
       // 4. 업데이트 성공 후, 더 이상 쓰이지 않는 기존 파일 정리
       //  - inline 이미지: 본문에서 삭제된(더 이상 참조되지 않는) 이미지
@@ -400,7 +400,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
       .from(dbName)
       .delete()
       .eq("id", id);
-    if (postError) throw postError;
+    if (postError) throw new PostgrestError(postError);
 
     try {
       await removePostFiles(client, dbName, id);
@@ -433,6 +433,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
         .from(TEMP_POST)
         .download(storageFile.path);
       if (error) throw error;
+
       return new File([data], storageFile.key, {
         type: data.type || undefined,
       });
@@ -487,7 +488,7 @@ export const posts = (client: SupabaseClient<Database>) => ({
     const { data, error } = await client.rpc("posts_bulk_delete", {
       post_ids: postIds,
     });
-    if (error) throw error;
+    if (error) throw new PostgrestError(error);
 
     const failures = data ?? [];
     const failedIds = new Set(failures.map((failure) => failure.post_id));
