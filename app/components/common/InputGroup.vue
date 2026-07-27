@@ -45,8 +45,8 @@
     <!-- 비밀번호 -->
     <div v-if="props.type === 'password'" class="relative">
       <Input
-        :type="showPassword ? 'text' : 'password'"
         v-model="singleModel"
+        :type="showPassword ? 'text' : 'password'"
         :placeholder="props.placeholder"
         :required="props.required"
         :disabled="props.disabled"

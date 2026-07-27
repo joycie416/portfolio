@@ -102,8 +102,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
-import { Skeleton } from "../ui/skeleton";
+} from "@/components/ui/accordion";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Props {
   open: boolean;

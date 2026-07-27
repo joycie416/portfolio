@@ -41,14 +41,9 @@ import { useForm } from "vee-validate";
 import { menuSchema } from "@/schemas/menu";
 import { toTypedSchema } from "@vee-validate/zod";
 
-const props = withDefaults(
-  defineProps<{
-    menu: Menu | null;
-  }>(),
-  {
-    menu: null,
-  }
-);
+const props = defineProps<{
+  menu: Menu | null;
+}>();
 
 const { defineField, errors, meta, handleSubmit, resetForm } = useForm({
   validationSchema: toTypedSchema(menuSchema),

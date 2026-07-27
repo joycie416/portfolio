@@ -1,6 +1,6 @@
 import type { MenuGroup, FlatMenu } from "@/types/menu";
 import type { Menu } from "@/types/supabase";
-import { flattenMenuGroups } from "~/utils/menu";
+import { flattenMenuGroups } from "@/utils/menu";
 
 /**
  * 메뉴 순서 변경 컴포저블

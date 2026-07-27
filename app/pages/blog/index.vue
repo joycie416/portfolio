@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable vue/no-multiple-template-root -->
   <div>블로그</div>
   <Card title="블로그 카드">
     <p>블로그 카드</p>

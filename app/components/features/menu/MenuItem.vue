@@ -6,13 +6,13 @@
     handle=".drag-handle"
     :disabled="disabled"
     class="flex flex-col gap-1"
-    @start="handleDragStart"
-    @end="handleDragEnd"
     :class="
       depth > 0
         ? 'mt-1 ml-4 md:mt-2 md:ml-6 min-h-6 md:min-h-8'
         : 'min-h-6 md:min-h-8'
     "
+    @start="handleDragStart"
+    @end="handleDragEnd"
   >
     <li
       v-for="item in list"
@@ -65,7 +65,6 @@
             size="icon"
             class="size-6 md:size-7 p-1 md:p-[5px] text-red-03"
             :disabled="disabled || buttonDisabled"
-            "
             @click="handleDelete?.(item.id)"
           >
             <Trash2 />
@@ -145,7 +144,9 @@ const handleUpdateHidden = async (data: MenuGroup) => {
   try {
     await updateHidden({ id, hidden: !hidden });
     await refreshMenus?.();
-    toast.success(`메뉴가 ${hidden? '공개' : '비공개'} 상태로 변경되었습니다.`);
+    toast.success(
+      `메뉴가 ${hidden ? "공개" : "비공개"} 상태로 변경되었습니다.`
+    );
   } catch (error) {
     if (error instanceof PostgrestError) {
       toast.error(error.message);

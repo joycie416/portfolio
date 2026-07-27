@@ -1,6 +1,6 @@
 import TiptapImage, { type ImageOptions } from "@tiptap/extension-image";
 import { VueNodeViewRenderer } from "@tiptap/vue-3";
-import TiptapImageNodeView from "../TiptapImageNodeView.vue";
+import TiptapImageNodeView from "@/components/tiptap/TiptapImageNodeView.vue";
 
 export type InlineImageOptions = ImageOptions & {
   /** 대표이미지 토글 클릭 시 호출되는 콜백 (TiptapEditor의 setThumbnail로 대체됨) */

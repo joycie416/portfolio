@@ -33,7 +33,7 @@ export function useQueryParams<T extends Record<string, string>>(defaults: T) {
         value === undefined || value === "" || value === defaults[key];
 
       if (isEmpty) {
-        delete query[key as string];
+        query[key as string] = undefined;
       } else {
         query[key as string] = value as string;
       }
@@ -47,7 +47,7 @@ export function useQueryParams<T extends Record<string, string>>(defaults: T) {
     const query: LocationQueryRaw = { ...route.query };
 
     for (const key of keys) {
-      delete query[key as string];
+      query[key as string] = undefined;
     }
 
     router.push({ query });

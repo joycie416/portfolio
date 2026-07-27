@@ -9,20 +9,20 @@
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" class="min-w-fit">
           <DropdownMenuItem
-            @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
             class="text-[1.4rem] font-semibold"
+            @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
           >
             제목 1
           </DropdownMenuItem>
           <DropdownMenuItem
-            @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
             class="text-[1.2rem] font-semibold"
+            @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
           >
             제목 2
           </DropdownMenuItem>
           <DropdownMenuItem
-            @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
             class="text-[1.1rem] font-semibold"
+            @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
           >
             제목 3
           </DropdownMenuItem>
@@ -34,37 +34,37 @@
         </DropdownMenuContent>
       </DropdownMenu>
       <Button
-        @click="editor?.chain().focus().toggleBold().run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleBold().run()"
       >
         <Bold />
       </Button>
       <Button
-        @click="editor?.chain().focus().toggleItalic().run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleItalic().run()"
       >
         <Italic />
       </Button>
       <Button
-        @click="editor?.chain().focus().toggleUnderline().run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleUnderline().run()"
       >
         <Underline />
       </Button>
       <Button
-        @click="editor?.chain().focus().toggleStrike().run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleStrike().run()"
       >
         <Strikethrough />
       </Button>
       <Button
-        @click="editor?.chain().focus().toggleBold().run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleBold().run()"
       >
         <Type />
       </Button>
@@ -129,75 +129,75 @@
       <div class="tiptap__toolbar__divider" />
 
       <Button
-        @click="editor?.chain().focus().setTextAlign('left').run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().setTextAlign('left').run()"
       >
         <TextAlignStart />
       </Button>
       <Button
-        @click="editor?.chain().focus().setTextAlign('center').run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().setTextAlign('center').run()"
       >
         <TextAlignCenter />
       </Button>
       <Button
-        @click="editor?.chain().focus().setTextAlign('right').run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().setTextAlign('right').run()"
       >
         <TextAlignEnd />
       </Button>
       <Button
-        @click="editor?.chain().focus().setTextAlign('justify').run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().setTextAlign('justify').run()"
       >
         <TextAlignJustify />
       </Button>
       <div class="tiptap__toolbar__divider" />
 
       <Button
-        @click="editor?.chain().focus().toggleBlockquote().run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleBlockquote().run()"
       >
         <TextQuote />
       </Button>
       <Button
-        @click="editor?.chain().focus().toggleBulletList().run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleBulletList().run()"
       >
         <List />
       </Button>
       <Button
-        @click="editor?.chain().focus().toggleOrderedList().run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleOrderedList().run()"
       >
         <ListOrdered />
       </Button>
       <div class="tiptap__toolbar__divider" />
       <Button
-        @click="editor?.chain().focus().setHorizontalRule().run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().setHorizontalRule().run()"
       >
         <Minus />
       </Button>
       <Button
-        @click="editor?.chain().focus().toggleCode().run()"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleCode().run()"
       >
         <CodeXml />
       </Button>
       <Button
-        @click="openHyperlinkModal"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="openHyperlinkModal"
       >
         <Link />
       </Button>
@@ -276,16 +276,16 @@
         </DropdownMenuContent>
       </DropdownMenu>
       <Button
-        @click="openImagePicker"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="openImagePicker"
       >
         <Image />
       </Button>
       <Button
-        @click="openFilePicker"
         variant="ghost"
         class="tiptap__toolbar__button"
+        @click="openFilePicker"
       >
         <Paperclip />
       </Button>

@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Empty } from "~/components/common";
+import { Empty } from "@/components/common";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Props {
@@ -123,7 +123,7 @@ const table = useVueTable({
         </template>
         <template v-else-if="status === 'loading'">
           <TableRow v-for="i in loadingRows || 4" :key="i" class="border-b-0">
-            <TableCell v-for="i in columns.length" :key="i" class="px-1.5 py-1">
+            <TableCell v-for="j in columns.length" :key="j" class="px-1.5 py-1">
               <Skeleton class="w-full h-7" />
             </TableCell>
           </TableRow>

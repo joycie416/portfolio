@@ -4,7 +4,7 @@
     data-slot="toggle"
     :data-disabled="disabled"
     :data-state="state"
-    :class="class"
+    :class="props.class"
     :data-toggle="model ? 'on' : 'off'"
     :data-size="size"
   >
@@ -35,9 +35,9 @@
         @click.stop="handleClick"
       />
       <input
-        type="checkbox"
         :id="toggleId"
         v-model="model"
+        type="checkbox"
         :disabled="disabled"
         class="hidden"
       />
@@ -66,6 +66,7 @@ const props = withDefaults(
     state: "success",
     disabled: false,
     size: "default",
+    classes: () => ({}),
   }
 );
 const toggleId = useId();
@@ -137,8 +138,9 @@ const handleClick = () => {
 
       .toggle[data-toggle="on"] & {
         left: calc(
-          var(--toggle-track-width) - var(--toggle-thumb-size) -
-            var(--toggle-thumb-gap)
+          var(--toggle-track-width) - var(--toggle-thumb-size) - var(
+              --toggle-thumb-gap
+            )
         );
       }
 

@@ -68,7 +68,7 @@ import {
   Pagination as PaginationRoot,
 } from "@/components/ui/pagination";
 import type { HTMLAttributes } from "vue";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
   ChevronRight,

@@ -47,13 +47,12 @@
 </template>
 
 <script setup lang="ts">
-import { Empty, Checkbox } from "@/components/common";
+import { Empty, Checkbox, Pagination } from "@/components/common";
 import AdminPostItem from "@/components/features/post/AdminPostItem.vue";
-import PostFilter from "~/components/features/post/PostFilter.vue";
+import PostFilter from "@/components/features/post/PostFilter.vue";
 import PostBulkActions from "@/components/features/post/PostBulkActions.vue";
 import { parseQueryEnum, parseQueryParam } from "@/utils/query-params";
 import { POST_VISIBILITIES } from "@/utils/supabase/posts";
-import { Pagination } from "@/components/common";
 
 const route = useRoute();
 

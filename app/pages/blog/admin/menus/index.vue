@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable vue/no-multiple-template-root -->
   <div class="flex flex-col gap-2">
     <div class="flex justify-end gap-2">
       <Button v-if="hasOrderChanges" variant="outline" @click="cancelReorder">

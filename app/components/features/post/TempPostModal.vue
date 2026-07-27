@@ -1,6 +1,6 @@
 <template>
   <Dialog
-    :open="open"
+    :open="props.open"
     title="임시 저장 목록"
     class="min-h-80 max-h-[50vh] flex flex-col"
   >
@@ -31,7 +31,6 @@ import type { Columns } from "@/components/ui/data-table";
 import type { SimpleTempPost } from "@/types/supabase";
 import { Trash2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
-import { useGetTempPosts } from "~/composables/usePost";
 
 const route = useRoute();
 const router = useRouter();
@@ -39,8 +38,8 @@ const router = useRouter();
 const props = defineProps<{ open: boolean }>();
 
 const emit = defineEmits<{
-  (e: "close"): void;
-  (e: "resetForm"): void;
+  close: [];
+  resetForm: [];
 }>();
 
 const close = () => {

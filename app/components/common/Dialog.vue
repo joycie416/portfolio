@@ -23,15 +23,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { HTMLAttributes } from "vue";
-const props = withDefaults(
-  defineProps<{
-    title: string;
-    open: boolean;
-    class?: HTMLAttributes["class"];
-  }>(),
-  {
-    title: "",
-    open: false,
-  }
-);
+
+const props = defineProps<{
+  title: string;
+  open: boolean;
+  class?: HTMLAttributes["class"];
+}>();
 </script>

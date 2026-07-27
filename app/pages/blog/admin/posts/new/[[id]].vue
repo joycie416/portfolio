@@ -1,9 +1,10 @@
 <template>
+  <!-- eslint-disable vue/no-multiple-template-root -->
   <div class="flex-1 flex flex-col gap-5 md:gap-6">
     <div class="flex flex-col md:flex-row gap-2">
       <InputGroup
-        type="text"
         v-model="title"
+        type="text"
         :state="titleProps.state"
         :hint="titleProps.hint"
         :required="true"
@@ -29,25 +30,25 @@
     <Checkbox v-model="isHidden" label="숨김" class="w-fit" />
     <div class="space-y-2">
       <InputGroup
-        type="text"
         v-model="tag"
-        @keydown.enter="addTag"
+        type="text"
         placeholder="태그를 입력해주세요."
         hint="태그는 공백을 포함하지 않습니다."
+        @keydown.enter="addTag"
       />
       <div class="flex flex-wrap gap-1">
         <div
-          v-for="tag in tags"
-          :key="tag"
+          v-for="tagItem in tags"
+          :key="tagItem"
           class="min-w-0 pl-2 pr-1 py-0.5 flex items-center gap-1 rounded-full bg-gray-02"
         >
-          <p class="flex-1 text-sm truncate">{{ tag }}</p>
+          <p class="flex-1 text-sm truncate">{{ tagItem }}</p>
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            @click="removeTag(tag)"
             class="p-0.5 size-4 hover:bg-transparent"
+            @click="removeTag(tagItem)"
           >
             <X />
           </Button>
@@ -87,7 +88,7 @@
   <TempPostModal
     :open="tempPostModalOpen"
     @close="closeTempPostModal"
-    @resetForm="resetForm"
+    @reset-form="resetForm"
   />
 </template>
 
@@ -107,7 +108,7 @@ import type {
   PostUpdateType,
 } from "@/types/supabase";
 import { TiptapEditor } from "@/components/tiptap";
-import { Button } from "~/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { X } from "@lucide/vue";
 import TempPostModal from "@/components/features/post/TempPostModal.vue";
 

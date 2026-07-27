@@ -1,9 +1,9 @@
 <template>
-  <Dialog :open="open" title="링크 삽입">
+  <Dialog :open="props.open" title="링크 삽입">
     <InputGroup
+      v-model="url"
       type="text"
       label="URL"
-      v-model="url"
       placeholder="https://www.example.com"
     />
     <template #footer>
@@ -14,18 +14,16 @@
 </template>
 
 <script lang="ts" setup>
-import { Editor } from "@tiptap/vue-3";
 import { Dialog, InputGroup } from "@/components/common";
 import { Button } from "@/components/ui/button";
 
 const props = defineProps<{
-  editor?: Editor;
   open: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: "update:set-link", value: string): void;
-  (e: "close"): void;
+  "update:set-link": [value: string];
+  close: [];
 }>();
 
 const url = ref("");

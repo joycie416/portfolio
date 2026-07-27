@@ -36,7 +36,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  (e: "toggleSidebar"): void;
+  toggleSidebar: [];
 }>();
 </script>
 

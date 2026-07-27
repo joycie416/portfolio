@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 import { File, X, Download } from "@lucide/vue";
-import { formatFileSize, getFileType } from "~/utils/format-file";
+import { formatFileSize, getFileType } from "@/utils/format-file";
 
 const props = withDefaults(
   defineProps<{
@@ -73,7 +73,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (e: "remove"): void;
+  remove: [];
 }>();
 
 const formattedSize = computed(() => formatFileSize(props.file.size));

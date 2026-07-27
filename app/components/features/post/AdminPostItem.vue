@@ -36,7 +36,7 @@
 import type { TransformedPost } from "@/types/supabase";
 import { Checkbox } from "@/components/common";
 import { formatDate } from "@/utils/format-date";
-import { Button } from "~/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Trash2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
 
@@ -57,7 +57,7 @@ const handleDelete = async () => {
   try {
     await deletePost(props.post.id);
     toast.success("게시글이 삭제되었습니다.");
-  } catch (error) {
+  } catch {
     toast.error("게시글 삭제에 실패했습니다.");
   }
 };

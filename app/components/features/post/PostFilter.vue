@@ -1,7 +1,7 @@
 <template>
   <form
-    @submit.prevent="handleSubmitFilter"
     :class="cn('flex flex-col md:flex-row gap-2', props.class)"
+    @submit.prevent="handleSubmitFilter"
   >
     <InputGroup
       v-model="query"
@@ -38,8 +38,8 @@
     <Button
       type="button"
       variant="outline"
-      @click="reset"
       class="ml-auto md:mt-auto"
+      @click="reset"
     >
       <RotateCcw class="size-4 md:size-5" />
     </Button>
