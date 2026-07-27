@@ -16,12 +16,13 @@ const props = defineProps<ToasterProps>();
 
 <template>
   <Sonner
-    :class="cn('toaster group', props.class)"
+    :class="cn('toaster group font-pretendard', props.class)"
     :style="{
       '--normal-bg': 'var(--popover)',
-      '--normal-text': 'var(--font-pretendard)',
+      '--normal-text': 'var(--popover-foreground)',
       '--normal-border': 'var(--border)',
       '--border-radius': '999px',
+      fontFamily: 'var(--font-pretendard)',
     }"
     v-bind="props"
   >
