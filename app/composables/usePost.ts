@@ -2,6 +2,7 @@ import { posts, type PostVisibility } from "@/utils/supabase/posts";
 import { postsTransformer } from "@/utils/post";
 import type {
   Post,
+  TempPost,
   TransformedPost,
   PostBulkFailure,
   PostInsertType,
@@ -189,7 +190,7 @@ export const usePublishTempPost = () => {
 };
 
 export type GetPostResult = {
-  post: Post;
+  post: Post | TempPost;
   files: PostStorageFiles;
 };
 
