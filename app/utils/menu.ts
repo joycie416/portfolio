@@ -1,5 +1,5 @@
 import type { Menu } from "@/types/supabase";
-import type { MenuGroup, FlatMenu } from "@/types/menu";
+import type { MenuGroup, FlatMenu, MenuFamily } from "@/types/menu";
 import type { InputOption } from "@/types/common";
 
 export const buildMenuTree = (menus: Menu[]): MenuGroup[] => {
@@ -99,4 +99,36 @@ export const toMenuOptions = (
   });
 
   return options;
+};
+
+/**
+ * 메뉴의 slug를 사용해 메뉴 계층을 찾아 반환
+ * 해당 메뉴의 parent가 있는 경우 parent 정보도 함께 반환해 breadcrumb 에서 사용
+ */
+export const getMenuFamilyBySlug = (
+  slug: string,
+  menus: Menu[]
+): MenuFamily | null => {
+  const currentMenu = menus.find((menu) => menu.slug === slug);
+  if (!currentMenu) return null;
+
+  const parent = menus.find((menu) => menu.id === currentMenu.parent_id);
+  if (!parent)
+    return {
+      parent: null,
+      menu: {
+        id: currentMenu.id,
+        name: currentMenu.name,
+        slug: currentMenu.slug,
+      },
+    };
+
+  return {
+    parent: { id: parent.id, name: parent.name, slug: parent.slug },
+    menu: {
+      id: currentMenu.id,
+      name: currentMenu.name,
+      slug: currentMenu.slug,
+    },
+  };
 };

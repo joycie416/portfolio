@@ -25,3 +25,11 @@ export type FlatMenu = {
   order_idx: number;
   parent_id: string | null;
 };
+
+/**
+ * Breadcrumb 에서 사용하는 메뉴 계층 타입
+ */
+export type MenuFamily = {
+  parent: Pick<Menu, "id" | "name" | "slug"> | null;
+  menu: Pick<Menu, "id" | "name" | "slug">;
+};

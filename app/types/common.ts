@@ -21,6 +21,10 @@ export interface Project {
   skills: Skill[];
   links?: ProjectLink[];
 }
+export type BreadcrumbItem = {
+  label: string;
+  href?: string;
+};
 export interface InputOption<TValue extends string | number> {
   label: string;
   value: TValue;

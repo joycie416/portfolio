@@ -1,7 +1,9 @@
 import { menus } from "@/utils/supabase/menus";
+import { getMenuFamilyBySlug } from "@/utils/menu";
 import type { Menu, MenuInsertType, MenuUpdateType } from "@/types/supabase";
 import type { FlatMenu } from "@/types/menu";
 import type { PostgrestError } from "@supabase/supabase-js";
+import type { BreadcrumbItem } from "@/types/common";
 
 export const useGetMenus = () => {
   const supabase = useSupabaseClient();
@@ -59,4 +61,34 @@ export const useReorderMenus = () => {
   };
 
   return { reorderMenus };
+};
+
+export const useMenuBreadcrumb = (slug: MaybeRefOrGetter<string>) => {
+  const { data: menus, status } = useGetMenus();
+
+  const menuFamily = computed(() =>
+    getMenuFamilyBySlug(toValue(slug), menus.value ?? [])
+  );
+
+  const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
+    const family = menuFamily.value;
+    if (!family) return [];
+
+    const { parent, menu } = family;
+    return parent
+      ? [
+          { label: parent.name },
+          { label: menu.name, href: `/blog/${menu.slug}` },
+        ]
+      : [{ label: menu.name, href: `/blog/${menu.slug}` }];
+  });
+
+  const breadcrumbStatus = computed(() => {
+    if (breadcrumbItems.value.length === 0 || status.value === "error")
+      return "error" as const;
+    if (status.value === "pending") return "loading" as const;
+    return "success" as const;
+  });
+
+  return { breadcrumbItems, breadcrumbStatus, menuFamily };
 };
