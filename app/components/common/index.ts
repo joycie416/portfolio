@@ -1,3 +1,4 @@
+export { default as Breadcrumb } from "./Breadcrumb.vue";
 export { default as Card } from "./Card.vue";
 export { default as CheckboxGroup } from "./CheckboxGroup.vue";
 export { default as Checkbox } from "./Checkbox.vue";
