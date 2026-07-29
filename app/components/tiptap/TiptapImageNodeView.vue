@@ -204,7 +204,7 @@ const onHandleMouseDown = (direction: ResizeDirection, event: MouseEvent) => {
 onBeforeUnmount(stopResizing);
 </script>
 
-<style lang="scss" scoped>
+<!-- <style lang="scss" scoped>
 .tiptap-image {
   position: relative;
   display: block;
@@ -274,4 +274,4 @@ onBeforeUnmount(stopResizing);
     }
   }
 }
-</style>
+</style> -->

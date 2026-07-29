@@ -125,6 +125,7 @@
   --color-highlight-red: var(--highlight-red);
   --color-highlight-yellow: var(--highlight-yellow);
   --color-highlight-gray: var(--highlight-gray);
+  --color-code-keyword: var(--code-keyword);
 }
 
 :root {
@@ -235,6 +236,7 @@
   --highlight-red: var(--red-03);
   --highlight-yellow: var(--yellow-03);
   --highlight-gray: var(--gray-03);
+  --code-keyword: #6034db;
 }
 
 @media (width >= theme(--breakpoint-md)) {
@@ -350,6 +352,7 @@
   --highlight-red: var(--red-03);
   --highlight-yellow: var(--yellow-03);
   --highlight-gray: var(--gray-03);
+  --code-keyword: #5a29e4;
 }
 
 @layer base {
