@@ -37,6 +37,10 @@ import { Breadcrumb, Empty, Pagination } from "@/components/common";
 import PostItem from "@/components/features/post/PostItem.vue";
 import PostItemSkeleton from "@/components/features/post/PostItemSkeleton.vue";
 
+definePageMeta({
+  middleware: "validate-menu",
+});
+
 const route = useRoute();
 const slug = computed(() => route.params.slug as string);
 const { page, onPageChange } = usePagination();
@@ -44,12 +48,37 @@ const { page, onPageChange } = usePagination();
 const { breadcrumbItems, breadcrumbStatus, menuFamily } =
   useMenuBreadcrumb(slug);
 
+// ------------ SEO ------------
+const title = computed(() => {
+  if (menuFamily.value?.parent) {
+    return `${menuFamily.value?.parent.name}/${menuFamily.value?.menu.name} - Haein's Blog`;
+  }
+  return `${menuFamily.value?.menu.name} - Haein's Blog`;
+});
+
+const runtimeConfig = useRuntimeConfig();
+const siteUrl = runtimeConfig.public.siteUrl;
+
+useSeoMeta({
+  title,
+  description: title.value,
+  ogTitle: title.value,
+  ogDescription: title.value,
+  ogImage: `${siteUrl}/og-image-blog.png`,
+  ogUrl: `${siteUrl}/blog/${menuFamily.value?.menu.slug}`,
+});
+
+// ------------ 게시글 조회 ------------
 const PER_PAGE = 12;
 const {
   data: posts,
   filteredCount,
   status,
-} = useGetPosts({ slug, page, perPage: PER_PAGE });
+} = useGetPosts({
+  slug: menuFamily.value?.menu.slug ?? "", // slug가 없으면
+  page,
+  perPage: PER_PAGE,
+});
 </script>
 
 <style lang="scss" scoped>

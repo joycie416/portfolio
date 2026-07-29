@@ -28,4 +28,13 @@ export const menus = (client: SupabaseClient<Database>) => ({
     if (error) throw new PostgrestError(error);
     return;
   },
+  getBySlug: async (slug: string) => {
+    const { data, error } = await client
+      .from("menus")
+      .select("id, name, slug")
+      .eq("slug", slug)
+      .single();
+    if (error) throw new PostgrestError(error);
+    return data;
+  },
 });

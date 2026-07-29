@@ -36,7 +36,7 @@ useSeoMeta({
   description: "Haein's Blog",
   ogTitle: "Haein's Blog",
   ogDescription: "Haein's Blog",
-  // ogImage: `${siteUrl}/og-image-blog.png`,
+  ogImage: `${siteUrl}/og-image-blog.png`,
   ogUrl: siteUrl,
 });
 
