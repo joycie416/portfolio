@@ -87,8 +87,8 @@ const closeSidebar = () => {
   &__content {
     width: 100%;
     max-width: 1024px;
+    height: 100%;
     margin: 0 auto;
-
     padding: 20px;
 
     display: flex;

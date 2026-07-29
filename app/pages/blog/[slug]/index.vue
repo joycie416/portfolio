@@ -1,19 +1,72 @@
 <template>
-  <div>
-    <Breadcrumb
-      :status="breadcrumbStatus"
-      :items="breadcrumbItems"
-      error-message="메뉴 조회에 실패했습니다."
+  <Breadcrumb
+    :status="breadcrumbStatus"
+    :items="breadcrumbItems"
+    error-message="메뉴 조회에 실패했습니다."
+  />
+  <div class="post-list">
+    <PostItem
+      v-if="status === 'success' && posts.length > 0"
+      v-for="post in posts"
+      :key="post.id"
+      :post="post"
     />
+    <PostItemSkeleton
+      v-else-if="status === 'pending'"
+      v-for="i in 6"
+      :key="i"
+    />
+    <Empty
+      v-else-if="status === 'success' && posts.length === 0"
+      class="col-span-full"
+      message="등록된 게시글이 없습니다."
+    />
+    <Empty v-else class="col-span-full" message="게시글 조회에 실패했습니다." />
   </div>
+  <Pagination
+    :page="page"
+    :total="filteredCount"
+    :itemsPerPage="PER_PAGE"
+    class="mt-auto"
+    @update:page="onPageChange"
+  />
 </template>
 
 <script setup lang="ts">
-import { Breadcrumb } from "@/components/common";
+import { Breadcrumb, Empty, Pagination } from "@/components/common";
+import PostItem from "@/components/features/post/PostItem.vue";
+import PostItemSkeleton from "@/components/features/post/PostItemSkeleton.vue";
 
 const route = useRoute();
+const slug = computed(() => route.params.slug as string);
+const { page, onPageChange } = usePagination();
 
-const { breadcrumbItems, breadcrumbStatus } = useMenuBreadcrumb(
-  () => route.params.slug as string
-);
+const { breadcrumbItems, breadcrumbStatus, menuFamily } =
+  useMenuBreadcrumb(slug);
+
+const PER_PAGE = 12;
+const {
+  data: posts,
+  filteredCount,
+  status,
+} = useGetPosts({ slug, page, perPage: PER_PAGE });
 </script>
+
+<style lang="scss" scoped>
+.post-list {
+  height: 100%;
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @include md {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @include lg {
+    gap: 24px;
+  }
+}
+</style>
