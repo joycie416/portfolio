@@ -419,7 +419,7 @@ const savePost = async () => {
 
   try {
     if (editTarget.value && !editTarget.value.temp) {
-      // 등록글 수정 (excerpt는 등록 시에만 저장)
+      // 등록글 수정
       await updatePost(
         { id: editTarget.value.id, ...baseFormData },
         updateFiles,
@@ -427,24 +427,11 @@ const savePost = async () => {
       );
     } else if (editTarget.value?.temp) {
       // 임시저장 글 등록: posts에 새로 저장한 뒤 temp_posts 삭제
-      await publishTempPost(
-        editTarget.value.id,
-        {
-          ...baseFormData,
-          excerpt: generateExcerpt(baseFormData.content),
-        },
-        updateFiles
-      );
+      await publishTempPost(editTarget.value.id, baseFormData, updateFiles);
       await refreshNuxtData(TEMP_POST_LIST_KEY);
     } else {
       // 새 글 등록
-      await createPost(
-        {
-          ...baseFormData,
-          excerpt: generateExcerpt(baseFormData.content),
-        },
-        pendingFiles
-      );
+      await createPost(baseFormData, pendingFiles);
     }
 
     toast.success("게시글이 저장되었습니다.");

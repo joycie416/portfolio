@@ -1,5 +1,6 @@
 import { PostgrestError, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
+import { generateExcerpt } from "@/utils/post";
 import type {
   PostBulkFailure,
   PostFile,
@@ -223,9 +224,22 @@ export const posts = (client: SupabaseClient<Database>) => ({
         : formData.thumbnail;
 
       // 4. 게시글을 테이블에 업로드
-      const { error: postInsertError } = await client
-        .from(dbName)
-        .insert({ ...formData, id: postId, content, thumbnail });
+      const baseRow = {
+        id: postId,
+        content,
+        thumbnail,
+        hidden: formData.hidden,
+        menu_id: formData.menu_id,
+        tags: formData.tags,
+        title: formData.title,
+      };
+
+      const { error: postInsertError } = temp
+        ? await client.from(TEMP_POST).insert(baseRow)
+        : await client.from(POST).insert({
+            ...baseRow,
+            excerpt: generateExcerpt(content),
+          });
       if (postInsertError) throw new PostgrestError(postInsertError);
 
       const attachments = await listStorageFiles(
@@ -344,10 +358,27 @@ export const posts = (client: SupabaseClient<Database>) => ({
 
       // 3. 게시글 업데이트
       // 기존 파일 삭제보다 먼저 수행해, 업데이트 실패 시 기존 파일이 살아있도록 함
-      const { error: postUpdateError } = await client
-        .from(dbName)
-        .update({ ...formData, content, thumbnail })
-        .eq("id", postId);
+      const updateRow = {
+        title: formData.title,
+        menu_id: formData.menu_id,
+        content,
+        thumbnail,
+        hidden: formData.hidden,
+        tags: formData.tags,
+      };
+
+      let postUpdateError;
+      if (temp) {
+        ({ error: postUpdateError } = await client
+          .from(TEMP_POST)
+          .update(updateRow)
+          .eq("id", postId));
+      } else {
+        ({ error: postUpdateError } = await client
+          .from(POST)
+          .update({ ...updateRow, excerpt: generateExcerpt(content) })
+          .eq("id", postId));
+      }
       if (postUpdateError) throw new PostgrestError(postUpdateError);
 
       // 4. 업데이트 성공 후, 더 이상 쓰이지 않는 기존 파일 정리

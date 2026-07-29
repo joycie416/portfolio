@@ -17,14 +17,29 @@ export const generateExcerpt = (
   const trimmedHtml = html.trim();
   if (!trimmedHtml) return "";
 
-  const doc = new DOMParser().parseFromString(trimmedHtml, "text/html");
-  doc.querySelectorAll("img, table").forEach((element) => element.remove());
-
-  const text = (doc.body.textContent ?? "").replace(/\s+/g, " ").trim();
+  const text = extractPlainText(trimmedHtml);
   if (!text) return "";
   if (text.length <= maxLength) return text;
 
   return `${text.slice(0, maxLength)}...`;
+};
+
+const extractPlainText = (html: string): string => {
+  if (import.meta.client) {
+    // DOMParser는 브라우저 API
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    doc.querySelectorAll("img, table").forEach((element) => element.remove());
+    return (doc.body.textContent ?? "").replace(/\s+/g, " ").trim();
+  }
+
+  // SSR 환경
+  // 태그 제거 후 텍스트 추출
+  return html
+    .replace(/<(img|table)\b[^>]*>[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<(img|table)\b[^>]*\/?>/gi, " ")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 };
 
 const POST_VISIBILITY_LABELS: Record<PostVisibility, string> = {

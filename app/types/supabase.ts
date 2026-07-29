@@ -35,8 +35,6 @@ export type PostInsertType = OmitDefaultColumns<
   >,
   true
 >;
-// 미리보기를 함께 전달할 때 사용
-export type PostRegisterInsertType = PostInsertType & { excerpt: string };
 // 게시글 수정 폼에서 사용하는 타입 (create와 동일하게 필수 필드를 강제하고, id도 함께 필요)
 export type PostUpdateType = OmitDefaultColumns<
   RequiredFields<
