@@ -189,26 +189,39 @@ export const usePublishTempPost = () => {
   return { publishTempPost };
 };
 
-export type GetPostResult = {
-  post: Post | TempPost;
+export type GetPostResult<TData extends Post | TempPost = Post | TempPost> = {
+  post: TData;
   files: PostStorageFiles;
 };
 
-export interface UseGetPostParams {
+export type UseGetPostParams<TTemp extends boolean | undefined = false> = {
   id: MaybeRefOrGetter<number | null>;
-  temp?: MaybeRefOrGetter<boolean>;
+  temp?: MaybeRefOrGetter<TTemp>;
   immediate?: boolean;
-}
+};
+
+type UseGetPostReturn<TPost extends Post | TempPost> = ReturnType<
+  typeof useAsyncData<GetPostResult<TPost> | null>
+>;
 
 // 수정 화면 등에서 단일 게시글(또는 임시저장 게시글)과 첨부파일 조회
-export const useGetPost = ({
+export function useGetPost(
+  params: UseGetPostParams<true> & { temp: MaybeRefOrGetter<true> }
+): UseGetPostReturn<TempPost>;
+export function useGetPost(
+  params: UseGetPostParams<false>
+): UseGetPostReturn<Post>;
+export function useGetPost(
+  params: UseGetPostParams<boolean>
+): UseGetPostReturn<Post | TempPost>;
+export function useGetPost({
   id,
   temp,
   immediate = true,
-}: UseGetPostParams) => {
+}: UseGetPostParams<boolean>) {
   const supabase = useSupabaseClient();
 
-  return useAsyncData<GetPostResult | null>(
+  return useAsyncData<GetPostResult<Post | TempPost> | null>(
     () => `post:${toValue(temp) ? "temp" : "post"}:${toValue(id) ?? "none"}`,
     async () => {
       const postId = toValue(id);

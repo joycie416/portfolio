@@ -2,6 +2,7 @@ import { PostgrestError, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database.types";
 import { generateExcerpt } from "@/utils/post";
 import type {
+  Post,
   PostBulkFailure,
   PostFile,
   PostInsertType,
@@ -10,6 +11,8 @@ import type {
   PostStorageFiles,
   PostUpdateFile,
   PostUpdateType,
+  SimpleTempPost,
+  TempPost,
 } from "@/types/supabase";
 
 export const POST_VISIBILITIES = ["all", "public", "private"] as const;
@@ -27,6 +30,41 @@ export interface GetPostListParams {
   query?: string;
   visibility?: PostVisibility;
 }
+
+export type PostsGetById = {
+  (id: number, temp: true): Promise<TempPost>;
+  (id: number, temp?: false): Promise<Post>;
+  (id: number, temp: boolean): Promise<Post | TempPost>;
+};
+
+export type PostsApi = {
+  getList: (
+    params: GetPostListParams
+  ) => Promise<{ data: Post[]; count: number }>;
+  getTempList: () => Promise<{ data: SimpleTempPost[]; count: number }>;
+  create: (
+    formData: PostInsertType,
+    files: PostFile,
+    temp?: boolean
+  ) => Promise<PostSaveResult>;
+  getById: PostsGetById;
+  getFiles: (
+    postId: number,
+    temp?: boolean
+  ) => Promise<PostStorageFiles>;
+  update: (
+    formData: PostUpdateType,
+    files: PostUpdateFile,
+    temp?: boolean
+  ) => Promise<PostSaveResult>;
+  delete: (id: number, temp?: boolean) => Promise<number>;
+  publishFromTemp: (
+    tempId: number,
+    formData: PostInsertType,
+    files: PostUpdateFile
+  ) => Promise<PostSaveResult>;
+  bulkDelete: (postIds: number[]) => Promise<PostBulkFailure[]>;
+};
 
 // 정규식 특수문자 이스케이프 (data-inline-key 값을 정규식 리터럴로 사용하기 위함)
 const escapeRegExp = (value: string): string =>
@@ -124,57 +162,24 @@ const removePostFiles = async (
   if (error) throw error;
 };
 
-export const posts = (client: SupabaseClient<Database>) => ({
-  getList: async ({
-    page,
-    perPage,
-    menuId,
-    query: q,
-    visibility = "all",
-  }: GetPostListParams) => {
-    const from = (page - 1) * perPage;
-    const to = from + perPage - 1;
+export const posts = (client: SupabaseClient<Database>): PostsApi => {
+  async function getById(id: number, temp: true): Promise<TempPost>;
+  async function getById(id: number, temp?: false): Promise<Post>;
+  async function getById(id: number, temp?: boolean): Promise<Post | TempPost>;
+  async function getById(id: number, temp: boolean = false) {
+    const table = temp ? TEMP_POST : POST;
 
-    const keyword = q?.trim();
-
-    // 검색어가 있으면 RPC, 없으면 기본 테이블에서 조회
-    let query = keyword
-      ? client.rpc(
-          "search_posts_or_title_phrase_or_tags_any",
-          { q: keyword },
-          { count: "exact" }
-        )
-      : client.from(POST).select("*", { count: "exact" });
-
-    if (menuId) query = query.eq("menu_id", menuId);
-    if (visibility === "public") query = query.eq("hidden", false);
-    else if (visibility === "private") query = query.eq("hidden", true);
-
-    // 필터, 페이지네이션 적용된 목록 (count는 필터 반영된 전체 개수)
-    const { data, count, error } = await query
-      .order("created_at", { ascending: false })
-      .range(from, to);
-
+    const { data, error } = await client
+      .from(table)
+      .select("*")
+      .eq("id", id)
+      .single();
     if (error) throw new PostgrestError(error);
 
-    return {
-      data: data ?? [],
-      count: count ?? 0,
-    };
-  },
-  getTempList: async () => {
-    const { data, count, error } = await client
-      .from(TEMP_POST)
-      .select("id, title, created_at", { count: "exact" })
-      .order("created_at", { ascending: false });
-    if (error) throw new PostgrestError(error);
+    return data;
+  }
 
-    return {
-      data: data ?? [],
-      count: count ?? 0,
-    };
-  },
-  create: async (
+  const create = async (
     formData: PostInsertType,
     files: PostFile,
     temp: boolean = false
@@ -256,40 +261,9 @@ export const posts = (client: SupabaseClient<Database>) => ({
       }
       throw error;
     }
-  },
-  /*
-   게시글 상세 조회
-  */
-  getById: async (id: number, temp: boolean = false) => {
-    const table = temp ? TEMP_POST : POST;
+  };
 
-    const { data, error } = await client
-      .from(table)
-      .select("*")
-      .eq("id", id)
-      .single();
-    if (error) throw new PostgrestError(error);
-
-    return data;
-  },
-  /*
-   게시글에 첨부된 파일(inline 이미지, 첨부파일) 목록 조회
-   수정 화면에서 기존 파일을 보여주고, 삭제 대상을 판단하는 데 사용
-  */
-  getFiles: async (
-    postId: number,
-    temp: boolean = false
-  ): Promise<PostStorageFiles> => {
-    const bucket = temp ? TEMP_POST : POST;
-
-    const [inlineImages, attachments] = await Promise.all([
-      listStorageFiles(client, bucket, `${postId}/${INLINE}`),
-      listStorageFiles(client, bucket, `${postId}/${ATTACHMENTS}`),
-    ]);
-
-    return { inlineImages, attachments };
-  },
-  update: async (
+  const update = async (
     formData: PostUpdateType,
     files: PostUpdateFile,
     temp: boolean = false
@@ -423,8 +397,9 @@ export const posts = (client: SupabaseClient<Database>) => ({
       }
       throw error;
     }
-  },
-  delete: async (id: number, temp: boolean = false) => {
+  };
+
+  const deletePost = async (id: number, temp: boolean = false) => {
     const dbName = temp ? TEMP_POST : POST;
 
     const { error: postError } = await client
@@ -440,20 +415,34 @@ export const posts = (client: SupabaseClient<Database>) => ({
     }
 
     return id;
-  },
+  };
+
+  const getFiles = async (
+    postId: number,
+    temp: boolean = false
+  ): Promise<PostStorageFiles> => {
+    const bucket = temp ? TEMP_POST : POST;
+
+    const [inlineImages, attachments] = await Promise.all([
+      listStorageFiles(client, bucket, `${postId}/${INLINE}`),
+      listStorageFiles(client, bucket, `${postId}/${ATTACHMENTS}`),
+    ]);
+
+    return { inlineImages, attachments };
+  };
+
   /*
    임시저장 글을 정식 게시글로 등록
    1. temp_posts 스토리지에 남아 있는 파일을 내려받아 신규 posts 업로드 대상에 합침
    2. posts 테이블/버킷에 새로 저장
    3. 성공 후 임시저장 글(및 파일) 삭제
   */
-  publishFromTemp: async (
+  const publishFromTemp = async (
     tempId: number,
     formData: PostInsertType,
     files: PostUpdateFile
   ): Promise<PostSaveResult> => {
-    const api = posts(client);
-    const existing = await api.getFiles(tempId, true);
+    const existing = await getFiles(tempId, true);
     const keepInlineKeys = extractInlineImageKeys(formData.content);
     const removedAttachmentKeys = new Set(files.removedAttachmentKeys);
 
@@ -492,14 +481,14 @@ export const posts = (client: SupabaseClient<Database>) => ({
       attachments[storageFile.key] = await downloadAsFile(storageFile);
     }
 
-    const saved = await api.create(
+    const saved = await create(
       formData,
       { inlineImages, attachments },
       false
     );
 
     try {
-      await api.delete(tempId, true);
+      await deletePost(tempId, true);
     } catch (cleanupError) {
       // 등록은 이미 성공했으므로, 임시글 삭제 실패는 로그만 남기고 결과는 반환
       console.error(
@@ -509,13 +498,16 @@ export const posts = (client: SupabaseClient<Database>) => ({
     }
 
     return saved;
-  },
+  };
+
   /*
    체크한 게시글을 일괄 삭제
    1. RPC(posts_bulk_delete)로 게시글 본문 삭제
    2. 삭제에 성공한 게시글에 대해서만 스토리지 파일을 삭제
   */
-  bulkDelete: async (postIds: number[]): Promise<PostBulkFailure[]> => {
+  const bulkDelete = async (
+    postIds: number[]
+  ): Promise<PostBulkFailure[]> => {
     const { data, error } = await client.rpc("posts_bulk_delete", {
       post_ids: postIds,
     });
@@ -536,5 +528,64 @@ export const posts = (client: SupabaseClient<Database>) => ({
     );
 
     return failures;
-  },
-});
+  };
+
+  return {
+    getList: async ({
+      page,
+      perPage,
+      menuId,
+      query: q,
+      visibility = "all",
+    }: GetPostListParams) => {
+      const from = (page - 1) * perPage;
+      const to = from + perPage - 1;
+
+      const keyword = q?.trim();
+
+      // 검색어가 있으면 RPC, 없으면 기본 테이블에서 조회
+      let query = keyword
+        ? client.rpc(
+            "search_posts_or_title_phrase_or_tags_any",
+            { q: keyword },
+            { count: "exact" }
+          )
+        : client.from(POST).select("*", { count: "exact" });
+
+      if (menuId) query = query.eq("menu_id", menuId);
+      if (visibility === "public") query = query.eq("hidden", false);
+      else if (visibility === "private") query = query.eq("hidden", true);
+
+      // 필터, 페이지네이션 적용된 목록 (count는 필터 반영된 전체 개수)
+      const { data, count, error } = await query
+        .order("created_at", { ascending: false })
+        .range(from, to);
+
+      if (error) throw new PostgrestError(error);
+
+      return {
+        data: data ?? [],
+        count: count ?? 0,
+      };
+    },
+    getTempList: async () => {
+      const { data, count, error } = await client
+        .from(TEMP_POST)
+        .select("id, title, created_at", { count: "exact" })
+        .order("created_at", { ascending: false });
+      if (error) throw new PostgrestError(error);
+
+      return {
+        data: data ?? [],
+        count: count ?? 0,
+      };
+    },
+    create,
+    getById,
+    getFiles,
+    update,
+    delete: deletePost,
+    publishFromTemp,
+    bulkDelete,
+  };
+};
