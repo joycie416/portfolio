@@ -86,11 +86,12 @@ const {
   height: 100%;
   width: 100%;
 
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 16px;
 
   @include md {
+    display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
