@@ -22,7 +22,10 @@
             prefetch-on="interaction"
             class="menu__parent"
           >
-            {{ parent.name }} ({{ parent.postCount.toLocaleString() }})
+            <span class="menu__name">{{ parent.name }}</span>
+            <span class="menu__count">
+              ({{ parent.postCount.toLocaleString() }})
+            </span>
           </NuxtLink>
           <AccordionTrigger
             v-else
@@ -32,15 +35,14 @@
                 parent.children.length === 0,
             }"
           >
-            <NuxtLink
-              :to="`/blog/${parent.slug}`"
-              prefetch-on="interaction"
-              class="block w-1/2 shrink-0 truncate hover:underline"
-            >
-              {{ parent.name }} ({{ parent.postCount.toLocaleString() }})
-            </NuxtLink>
+            <span class="menu__label">
+              <span class="menu__name">{{ parent.name }}</span>
+              <span class="menu__count">
+                ({{ parent.postCount.toLocaleString() }})
+              </span>
+            </span>
           </AccordionTrigger>
-          <AccordionContent v-if="parent.children.length > 0" class="pl-6">
+          <AccordionContent v-if="parent.children.length > 0" class="pl-6 pb-0">
             <ul>
               <li v-for="child in parent.children" :key="child.id">
                 <NuxtLink
@@ -48,7 +50,10 @@
                   prefetch-on="interaction"
                   class="menu__child"
                 >
-                  {{ child.name }} ({{ child.postCount.toLocaleString() }})
+                  <span class="menu__name">{{ child.name }}</span>
+                  <span class="menu__count">
+                    ({{ child.postCount.toLocaleString() }})
+                  </span>
                 </NuxtLink>
               </li>
             </ul>
@@ -238,31 +243,49 @@ const handleSignOut = async () => {
       animation: var(--sidebar-menu-content-fade-out);
     }
   }
+  &__parent,
+  &__child,
+  &__label {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
   &__parent {
-    display: block;
-    width: 50%;
     padding-block: 16px;
     padding-inline: 12px;
     font-size: 14px;
     font-weight: 500;
     line-height: 20px;
-    flex-shrink: 0;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 
     &:hover {
       text-decoration: underline;
     }
   }
+
   &__child {
-    display: block;
     padding-block: 8px;
+    gap: 4px;
 
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  &__label {
+    flex: 1;
+    gap: 4px;
+  }
+
+  &__name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__count {
+    flex-shrink: 0;
   }
 }
 .admin {
