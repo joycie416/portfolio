@@ -57,6 +57,7 @@ export const flattenMenuGroups = (
 
 /**
  * 메뉴 데이터를 드롭다운용 메뉴 목록으로 변환
+ * buildMenuTree와 동일한 계층 구조로 children을 포함
  * @param menus - 메뉴 데이터
  * @returns 드롭다운용 메뉴 목록
  */
@@ -64,39 +65,44 @@ export const toMenuOptions = (
   menus: Menu[],
   withAll: boolean = true
 ): InputOption<string>[] => {
-  const sortByOrder = (a: Menu, b: Menu) => a.order_idx - b.order_idx;
-
-  const parents = menus.filter((menu) => !menu.parent_id).sort(sortByOrder);
-
-  const childrenByParent = new Map<string, Menu[]>();
-  menus
-    .filter((menu) => menu.parent_id)
-    .sort(sortByOrder)
-    .forEach((child) => {
-      const siblings = childrenByParent.get(child.parent_id!) ?? [];
-      siblings.push(child);
-      childrenByParent.set(child.parent_id!, siblings);
-    });
-
   const options: InputOption<string>[] = withAll
     ? [{ label: "전체", value: "all" }]
     : [];
 
-  parents.forEach((parent) => {
-    options.push({ label: parent.name, value: parent.id });
+  const tree = buildMenuTree(menus);
 
-    childrenByParent.get(parent.id)?.forEach((child) => {
-      options.push({ label: ` - ${child.name}`, value: child.id });
+  tree.forEach((parent) => {
+    if (parent.children.length > 0) {
+      options.push({
+        label: parent.name,
+        value: parent.id,
+        children: parent.children.map((child) => ({
+          label: child.name,
+          value: child.id,
+        })),
+      });
+      return;
+    }
+
+    options.push({
+      label: parent.name,
+      value: parent.id,
     });
-    childrenByParent.delete(parent.id);
+  });
+
+  const includedIds = new Set<string>();
+  options.forEach((option) => {
+    includedIds.add(option.value);
+    option.children?.forEach((child) => includedIds.add(child.value));
   });
 
   // 부모를 찾지 못한 메뉴는 맨 뒤에 추가
-  childrenByParent.forEach((orphans) => {
-    orphans.forEach((child) => {
-      options.push({ label: child.name, value: child.id });
+  menus
+    .filter((menu) => !includedIds.has(menu.id))
+    .sort((a, b) => a.order_idx - b.order_idx)
+    .forEach((menu) => {
+      options.push({ label: menu.name, value: menu.id });
     });
-  });
 
   return options;
 };

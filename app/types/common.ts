@@ -29,4 +29,5 @@ export interface InputOption<TValue extends string | number> {
   label: string;
   value: TValue;
   disabled?: boolean;
+  children?: InputOption<TValue>[];
 }

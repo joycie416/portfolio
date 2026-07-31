@@ -8,24 +8,40 @@
       <SelectValue :placeholder="props.placeholder" />
     </SelectTrigger>
     <SelectContent class="max-h-45">
-      <SelectItem
-        v-for="option in props.options"
-        :key="String(option.value)"
-        :value="String(option.value)"
-        :disabled="option.disabled"
-      >
-        {{ option.label }}
-      </SelectItem>
+      <template v-for="option in props.options" :key="String(option.value)">
+        <SelectItem
+          v-if="!option.children"
+          :value="String(option.value)"
+          :disabled="option.disabled"
+        >
+          {{ option.label }}
+        </SelectItem>
+        <SelectGroup v-else>
+          <SelectLabel>{{ option.label }}</SelectLabel>
+          <SelectItem
+            v-for="child in option.children"
+            :key="String(child.value)"
+            :value="String(child.value)"
+            :disabled="child.disabled"
+            class="pl-5"
+          >
+            {{ child.label }}
+          </SelectItem>
+        </SelectGroup>
+      </template>
     </SelectContent>
   </Select>
 </template>
 
 <script setup lang="ts" generic="TValue extends string | number">
 import type { DropdownProps } from "@/types/input-group";
+import type { InputOption } from "@/types/common";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -35,6 +51,22 @@ const props = defineProps<DropdownProps<TValue>>();
 
 const model = defineModel<TValue | undefined>();
 
+const findOption = (
+  options: InputOption<TValue>[],
+  value: string
+): InputOption<TValue> | undefined => {
+  for (const option of options) {
+    if (String(option.value) === value) return option;
+
+    const child = option.children
+      ? findOption(option.children, value)
+      : undefined;
+    if (child) return child;
+  }
+
+  return undefined;
+};
+
 const selectModel = computed({
   get: () => (model.value === undefined ? undefined : String(model.value)),
   set: (value: string | undefined) => {
@@ -43,11 +75,7 @@ const selectModel = computed({
       return;
     }
 
-    const selected = props.options.find(
-      (option) => String(option.value) === value
-    );
-
-    model.value = selected?.value;
+    model.value = findOption(props.options, value)?.value;
   },
 });
 </script>
