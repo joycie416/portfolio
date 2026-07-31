@@ -1,5 +1,10 @@
 <template>
-  <div v-if="status === 'success'" class="flex items-center gap-1">
+  <div
+    v-if="status === 'success'"
+    data-slot="breadcrumb"
+    :data-style="props.type === 'tag' ? 'tag' : 'default'"
+    :class="cn('breadcrumb', props.class)"
+  >
     <DropdownMenu v-if="truncatedItems.length >= 1">
       <DropdownMenuTrigger class="size-6 flex items-center justify-center">
         <Ellipsis class="size-5 text-text-gray-03" />
@@ -19,14 +24,14 @@
       <div
         v-for="(item, index) in displayItems"
         :key="item.label"
-        class="flex items-center gap-1 text-base md:text-lg text-text-gray-04 last:text-primary-500"
-        :class="
-          item.href ? 'hover:text-primary-300 last:hover:text-primary-500' : ''
-        "
+        :class="[
+          'breadcrumb__item',
+          item.href ? 'breadcrumb__item__hover' : '',
+        ]"
       >
         <ChevronRight
           v-if="(props.items.length > 2 && index === 0) || index > 0"
-          class="size-4 md:size-5 text-text-gray-03"
+          class="size-4 md:size-5"
         />
         <NuxtLink v-if="item.href" :to="item.href">
           {{ item.label }}
@@ -37,12 +42,22 @@
       </div>
     </div>
   </div>
-  <div v-else-if="status === 'loading'" class="flex items-center gap-1">
+  <div
+    v-else-if="status === 'loading'"
+    data-slot="breadcrumb"
+    :data-style="props.type === 'tag' ? 'tag' : 'default'"
+    :class="cn('breadcrumb', props.class)"
+  >
     <Skeleton class="h-4 w-15 md:h-5 md:w-20" />
     <ChevronRight class="size-4 md:size-5 text-text-gray-03" />
     <Skeleton class="h-4 w-15 md:h-5 md:w-20" />
   </div>
-  <div v-else class="flex items-center gap-1 text-text-gray-04 text-sm">
+  <div
+    v-else
+    data-slot="breadcrumb"
+    :data-style="props.type === 'tag' ? 'tag' : 'default'"
+    :class="cn('breadcrumb text-text-primary-100', props.class)"
+  >
     <TriangleAlert class="size-4" />
     {{ errorMessage }}
   </div>
@@ -56,7 +71,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface Item {
   label: string;
@@ -65,7 +81,9 @@ interface Item {
 interface Props {
   items: Item[];
   status: "success" | "loading" | "error";
+  type?: "default" | "tag";
   errorMessage?: string;
+  class?: string;
 }
 
 const props = defineProps<Props>();
@@ -75,3 +93,74 @@ const truncatedItems = computed(() =>
 );
 const displayItems = computed(() => props.items.slice(-2));
 </script>
+
+<style lang="scss" scoped>
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  width: fit-content;
+
+  .lucide {
+    color: var(--color-text-gray-03);
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+
+    @include md {
+      font-size: 1.125rem;
+      line-height: calc(1.75 / 1.125) rem;
+    }
+
+    color: var(--color-text-gray-04);
+
+    &:last-child {
+      color: var(--color-primary-500);
+    }
+
+    &__hover {
+      &:hover {
+        color: var(--color-primary-300);
+
+        &:last-child {
+          color: var(--color-primary-500);
+        }
+      }
+    }
+  }
+
+  &[data-style="tag"] {
+    padding: 0.125rem 0.5rem;
+    background-color: var(--color-primary-300);
+    border-radius: 999px;
+    color: var(--color-primary-100);
+
+    .lucide {
+      color: var(--color-primary-100);
+    }
+  }
+  &[data-style="tag"] &__item {
+    color: var(--color-primary-100);
+
+    &:last-child {
+      color: var(--color-primary-600);
+    }
+
+    &__hover {
+      &:hover {
+        color: var(--color-primary-200);
+
+        &:last-child {
+          color: var(--color-primary-700);
+        }
+      }
+    }
+  }
+}
+</style>
