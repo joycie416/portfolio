@@ -1,6 +1,6 @@
 <template>
-  <Card class="p-0 md:p-0 post-item">
-    <div class="post-item__thumbnail" @click="handleClick">
+  <Card class="p-0 md:p-0 post-item" @click="handleClick">
+    <div class="post-item__thumbnail">
       <NuxtImg
         v-if="post.thumbnail"
         :src="post.thumbnail"
