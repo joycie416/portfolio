@@ -136,7 +136,7 @@ const displayItems = computed(() => props.items.slice(-2));
   }
 
   &[data-style="tag"] {
-    padding: 0.125rem 0.5rem;
+    padding: 0.125rem 0.625rem;
     background-color: var(--color-primary-300);
     border-radius: 999px;
     color: var(--color-primary-100);
