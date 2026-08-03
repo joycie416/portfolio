@@ -18,7 +18,7 @@
       "
     >
       <InputGroup
-        v-model="menuId"
+        v-model="slug"
         type="dropdown"
         label="메뉴"
         :options="menuOptions"
@@ -70,7 +70,7 @@ const visibilityOptions = getVisibilityOptions();
 
 const DEFAULT_VALUES: PostFilterForm = {
   query: "",
-  menuId: "all",
+  slug: "all",
   visibility: "all",
 };
 
@@ -91,13 +91,13 @@ const {
   initialValues: {
     ...DEFAULT_VALUES,
     query: initialQueries.query,
-    menuId: initialQueries.menuId,
+    slug: initialQueries.slug,
     visibility: initialQueries.visibility,
   },
 });
 
 const [query] = defineField("query");
-const [menuId] = defineField("menuId");
+const [slug] = defineField("slug");
 const [visibility] = defineField("visibility");
 
 // URL -> 폼 동기화 중에는 폼 값을 URL 값으로 동기화하는 것을 막아 순환 방지
@@ -117,12 +117,12 @@ watch(
 
 // 메뉴 변경 시 즉시 반영
 watch(
-  () => formValues.menuId,
+  () => formValues.slug,
   (value) => {
     if (isSyncingFromUrl) return;
     setQuery({
       query: getQuery().query,
-      menuId: value,
+      slug: value,
       visibility: formValues.visibility,
       // 페이지 초기화
     });
@@ -136,7 +136,7 @@ watch(
     if (isSyncingFromUrl) return;
     setQuery({
       query: getQuery().query,
-      menuId: formValues.menuId,
+      slug: formValues.slug,
       visibility: value,
       // 페이지 초기화
     });
@@ -146,7 +146,7 @@ watch(
 const handleSubmitFilter = handleSubmit(() => {
   setQuery({
     query: formValues.query?.trim() || "",
-    menuId: formValues.menuId,
+    slug: formValues.slug,
     visibility: formValues.visibility,
     // 페이지 초기화
   });

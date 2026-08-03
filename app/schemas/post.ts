@@ -3,7 +3,7 @@ import { POST_VISIBILITIES } from "@/utils/supabase/posts";
 
 export const postFilterSchema = z.object({
   query: z.string(),
-  menuId: z.string(),
+  slug: z.string(),
   visibility: z.enum(POST_VISIBILITIES),
 });
 

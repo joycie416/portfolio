@@ -12,6 +12,7 @@ import type {
   PostUpdateFile,
   PostUpdateType,
   SimplePost,
+  SimplePostWithMenuSlug,
   SimpleTempPost,
   TempPost,
 } from "@/types/supabase";
@@ -27,10 +28,15 @@ const ATTACHMENTS = "attachments" as const;
 export interface GetPostListParams {
   page: number;
   perPage: number;
-  menuId?: string;
+  slug?: string;
   query?: string;
   visibility?: PostVisibility;
 }
+
+const LIST_COLUMNS =
+  "id, title, created_at, menu_id, hidden, thumbnail, excerpt" as const;
+
+type PostRowWithMenuSlug = SimplePost & { menus?: { slug: string } };
 
 export type PostsGetById = {
   (id: number, temp: true): Promise<TempPost>;
@@ -41,7 +47,7 @@ export type PostsGetById = {
 export type PostsApi = {
   getList: (
     params: GetPostListParams
-  ) => Promise<{ data: SimplePost[]; count: number }>;
+  ) => Promise<{ data: SimplePostWithMenuSlug[]; count: number }>;
   getTempList: () => Promise<{ data: SimpleTempPost[]; count: number }>;
   create: (
     formData: PostInsertType,
@@ -526,7 +532,7 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
     getList: async ({
       page,
       perPage,
-      menuId,
+      slug,
       query: q,
       visibility = "all",
     }: GetPostListParams) => {
@@ -534,6 +540,9 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
       const to = from + perPage - 1;
 
       const keyword = q?.trim();
+      const selectColumns = slug
+        ? `${LIST_COLUMNS}, menus!inner(slug)`
+        : LIST_COLUMNS;
 
       // 검색어가 있으면 RPC, 없으면 기본 테이블에서 조회
       let query = keyword
@@ -543,17 +552,10 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
               { q: keyword },
               { count: "exact" }
             )
-            .select(
-              "id, title, created_at, menu_id, hidden, thumbnail, excerpt"
-            )
-        : client
-            .from(POST)
-            .select(
-              "id, title, created_at, menu_id, hidden, thumbnail, excerpt",
-              { count: "exact" }
-            );
+            .select(selectColumns)
+        : client.from(POST).select(selectColumns, { count: "exact" });
 
-      if (menuId) query = query.eq("menu_id", menuId);
+      if (slug) query = query.eq("menus.slug", slug);
       if (visibility === "public") query = query.eq("hidden", false);
       else if (visibility === "private") query = query.eq("hidden", true);
 
@@ -564,8 +566,13 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
 
       if (error) throw new PostgrestError(error);
 
+      const rows = (data ?? []) as unknown as PostRowWithMenuSlug[];
+
       return {
-        data: data ?? [],
+        data: rows.map(({ menus, ...post }) => ({
+          ...post,
+          menu_slug: menus?.slug ?? "null",
+        })),
         count: count ?? 0,
       };
     },

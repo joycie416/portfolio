@@ -66,9 +66,9 @@ const {
   refresh,
 } = useGetPosts({
   query: () => parseQueryParam(route.query.query) ?? "",
-  menuId: () => {
-    const menuId = parseQueryParam(route.query.menuId);
-    return menuId && menuId !== "all" ? menuId : undefined;
+  slug: () => {
+    const slug = parseQueryParam(route.query.slug);
+    return slug && slug !== "all" ? slug : undefined;
   },
   visibility: () =>
     parseQueryEnum(route.query.visibility, POST_VISIBILITIES, "all"),

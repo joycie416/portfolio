@@ -5,19 +5,14 @@
     error-message="메뉴 조회에 실패했습니다."
   />
   <div class="post-list">
-    <PostItem
-      v-if="status === 'success' && posts.length > 0"
-      v-for="post in posts"
-      :key="post.id"
-      :post="post"
-    />
-    <PostItemSkeleton
-      v-else-if="status === 'pending'"
-      v-for="i in 6"
-      :key="i"
-    />
+    <template v-if="!pending && !error && posts.length > 0">
+      <PostItem v-for="post in posts" :key="post.id" :post="post" />
+    </template>
+    <template v-else-if="pending">
+      <PostItemSkeleton v-for="i in 6" :key="i" />
+    </template>
     <Empty
-      v-else-if="status === 'success' && posts.length === 0"
+      v-else-if="!error && posts.length === 0"
       class="col-span-full"
       message="등록된 게시글이 없습니다."
     />
@@ -73,9 +68,10 @@ const PER_PAGE = 12;
 const {
   data: posts,
   filteredCount,
-  status,
+  pending,
+  error,
 } = useGetPosts({
-  slug: menuFamily.value?.menu.slug ?? "", // slug가 없으면
+  slug,
   page,
   perPage: PER_PAGE,
 });

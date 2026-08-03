@@ -29,6 +29,9 @@ export type MenuUpdateType = OmitDefaultColumns<
 
 export type Post = Tables<"posts">;
 export type SimplePost = Omit<Post, "content" | "tags" | "modified_at">;
+export type SimplePostWithMenuSlug = SimplePost & {
+  menu_slug: string;
+};
 export type PostInsertType = OmitDefaultColumns<
   RequiredFields<
     TablesInsert<"posts">,
@@ -43,7 +46,7 @@ export type PostUpdateType = OmitDefaultColumns<
     "id" | "title" | "content" | "menu_id" | "hidden" | "tags" | "thumbnail"
   >
 >;
-export type TransformedPost = SimplePost & {
+export type TransformedPost = SimplePostWithMenuSlug & {
   menu_full_name: string;
 };
 
