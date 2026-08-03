@@ -12,6 +12,7 @@ import type {
   PostStorageFiles,
   PostSaveResult,
   SimpleTempPost,
+  SimplePost,
 } from "@/types/supabase";
 
 export const POSTS_PAGE_SIZE = 10;
@@ -64,7 +65,7 @@ export const useGetPosts = (params: UseGetPostsParams) => {
 
   // 페이지/필터 조합마다 별도 캐시 키 -> 같은 조건으로 돌아오면 재요청 없음
   const result = useAsyncData<{
-    data: Post[];
+    data: SimplePost[];
     count: number;
   }>(
     () =>
@@ -240,7 +241,7 @@ export function useGetPost({
       watch: [() => toValue(id), () => toValue(temp)],
     }
   );
-};
+}
 
 export const useUpdatePost = () => {
   const supabase = useSupabaseClient();

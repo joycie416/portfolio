@@ -11,6 +11,7 @@ import type {
   PostStorageFiles,
   PostUpdateFile,
   PostUpdateType,
+  SimplePost,
   SimpleTempPost,
   TempPost,
 } from "@/types/supabase";
@@ -40,7 +41,7 @@ export type PostsGetById = {
 export type PostsApi = {
   getList: (
     params: GetPostListParams
-  ) => Promise<{ data: Post[]; count: number }>;
+  ) => Promise<{ data: SimplePost[]; count: number }>;
   getTempList: () => Promise<{ data: SimpleTempPost[]; count: number }>;
   create: (
     formData: PostInsertType,
@@ -48,10 +49,7 @@ export type PostsApi = {
     temp?: boolean
   ) => Promise<PostSaveResult>;
   getById: PostsGetById;
-  getFiles: (
-    postId: number,
-    temp?: boolean
-  ) => Promise<PostStorageFiles>;
+  getFiles: (postId: number, temp?: boolean) => Promise<PostStorageFiles>;
   update: (
     formData: PostUpdateType,
     files: PostUpdateFile,
@@ -481,11 +479,7 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
       attachments[storageFile.key] = await downloadAsFile(storageFile);
     }
 
-    const saved = await create(
-      formData,
-      { inlineImages, attachments },
-      false
-    );
+    const saved = await create(formData, { inlineImages, attachments }, false);
 
     try {
       await deletePost(tempId, true);
@@ -505,9 +499,7 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
    1. RPC(posts_bulk_delete)로 게시글 본문 삭제
    2. 삭제에 성공한 게시글에 대해서만 스토리지 파일을 삭제
   */
-  const bulkDelete = async (
-    postIds: number[]
-  ): Promise<PostBulkFailure[]> => {
+  const bulkDelete = async (postIds: number[]): Promise<PostBulkFailure[]> => {
     const { data, error } = await client.rpc("posts_bulk_delete", {
       post_ids: postIds,
     });
@@ -545,12 +537,21 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
 
       // 검색어가 있으면 RPC, 없으면 기본 테이블에서 조회
       let query = keyword
-        ? client.rpc(
-            "search_posts_or_title_phrase_or_tags_any",
-            { q: keyword },
-            { count: "exact" }
-          )
-        : client.from(POST).select("*", { count: "exact" });
+        ? client
+            .rpc(
+              "search_posts_or_title_phrase_or_tags_any",
+              { q: keyword },
+              { count: "exact" }
+            )
+            .select(
+              "id, title, created_at, menu_id, hidden, thumbnail, excerpt"
+            )
+        : client
+            .from(POST)
+            .select(
+              "id, title, created_at, menu_id, hidden, thumbnail, excerpt",
+              { count: "exact" }
+            );
 
       if (menuId) query = query.eq("menu_id", menuId);
       if (visibility === "public") query = query.eq("hidden", false);

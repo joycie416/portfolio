@@ -25,11 +25,11 @@
 </template>
 
 <script setup lang="ts">
-import type { Post } from "@/types/supabase";
+import type { TransformedPost } from "@/types/supabase";
 import { Card } from "@/components/common";
 import { LogoIcon } from "@/components/icons";
 
-const props = defineProps<{ post: Post }>();
+const props = defineProps<{ post: TransformedPost }>();
 const post = computed(() => props.post);
 
 const route = useRoute();

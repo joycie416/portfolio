@@ -1,5 +1,5 @@
 import type { InputOption } from "@/types/common";
-import type { Menu, Post, TransformedPost } from "@/types/supabase";
+import type { Menu, SimplePost, TransformedPost } from "@/types/supabase";
 import { POST_VISIBILITIES, type PostVisibility } from "@/utils/supabase/posts";
 
 export const EXCERPT_MAX_LENGTH = 200;
@@ -59,7 +59,7 @@ export const getVisibilityOptions = (): InputOption<PostVisibility>[] =>
  * 부모 메뉴가 있으면 `부모메뉴이름/자식메뉴이름`, 없으면 `메뉴이름` 형태로 만든다.
  */
 export const postsTransformer = (
-  posts: Post[],
+  posts: SimplePost[],
   menus: Menu[]
 ): TransformedPost[] => {
   const menuMap = new Map(menus.map((menu) => [menu.id, menu]));
