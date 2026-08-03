@@ -22,9 +22,11 @@
             prefetch-on="interaction"
             class="menu__parent"
           >
-            <span class="menu__name">{{ parent.name }}</span>
-            <span class="menu__count">
-              ({{ parent.postCount.toLocaleString() }})
+            <span class="menu__label">
+              <span class="menu__name">{{ parent.name }}</span>
+              <span class="menu__count">
+                ({{ parent.postCount.toLocaleString() }})
+              </span>
             </span>
           </NuxtLink>
           <AccordionTrigger
