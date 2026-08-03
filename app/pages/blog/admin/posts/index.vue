@@ -1,13 +1,19 @@
 <template>
   <div class="flex-1 flex flex-col gap-2">
     <PostFilter with-visibility class="p-2 bg-gray-01 rounded-sm" />
+    <template v-if="status === 'pending' || status === 'idle'">
+      <AdminPostItemSkeleton v-for="i in 5" :key="i" />
+    </template>
     <div
-      v-if="!posts || posts.length === 0"
+      v-if="status === 'success' && posts.length === 0"
       class="flex-1 flex items-center justify-center"
     >
       <Empty message="게시글이 없습니다." />
     </div>
-    <div v-else class="flex-1 flex flex-col gap-2">
+    <div
+      v-else-if="status === 'success' && posts.length > 0"
+      class="flex-1 flex flex-col gap-2"
+    >
       <div class="flex items-center justify-between px-2">
         <Checkbox
           :model-value="isAllChecked"
@@ -43,12 +49,16 @@
         @update:page="onPageChange"
       />
     </div>
+    <div v-else class="flex-1 flex items-center justify-center">
+      <Empty message="게시글 조회에 실패했습니다." />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Empty, Checkbox, Pagination } from "@/components/common";
 import AdminPostItem from "@/components/features/post/AdminPostItem.vue";
+import AdminPostItemSkeleton from "@/components/features/post/AdminPostItemSkeleton.vue";
 import PostFilter from "@/components/features/post/PostFilter.vue";
 import PostBulkActions from "@/components/features/post/PostBulkActions.vue";
 import { parseQueryEnum, parseQueryParam } from "@/utils/query-params";
@@ -63,6 +73,7 @@ const {
   data: posts,
   filteredCount,
   pageSize,
+  status,
   refresh,
 } = useGetPosts({
   query: () => parseQueryParam(route.query.query) ?? "",

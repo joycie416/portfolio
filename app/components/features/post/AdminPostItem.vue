@@ -6,14 +6,18 @@
         @update:model-value="emit('update:checked', props.post.id.toString())"
       />
     </div>
-    <div class="flex-1">
-      <p class="text-[18px] md:text-xl">
-        {{ props.post.title }}
-      </p>
-      <div
-        class="flex items-center gap-x-2 flex-wrap text-xs md:text-sm text-text-gray-03 [&_p]:whitespace-nowrap"
+    <div class="flex-1 min-w-0">
+      <NuxtLink
+        class="text-[18px] line-clamp-1 hover:underline md:text-xl"
+        :to="`/blog/${props.post.menu_slug}/${props.post.id}`"
+        prefetch-on="interaction"
       >
-        <p>{{ props.post.menu_full_name }}</p>
+        {{ props.post.title }}
+      </NuxtLink>
+      <div
+        class="flex items-center gap-x-2 flex-wrap text-xs md:text-sm text-text-gray-03"
+      >
+        <p class="max-w-1/2 truncate">{{ props.post.menu_full_name }}</p>
         <div class="w-px h-3 bg-text-gray-03" />
         <p>{{ formatDate(props.post.created_at) }}</p>
         <div class="w-px h-3 bg-text-gray-03" />
