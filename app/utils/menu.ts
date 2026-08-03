@@ -55,56 +55,54 @@ export const flattenMenuGroups = (
   ]);
 };
 
+interface ToMenuOptionsProps {
+  menus: Menu[];
+  withAll?: boolean;
+  type?: "slug" | "id";
+}
+
 /**
  * 메뉴 데이터를 드롭다운용 메뉴 목록으로 변환
  * buildMenuTree와 동일한 계층 구조로 children을 포함
  * @param menus - 메뉴 데이터
- * @returns 드롭다운용 메뉴 목록
+ * @param withAll - 전체 메뉴 포함 여부
+ * @param type - 메뉴 id 또는 slug 사용 여부
  */
-export const toMenuOptions = (
-  menus: Menu[],
-  withAll: boolean = true
-): InputOption<string>[] => {
-  const options: InputOption<string>[] = withAll
+export const toMenuOptions = ({
+  menus,
+  withAll = true,
+  type = "slug",
+}: ToMenuOptionsProps): InputOption<string>[] => {
+  const defaultOptions: InputOption<string>[] = withAll
     ? [{ label: "전체", value: "all" }]
     : [];
+  const parentMap = new Map<string, InputOption<string>>();
 
-  const tree = buildMenuTree(menus);
-
-  tree.forEach((parent) => {
-    if (parent.children.length > 0) {
-      options.push({
-        label: parent.name,
-        value: parent.id,
-        children: parent.children.map((child) => ({
-          label: child.name,
-          value: child.id,
-        })),
-      });
-      return;
-    }
-
-    options.push({
-      label: parent.name,
-      value: parent.id,
-    });
-  });
-
-  const includedIds = new Set<string>();
-  options.forEach((option) => {
-    includedIds.add(option.value);
-    option.children?.forEach((child) => includedIds.add(child.value));
-  });
-
-  // 부모를 찾지 못한 메뉴는 맨 뒤에 추가
   menus
-    .filter((menu) => !includedIds.has(menu.id))
+    .filter((menu) => !menu.parent_id)
     .sort((a, b) => a.order_idx - b.order_idx)
     .forEach((menu) => {
-      options.push({ label: menu.name, value: menu.id });
+      parentMap.set(menu.id, {
+        label: menu.name,
+        value: type === "slug" ? menu.slug : menu.id,
+        children: [],
+      });
     });
 
-  return options;
+  menus
+    .filter((menu) => menu.parent_id)
+    .sort((a, b) => a.order_idx - b.order_idx)
+    .forEach((child) => {
+      const parent = parentMap.get(child.parent_id!);
+      if (!parent) return;
+
+      parent.children?.push({
+        label: child.name,
+        value: type === "slug" ? child.slug : child.id,
+      });
+    });
+
+  return [...defaultOptions, ...parentMap.values()];
 };
 
 /**

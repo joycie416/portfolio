@@ -10,14 +10,28 @@
           />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" class="max-h-45 overflow-y-auto">
-        <DropdownMenuItem
-          v-for="option in menuMoveOptions"
-          :key="option.value"
-          @select="handleMoveMenu(option.value)"
-        >
-          {{ option.label }}
-        </DropdownMenuItem>
+      <DropdownMenuContent align="end" class="w-45 max-h-45 overflow-y-auto">
+        <template v-for="option in menuMoveOptions" :key="option.value">
+          <DropdownMenuItem
+            v-if="!option.children || option.children.length === 0"
+            @select="handleMoveMenu(option.value)"
+          >
+            {{ option.label }}
+          </DropdownMenuItem>
+          <DropdownMenuGroup v-else>
+            <DropdownMenuLabel class="text-xs text-muted-foreground">
+              {{ option.label }}
+            </DropdownMenuLabel>
+            <DropdownMenuItem
+              v-for="child in option.children"
+              :key="child.value"
+              class="pl-5"
+              @select="handleMoveMenu(child.value)"
+            >
+              {{ child.label }}
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </template>
       </DropdownMenuContent>
     </DropdownMenu>
 
@@ -77,6 +91,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Eye, EyeOff } from "@lucide/vue";
@@ -98,7 +114,7 @@ const { data: menus } = useGetMenus();
 
 // 메뉴 필터의 menuOptions와 동일한 값을 사용하되, 이동 대상으로 무효한 "전체"는 제외
 const menuMoveOptions = computed(() =>
-  toMenuOptions(menus.value ?? []).filter((option) => option.value !== "all")
+  toMenuOptions({ menus: menus.value ?? [], withAll: false, type: "id" })
 );
 
 const { bulkDelete, bulkUpdateHidden, bulkMoveMenu } = useBulkPostActions();

@@ -198,7 +198,7 @@ const removeTag = (tag: string) => {
 
 // ------------ 메뉴 ------------
 const { data: menus } = useGetMenus();
-const menuOptions = computed(() => toMenuOptions(menus.value ?? [], false));
+const menuOptions = computed(() => toMenuOptions({ menus: menus.value ?? [] }));
 watch(
   menuOptions,
   () => {

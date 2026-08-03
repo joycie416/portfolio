@@ -64,7 +64,7 @@ const props = defineProps<{
 }>();
 
 const { data: menus } = useGetMenus();
-const menuOptions = computed(() => toMenuOptions(menus.value ?? []));
+const menuOptions = computed(() => toMenuOptions({ menus: menus.value ?? [] }));
 
 const visibilityOptions = getVisibilityOptions();
 

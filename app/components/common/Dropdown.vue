@@ -10,7 +10,7 @@
     <SelectContent class="max-h-45">
       <template v-for="option in props.options" :key="String(option.value)">
         <SelectItem
-          v-if="!option.children"
+          v-if="!option.children || option.children.length === 0"
           :value="String(option.value)"
           :disabled="option.disabled"
         >
