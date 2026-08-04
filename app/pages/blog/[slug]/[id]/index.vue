@@ -48,6 +48,9 @@
       v-html="post?.content"
       class="tiptap tiptap--readonly mt-10"
     />
+    <div>
+      <CommentForm :postId="postId" />
+    </div>
     <ConfirmDialog
       title="게시글 삭제"
       :open="deleteConfirmOpen"
@@ -76,15 +79,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import CommentForm from "~/components/features/comment/CommentForm.vue";
 
 const route = useRoute();
+const postId = computed(() => Number(route.params.id));
 
 const { breadcrumbItems, breadcrumbStatus } = useMenuBreadcrumb(
   () => route.params.slug as string
 );
 
 const { data, refresh } = useGetPost({
-  id: Number(route.params.id),
+  id: postId.value,
   immediate: true,
 });
 const post = computed(() => data.value?.post);
