@@ -48,9 +48,7 @@
       v-html="post?.content"
       class="tiptap tiptap--readonly mt-10"
     />
-    <div>
-      <CommentForm :postId="postId" />
-    </div>
+    <CommentSection :post-id="postId" />
     <ConfirmDialog
       title="게시글 삭제"
       :open="deleteConfirmOpen"
@@ -79,7 +77,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import CommentForm from "~/components/features/comment/CommentForm.vue";
+import CommentSection from "@/components/features/comment/CommentSection.vue";
 
 const route = useRoute();
 const postId = computed(() => Number(route.params.id));
