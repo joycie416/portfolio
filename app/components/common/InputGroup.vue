@@ -64,6 +64,23 @@
         <EyeIcon v-if="!showPassword" class="size-5" />
       </Button>
     </div>
+    <div v-if="props.type === 'textarea'">
+      <Textarea
+        v-model="singleModel"
+        :placeholder="props.placeholder"
+        :required="props.required"
+        :disabled="props.disabled"
+        :maxlength="props.maxlength || undefined"
+        :class="cn(props.class, stateStyle)"
+      />
+      <p v-if="props.maxlength" class="text-xs text-text-gray-04 mt-2">
+        <span class="font-medium">
+          {{ (singleModel?.toString().length || 0).toLocaleString() }}
+        </span>
+        /
+        {{ props.maxlength.toLocaleString() }}
+      </p>
+    </div>
     <p
       v-if="props.hint"
       :class="cn('text-xs text-text-gray-04 mt-2', stateStyle)"
@@ -77,10 +94,11 @@
 import type { InputGroupProps } from "@/types/input-group";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
 import { EyeIcon, EyeOffIcon } from "@lucide/vue";
 import Dropdown from "./Dropdown.vue";
 import CheckboxGroup from "./CheckboxGroup.vue";
+import { cn } from "@/lib/utils";
 
 const props = withDefaults(defineProps<InputGroupProps<TValue>>(), {
   type: "text",

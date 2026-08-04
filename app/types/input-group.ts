@@ -1,7 +1,12 @@
 import type { HTMLAttributes } from "vue";
 import type { InputOption } from "./common";
 
-export type InputType = "text" | "password" | "dropdown" | "checkbox";
+export type InputType =
+  | "text"
+  | "password"
+  | "dropdown"
+  | "checkbox"
+  | "textarea";
 
 export type InputGroupState = "success" | "error";
 
@@ -27,6 +32,10 @@ export type InputGroupProps<TValue extends string | number = string | number> =
       type: "checkbox";
       options?: InputOption<TValue>[];
       direction?: CheckboxDirection;
+    })
+  | (CommonInputGroupProps & {
+      type: "textarea";
+      maxlength?: number;
     });
 
 export type CheckboxDirection = "horizontal" | "vertical";
