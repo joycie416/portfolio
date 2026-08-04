@@ -1,6 +1,6 @@
 <template>
   <Card title="댓글 작성" class="*:data-[slot=card-title]:text-lg">
-    <form class="flex flex-col gap-2">
+    <form class="flex flex-col gap-1">
       <div class="flex flex-col md:flex-row gap-2">
         <InputGroup
           v-model="nickname"
@@ -33,7 +33,16 @@
         :hint="errors.content"
         class="resize-none min-h-24"
       />
-      <Button class="w-fit self-end" :disabled="!meta.valid">추가</Button>
+      <div class="flex justify-between items-center gap-2">
+        <div class="flex items-center gap-2 text-red-04">
+          <AlertTriangle class="size-4 shrink-0" />
+          <p class="text-xs md:text-sm">
+            비밀번호는 별도로 암호화되지 않습니다. 다른 곳에서 사용하는
+            비밀번호는 입력하지 마세요.
+          </p>
+        </div>
+        <Button class="w-fit self-end" :disabled="!meta.valid">추가</Button>
+      </div>
     </form>
   </Card>
 </template>
@@ -44,6 +53,7 @@ import { useForm } from "vee-validate";
 import { Card, InputGroup } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { commentSchema } from "@/schemas/comment";
+import { AlertTriangle } from "@lucide/vue";
 
 const props = defineProps<{ postId: number }>();
 
