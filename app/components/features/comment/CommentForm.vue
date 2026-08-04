@@ -23,10 +23,12 @@
           container-class="basis-1/2"
         />
       </div>
-      <Textarea
+      <InputGroup
         v-model="content"
+        type="textarea"
         placeholder="내용을 입력해주세요."
         required
+        :maxlength="1000"
         :state="errors.content ? 'error' : 'success'"
         :hint="errors.content"
         class="resize-none min-h-24"
@@ -41,7 +43,6 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { Card, InputGroup } from "@/components/common";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { commentSchema } from "@/schemas/comment";
 
 const props = defineProps<{ postId: number }>();
