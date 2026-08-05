@@ -13,6 +13,7 @@ import type {
   PostSaveResult,
   SimpleTempPost,
   SimplePostWithMenuSlug,
+  PostNeighbors,
 } from "@/types/supabase";
 
 export const POSTS_PAGE_SIZE = 10;
@@ -23,6 +24,7 @@ export type UseGetPostsParams = {
   visibility?: MaybeRefOrGetter<PostVisibility>;
   slug?: MaybeRefOrGetter<string | undefined>;
   perPage?: number;
+  server?: boolean;
 };
 
 export const useGetPosts = (params: UseGetPostsParams) => {
@@ -53,7 +55,7 @@ export const useGetPosts = (params: UseGetPostsParams) => {
         query: query.value,
         visibility: visibility.value,
       }),
-    { default: () => ({ data: [], count: 0 }) }
+    { default: () => ({ data: [], count: 0 }), server: params.server }
   );
 
   // menu_full_name 추가
@@ -243,4 +245,50 @@ export const useGetTempPosts = () => {
     () => posts(supabase).getTempList(),
     { default: () => ({ data: [], count: 0 }) }
   );
+};
+
+export type UseGetPostNeighborsParams = {
+  postId: MaybeRefOrGetter<number>;
+  slug: MaybeRefOrGetter<string>;
+};
+
+/** 이전/다음 글 + 같은 메뉴 최근글 — SEO 불필요하므로 클라이언트에서만 조회 */
+export const useGetPostNeighbors = (params: UseGetPostNeighborsParams) => {
+  const supabase = useSupabaseClient();
+  const postId = computed(() => toValue(params.postId));
+
+  const neighborsResult = useAsyncData<PostNeighbors | null>(
+    () => `post-neighbors:${postId.value}`,
+    () => posts(supabase).getPostNeighbors(postId.value),
+    {
+      server: false,
+      default: () => null,
+      watch: [postId],
+    }
+  );
+
+  const recentResult = useGetPosts({
+    page: 1,
+    slug: params.slug,
+    perPage: 3,
+    server: false,
+  });
+
+  const pending = computed(
+    () => neighborsResult.pending.value || recentResult.pending.value
+  );
+  const error = computed(
+    () => neighborsResult.error.value ?? recentResult.error.value ?? null
+  );
+
+  const refresh = () =>
+    Promise.all([neighborsResult.refresh(), recentResult.refresh()]);
+
+  return {
+    neighbors: neighborsResult.data,
+    recent: recentResult.data,
+    pending,
+    error,
+    refresh,
+  };
 };

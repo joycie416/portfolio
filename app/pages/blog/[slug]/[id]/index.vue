@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="space-y-8 md:space-y-10 pb-10 md:pb-16">
     <TopCard
       :imgSrc="post?.thumbnail ?? undefined"
       class="h-80 md:h-100"
@@ -43,11 +43,15 @@
         </DropdownMenu>
       </div>
     </TopCard>
+    <!-- 게시글 본문 -->
     <div
       ref="contentRef"
       v-html="post?.content"
-      class="tiptap tiptap--readonly mt-10"
+      class="tiptap tiptap--readonly"
     />
+    <!-- 게시글 하단 -->
+    <hr class="border border-px border-gray-06" />
+    <RelatedPostList />
     <CommentSection :post-id="postId" />
     <ConfirmDialog
       title="게시글 삭제"
@@ -78,6 +82,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import CommentSection from "@/components/features/comment/CommentSection.vue";
+import RelatedPostList from "@/components/features/post/RelatedPostList.vue";
 
 const route = useRoute();
 const postId = computed(() => Number(route.params.id));
