@@ -190,6 +190,7 @@ export type Database = {
     };
     Functions: {
       fn_menus_reorder: { Args: { updates: Json }; Returns: undefined };
+      get_post_neighbors: { Args: { p_post_id: number }; Returns: Json };
       posts_bulk_delete: {
         Args: { post_ids: number[] };
         Returns: {
