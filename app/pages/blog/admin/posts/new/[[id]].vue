@@ -113,7 +113,7 @@ import { X } from "@lucide/vue";
 import TempPostModal from "@/components/features/post/TempPostModal.vue";
 
 definePageMeta({
-  middleware: "validate-post",
+  middleware: "validate-edit-post",
 });
 
 const route = useRoute();
