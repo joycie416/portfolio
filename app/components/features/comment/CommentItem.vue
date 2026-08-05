@@ -5,9 +5,11 @@
         <div class="avatar" :style="{ '--avatar-color': avatarColor }">
           <avatar-icon class="size-full" />
         </div>
-        <p class="font-semibold">{{ comment.nickname }}</p>
-        <hr class="w-px h-4 bg-gray-03" />
-        <p class="text-text-gray-03">{{ formatDate(comment.created_at) }}</p>
+        <p class="font-semibold text-sm md:text-base">{{ comment.nickname }}</p>
+        <hr class="w-px h-3.5 bg-gray-03 md:h-4" />
+        <p class="text-text-gray-03 text-sm md:text-base">
+          {{ formatDate(comment.created_at) }}
+        </p>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger
@@ -24,7 +26,7 @@
     <div class="relative w-full min-h-20 md:min-h-16 px-1">
       <p
         v-if="!isEditing || isPasswordValid === INDETERMINATE"
-        class="whitespace-pre-wrap"
+        class="whitespace-pre-wrap text-sm md:text-base"
       >
         {{ comment.content }}
       </p>

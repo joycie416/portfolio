@@ -3,7 +3,7 @@
     title="댓글 작성"
     class="*:data-[slot=card-title]:text-base md:*:data-[slot=card-title]:text-lg"
   >
-    <form class="flex flex-col gap-1" @submit.prevent="handleSubmitComment">
+    <form class="flex flex-col gap-2" @submit.prevent="handleSubmitComment">
       <div class="flex flex-col md:flex-row gap-2">
         <InputGroup
           v-model="nickname"
@@ -94,6 +94,11 @@ const loading = ref(false);
 
 const handleSubmitComment = handleSubmit(async () => {
   if (!meta.value.valid || loading.value) return;
+
+  if (toValue(nickname)?.trim() === "" || toValue(content)?.trim() === "") {
+    toast.error("닉네임과 내용을 입력해주세요.");
+    return;
+  }
 
   try {
     loading.value = true;

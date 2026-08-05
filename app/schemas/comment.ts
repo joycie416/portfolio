@@ -4,6 +4,7 @@ export const commentSchema = z.object({
   postId: z.number().int(),
   nickname: z
     .string()
+    .trim()
     .min(2, { message: "닉네임을 2자 이상 입력해주세요." })
     .max(10, { message: "닉네임은 10자 이하로 입력해주세요." }),
   password: z
@@ -15,8 +16,9 @@ export const commentSchema = z.object({
     }),
   content: z
     .string()
+    .trim()
     .min(1, { message: "내용을 입력해주세요." })
-    .max(500, { message: "500자 이하로 입력해주세요." }),
+    .max(1000, { message: "1,000자 이하로 입력해주세요." }),
 });
 
 export type CommentForm = z.infer<typeof commentSchema>;
