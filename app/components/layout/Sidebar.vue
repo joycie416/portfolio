@@ -63,7 +63,7 @@
         </AccordionItem>
       </Accordion>
       <!-- 메뉴 로딩 -->
-      <div v-else-if="status === 'pending'" class="space-y-1">
+      <div v-else-if="status === 'pending'" class="menu-skeleton space-y-1">
         <Skeleton v-for="i in 5" :key="i" class="w-full h-13 rounded-[12px]" />
       </div>
       <!-- 메뉴 에러 -->
@@ -78,14 +78,12 @@
         </button>
       </div>
       <div class="sidebar__footer">
-        <NuxtLink
-          v-if="!isAuthenticated"
-          class="admin__button"
-          to="/blog/admin/login"
-        >
-          <LockKeyhole class="size-5" />
-          <span class="admin__button__text">관리자 로그인</span>
-        </NuxtLink>
+        <div v-if="!isAuthenticated" class="admin">
+          <NuxtLink class="admin__button" to="/blog/admin/login">
+            <LockKeyhole class="size-5" />
+            <span class="admin__button__text">관리자 로그인</span>
+          </NuxtLink>
+        </div>
         <div v-else class="admin">
           <NuxtLink class="admin__button" to="/blog/admin">
             <Settings class="size-5" />
@@ -288,6 +286,11 @@ const handleSignOut = async () => {
 
   &__count {
     flex-shrink: 0;
+  }
+}
+.menu-skeleton {
+  .sidebar[data-open="false"] & {
+    display: none;
   }
 }
 .admin {
