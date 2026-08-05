@@ -1,7 +1,7 @@
 import { createBrowserClient } from "@supabase/ssr";
 import type { User } from "@supabase/supabase-js";
 import { AUTH_STATE_KEYS } from "@/constants/supabase.auth";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@/types/extended-database.types";
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();

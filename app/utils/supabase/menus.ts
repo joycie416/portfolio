@@ -1,5 +1,5 @@
 import { PostgrestError, type SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@/types/extended-database.types";
 import type { MenuInsertType, MenuUpdateType } from "@/types/supabase";
 
 export const menus = (client: SupabaseClient<Database>) => ({

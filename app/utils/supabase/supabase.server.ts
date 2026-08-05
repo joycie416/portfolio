@@ -5,7 +5,7 @@ import {
 } from "@supabase/ssr";
 import type { CookieMethodsServer, CookieOptions } from "@supabase/ssr";
 import { appendHeader, getHeader, type H3Event } from "h3";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@/types/extended-database.types";
 
 export function serverSupabaseClient(event: H3Event) {
   const config = useRuntimeConfig();

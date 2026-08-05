@@ -1,9 +1,5 @@
-import type {
-  Database,
-  Tables,
-  TablesInsert,
-  TablesUpdate,
-} from "./database.types";
+import type { Tables, TablesInsert, TablesUpdate } from "./database.types";
+import type { Database } from "./extended-database.types";
 
 // 쉽게 사용할 수 있도록 db 타입 정의
 
@@ -99,6 +95,16 @@ export type TempPostInsertType = OmitDefaultColumns<
   TablesInsert<"temp_posts">,
   true
 >;
+
+// 이전/다음 게시글 타입
+export type PostNeighbor = {
+  id: number;
+  title: string;
+};
+export type PostNeighbors = {
+  prev: PostNeighbor | null;
+  next: PostNeighbor | null;
+};
 
 export type Comment = Tables<"comments">;
 export type CommentInsertType = OmitDefaultColumns<

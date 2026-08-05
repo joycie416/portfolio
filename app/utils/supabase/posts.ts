@@ -1,11 +1,12 @@
 import { PostgrestError, type SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database.types";
+import type { Database } from "@/types/extended-database.types";
 import { generateExcerpt } from "@/utils/post";
 import type {
   Post,
   PostBulkFailure,
   PostFile,
   PostInsertType,
+  PostNeighbors,
   PostSaveResult,
   PostStorageFile,
   PostStorageFiles,
@@ -68,6 +69,7 @@ export type PostsApi = {
     files: PostUpdateFile
   ) => Promise<PostSaveResult>;
   bulkDelete: (postIds: number[]) => Promise<PostBulkFailure[]>;
+  getRelatedPosts: (postId: number) => Promise<PostNeighbors | null>;
 };
 
 // 정규식 특수문자 이스케이프 (data-inline-key 값을 정규식 리터럴로 사용하기 위함)
@@ -528,6 +530,16 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
     return failures;
   };
 
+  const getRelatedPosts = async (postId: number) => {
+    const { data, error } = await client.rpc("get_post_neighbors", {
+      p_post_id: postId,
+    });
+
+    if (error) throw new PostgrestError(error);
+
+    return data;
+  };
+
   return {
     getList: async ({
       page,
@@ -595,5 +607,6 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
     delete: deletePost,
     publishFromTemp,
     bulkDelete,
+    getRelatedPosts,
   };
 };
