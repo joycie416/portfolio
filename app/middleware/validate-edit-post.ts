@@ -19,7 +19,7 @@ const notFound = () =>
     statusMessage: "존재하지 않는 게시글입니다.",
   });
 
-const SKIP_KEY = "validate-post:skip";
+const SKIP_KEY = "validate-edit-post:skip";
 
 // 게시글/임시저장 글이 실제로 존재하는지 확인하고, 없으면 404
 export default defineNuxtRouteMiddleware(async (to) => {

@@ -84,6 +84,10 @@ import {
 import CommentSection from "@/components/features/comment/CommentSection.vue";
 import RelatedPostList from "@/components/features/post/RelatedPostList.vue";
 
+definePageMeta({
+  middleware: "validate-post",
+});
+
 const route = useRoute();
 const postId = computed(() => Number(route.params.id));
 
