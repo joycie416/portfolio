@@ -8,7 +8,7 @@
     "
   >
     <template v-if="props.imgSrc">
-      <NuxtImg :src="props.imgSrc"" class="absolute inset-0 size-full object-cover" />
+      <NuxtImg :src="props.imgSrc" class="absolute inset-0 size-full object-cover" />
       <div class="absolute inset-0 bg-gray-00/50" />
     </template>
     <div v-else class="absolute inset-0 bg-gray-02" />

@@ -36,7 +36,7 @@
         <NuxtLink v-if="item.href" :to="item.href">
           {{ item.label }}
         </NuxtLink>
-        <span v-else class="">
+        <span v-else>
           {{ item.label }}
         </span>
       </div>
