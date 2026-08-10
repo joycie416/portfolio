@@ -47,10 +47,7 @@ export const useUpdateMenu = () => {
 export const useDeleteMenu = () => {
   const supabase = useSupabaseClient();
 
-  const deleteMenu = async (id: string) => {
-    const { error } = await supabase.from("menus").delete().eq("id", id);
-    if (error) throw error;
-  };
+  const deleteMenu = (id: string) => menus(supabase).delete(id);
 
   return { deleteMenu };
 };
