@@ -7,6 +7,7 @@ export { default as Dialog } from "./Dialog.vue";
 export { default as Dropdown } from "./Dropdown.vue";
 export { default as Empty } from "./Empty.vue";
 export { default as FileItem } from "./FileItem.vue";
+export { default as InputFilePreview } from "./InputFilePreview.vue";
 export { default as InputGroup } from "./InputGroup.vue";
 export { default as LoadingOverlay } from "./LoadingOverlay.vue";
 export { default as Pagination } from "./Pagination.vue";
