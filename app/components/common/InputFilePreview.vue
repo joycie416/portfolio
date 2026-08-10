@@ -1,5 +1,5 @@
 <template>
-  <div class="input-file-preview">
+  <div class="input-file-preview" :data-state="props.state">
     <label
       v-if="props.label"
       :class="
@@ -71,12 +71,14 @@ const props = withDefaults(
     label?: string;
     required?: boolean;
     disabled?: boolean;
+    state: "success" | "error";
   }>(),
   {
     url: undefined,
     label: undefined,
     required: false,
     disabled: false,
+    state: "success",
   }
 );
 
@@ -179,6 +181,10 @@ onBeforeUnmount(() => {
       line-height: 1.5rem;
     }
 
+    .input-file-preview[data-state="error"] & {
+      color: var(--color-red-04);
+    }
+
     &.required-label::after {
       content: " *";
       color: var(--color-red-04);
@@ -203,6 +209,10 @@ onBeforeUnmount(() => {
     &:hover:not(&--disabled),
     &:focus-visible:not(&--disabled) {
       border-color: var(--color-gray-04);
+    }
+
+    .input-file-preview[data-state="error"] & {
+      border-color: var(--color-destructive);
     }
 
     &--empty {
