@@ -1,4 +1,5 @@
 import { menus } from "@/utils/supabase/menus";
+import { useMenuRoute } from "@/composables/useMenuRoute";
 
 const notFound = () =>
   createError({
@@ -10,11 +11,16 @@ const notFound = () =>
 export default defineNuxtRouteMiddleware(async (to) => {
   const supabase = useSupabaseClient();
 
+  const { setMenuId } = useMenuRoute();
+
   const slug = to.params.slug as string;
 
   try {
-    await menus(supabase).getBySlug(slug);
+    const menu = await menus(supabase).getBySlug(slug);
+    if (!menu) throw notFound();
+    setMenuId(menu.id);
   } catch {
+    setMenuId(null);
     throw notFound();
   }
 });

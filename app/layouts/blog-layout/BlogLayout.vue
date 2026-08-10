@@ -12,11 +12,7 @@
         class="layout__backdrop"
         @click="closeSidebar"
       />
-      <main class="layout__main">
-        <div class="layout__content">
-          <slot />
-        </div>
-      </main>
+      <slot />
       <NuxtLink to="/blog/admin/posts/new" class="create-post-button">
         <Plus />
       </NuxtLink>
