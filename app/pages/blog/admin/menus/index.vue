@@ -55,8 +55,9 @@ import { Button } from "@/components/ui/button";
 import { Pin } from "@lucide/vue";
 import type { MenuState } from "@/types/menu";
 import type { MenuInsertType, MenuUpdateType } from "@/types/supabase";
+import type { MenuThumbnailUpdate } from "@/utils/supabase/menus";
 import EditMenuModal from "@/components/features/menu/EditMenuModal.vue";
-import { PostgrestError } from "@supabase/supabase-js";
+import { PostgrestError, StorageApiError } from "@supabase/supabase-js";
 import { toast } from "vue-sonner";
 
 // 메뉴 목록
@@ -117,10 +118,10 @@ provide("onMenuDragEnd", endDrag);
 
 // CRUD
 const { createMenu } = useCreateMenu();
-const handleCreate = async (data: MenuInsertType) => {
+const handleCreate = async (data: MenuInsertType, thumbnail: File | null) => {
   try {
     const orderIdx = transformedMenus.value.length + 1;
-    await createMenu({ ...data, order_idx: orderIdx });
+    await createMenu({ ...data, order_idx: orderIdx }, thumbnail);
     await refresh();
     closeModal();
     toast.success("메뉴가 추가되었습니다.");
@@ -135,15 +136,21 @@ const handleCreate = async (data: MenuInsertType) => {
       }
       toast.error(error.message);
       return;
+    } else if (error instanceof StorageApiError) {
+      toast.error(error.message);
+      return;
     }
     toast.error("메뉴 추가에 실패했습니다.");
   }
 };
 
 const { updateMenu } = useUpdateMenu();
-const handleEdit = async (data: MenuUpdateType) => {
+const handleEdit = async (
+  data: MenuUpdateType,
+  thumbnail: MenuThumbnailUpdate
+) => {
   try {
-    await updateMenu(data);
+    await updateMenu(data, thumbnail);
     await refresh();
     closeModal();
     toast.success("메뉴가 수정되었습니다.");
@@ -156,6 +163,9 @@ const handleEdit = async (data: MenuUpdateType) => {
         toast.error("이미 존재하는 slug입니다.");
         return;
       }
+      toast.error(error.message);
+      return;
+    } else if (error instanceof StorageApiError) {
       toast.error(error.message);
       return;
     }

@@ -1,4 +1,4 @@
-import { menus } from "@/utils/supabase/menus";
+import { menus, type MenuThumbnailUpdate } from "@/utils/supabase/menus";
 import { getMenuFamilyBySlug } from "@/utils/menu";
 import type { Menu, MenuInsertType, MenuUpdateType } from "@/types/supabase";
 import type { FlatMenu } from "@/types/menu";
@@ -15,8 +15,8 @@ export const useGetMenus = () => {
 export const useCreateMenu = () => {
   const supabase = useSupabaseClient();
 
-  const createMenu = (formData: MenuInsertType) =>
-    menus(supabase).create(formData);
+  const createMenu = (formData: MenuInsertType, thumbnail?: File | null) =>
+    menus(supabase).create(formData, thumbnail);
 
   return { createMenu };
 };
@@ -36,7 +36,10 @@ export const useUpdateHidden = () => {
 export const useUpdateMenu = () => {
   const supabase = useSupabaseClient();
 
-  const updateMenu = (data: MenuUpdateType) => menus(supabase).update(data);
+  const updateMenu = (
+    data: MenuUpdateType,
+    thumbnail?: MenuThumbnailUpdate
+  ) => menus(supabase).update(data, thumbnail);
 
   return { updateMenu };
 };
