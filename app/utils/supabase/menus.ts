@@ -72,7 +72,14 @@ export const menus = (client: SupabaseClient<Database>) => ({
   delete: async (id: string) => {
     const { error } = await client.from("menus").delete().eq("id", id);
     if (error) throw new PostgrestError(error);
-    return;
+
+    const {
+      data: { publicUrl },
+    } = client.storage.from("menus").getPublicUrl(id);
+    const res = await fetch(publicUrl, { method: "HEAD" });
+    if (res.ok) {
+      await removeThumbnail(client, id);
+    }
   },
   getBySlug: async (slug: string) => {
     const { data, error } = await client

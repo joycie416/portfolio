@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import { Breadcrumb, ConfirmDialog } from "@/components/common";
-import { BlogInnerLayout, TopCard } from "@/components/layout";
+import { BlogInnerLayout } from "@/components/layout";
 import { EllipsisVertical, Share2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
 import { Button } from "@/components/ui/button";
