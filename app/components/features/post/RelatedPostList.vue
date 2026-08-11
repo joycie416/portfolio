@@ -113,8 +113,16 @@ const { neighbors, recent, pending, error } = useGetPostNeighbors({
   grid-template-columns: repeat(1, 1fr);
   gap: 1rem;
 
+  :deep(.post-item) {
+    height: 120px;
+  }
+
   @include md {
     grid-template-columns: repeat(3, 1fr);
+
+    :deep(.post-item) {
+      height: 360px;
+    }
   }
 }
 </style>

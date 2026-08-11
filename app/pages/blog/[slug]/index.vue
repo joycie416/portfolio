@@ -123,10 +123,18 @@ watch(
   flex-direction: column;
   gap: 16px;
 
+  :deep(.post-item) {
+    height: 120px;
+  }
+
   @include md {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+
+    :deep(.post-item) {
+      height: 360px;
+    }
   }
   @include lg {
     gap: 24px;

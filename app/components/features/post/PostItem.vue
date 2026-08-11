@@ -1,5 +1,12 @@
 <template>
-  <Card class="p-0 md:p-0 post-item" @click="handleClick">
+  <Card
+    class="p-0 md:p-0 post-item"
+    :class="{
+      'post-item--vertical': variant === 'vertical',
+      'post-item--horizontal': variant === 'horizontal',
+    }"
+    @click="handleClick"
+  >
     <div class="post-item__thumbnail">
       <NuxtImg
         v-if="post.thumbnail"
@@ -12,12 +19,13 @@
       </div>
     </div>
     <div class="post-item__content">
-      <h3
-        class="md:h-14 text-base md:text-lg font-bold max-md:truncate md:line-clamp-2"
-      >
+      <div v-if="withMenuTag" class="post-item__menu-tag">
+        {{ post.menu_full_name }}
+      </div>
+      <h3 class="post-item__title">
         {{ post.title }}
       </h3>
-      <p class="text-xs md:text-sm text-gray-500 line-clamp-4">
+      <p class="post-item__excerpt">
         {{ post.excerpt }}
       </p>
     </div>
@@ -28,15 +36,25 @@
 import type { TransformedPost } from "@/types/supabase";
 import { Card } from "@/components/common";
 import { LogoIcon } from "@/components/icons";
+import { ChevronRight } from "@lucide/vue";
 
-const props = defineProps<{ post: TransformedPost }>();
+const props = withDefaults(
+  defineProps<{
+    post: TransformedPost;
+    /** 미지정 시 반응형(모바일 가로 / md+ 세로). vertical은 md+에서만 세로, 모바일은 가로 */
+    variant?: "vertical" | "horizontal";
+    /** 메뉴명 태그(breadcrumb) 표시 */
+    withMenuTag?: boolean;
+  }>(),
+  {
+    withMenuTag: false,
+  }
+);
+
 const post = computed(() => props.post);
 
-const route = useRoute();
-const slug = computed(() => route.params.slug as string);
-
 const handleClick = () => {
-  navigateTo(`/blog/${slug.value}/${post.value.id}`);
+  navigateTo(`/blog/${post.value.menu_slug}/${post.value.id}`);
 };
 </script>
 
@@ -44,7 +62,9 @@ const handleClick = () => {
 @layer components {
   .post-item {
     display: flex;
-    height: 120px;
+    flex-direction: row;
+    height: 100%;
+    min-height: 0;
     overflow: hidden;
 
     transition:
@@ -52,9 +72,11 @@ const handleClick = () => {
       scale 0.2s ease-in-out;
     cursor: pointer;
 
-    @include md {
-      flex-direction: column;
-      height: 360px;
+    // 기본(variant 미지정): 모바일 가로 / md+ 세로 — 높이는 부모에서 제어
+    &:not(.post-item--vertical):not(.post-item--horizontal) {
+      @include md {
+        flex-direction: column;
+      }
     }
 
     &:hover {
@@ -64,14 +86,49 @@ const handleClick = () => {
       }
     }
 
+    &--vertical {
+      // 모바일: horizontal과 동일 / md+: 세로 레이아웃
+      flex-direction: row;
+      height: 100%;
+      min-height: 0;
+
+      @include md {
+        flex-direction: column;
+      }
+    }
+
+    &--horizontal {
+      flex-direction: row;
+      height: 100%;
+      min-height: 0;
+    }
+
     &__thumbnail {
       flex: 0 0 30%;
       width: 100%;
       min-height: 0;
+      overflow: hidden;
 
+      .post-item--horizontal &,
+      .post-item--vertical & {
+        flex: 0 0 30%;
+        align-self: stretch;
+      }
+
+      .post-item--vertical & {
+        @include md {
+          flex: 0 0 65%;
+          align-self: auto;
+        }
+      }
+    }
+
+    // 기본 variant: md+에서 세로 레이아웃 썸네일 비율
+    &:not(.post-item--vertical):not(.post-item--horizontal) {
       @include md {
-        flex: 0 0 50%;
-        width: 100%;
+        .post-item__thumbnail {
+          flex: 0 0 50%;
+        }
       }
     }
 
@@ -81,13 +138,125 @@ const handleClick = () => {
       gap: 4px;
 
       width: 100%;
-      height: 100%;
+      min-width: 0;
+      min-height: 0;
       padding: 12px 16px;
       overflow: hidden;
 
       @include md {
         padding: 16px;
         gap: 8px;
+      }
+
+      .post-item--horizontal &,
+      .post-item--vertical & {
+        flex: 1 1 70%;
+      }
+
+      .post-item--vertical & {
+        @include md {
+          flex: 0 0 35%;
+        }
+      }
+    }
+
+    &__menu-tag {
+      background-color: var(--color-primary-100);
+      padding: 4px 8px;
+      border-radius: 99px;
+      width: fit-content;
+      max-width: 100%;
+
+      font-size: 11px;
+      line-height: 1.3;
+      font-weight: 500;
+      color: var(--color-primary-500);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      @include md {
+        font-size: 12px;
+      }
+    }
+
+    &__title {
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--color-gray-10);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      // 기본: 모바일 1줄, md+ 2줄
+      @include md {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        white-space: normal;
+        text-overflow: unset;
+      }
+
+      .post-item--horizontal & {
+        display: block;
+        -webkit-line-clamp: unset;
+        line-clamp: unset;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .post-item--vertical & {
+        // 모바일: horizontal과 동일(1줄) / md+: 2줄
+        display: block;
+        -webkit-line-clamp: unset;
+        line-clamp: unset;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        @include md {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
+          white-space: normal;
+          text-overflow: unset;
+        }
+      }
+
+      @include md {
+        font-size: 1.125rem;
+      }
+    }
+
+    &__excerpt {
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: var(--color-text-gray-03);
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      line-clamp: 4;
+
+      @include md {
+        font-size: 0.875rem;
+      }
+
+      .post-item--horizontal & {
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+      }
+
+      .post-item--vertical & {
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+
+        @include md {
+          -webkit-line-clamp: 4;
+          line-clamp: 4;
+        }
       }
     }
   }
