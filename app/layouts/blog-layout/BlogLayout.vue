@@ -71,31 +71,6 @@ const closeSidebar = () => {
       display: none;
     }
   }
-
-  &__main {
-    flex: 1;
-    min-width: 0;
-
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__content {
-    width: 100%;
-    max-width: 1024px;
-    height: 100%;
-    margin: 0 auto;
-    padding: 20px;
-
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-
-    @include lg {
-      padding: 32px 20px;
-      gap: 40px;
-    }
-  }
 }
 .create-post-button {
   position: fixed;

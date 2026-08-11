@@ -1,11 +1,15 @@
 <template>
-  <!-- eslint-disable vue/no-multiple-template-root -->
-  <div>블로그</div>
-  <Card title="블로그 카드">
-    <p>블로그 카드</p>
-  </Card>
+  <main class="main">
+    <TopSection />
+  </main>
 </template>
 
 <script setup lang="ts">
-import { Card } from "@/components/common";
+import { TopSection } from "@/components/features/blog";
 </script>
+
+<style lang="scss" scoped>
+.main {
+  width: 100%;
+}
+</style>
