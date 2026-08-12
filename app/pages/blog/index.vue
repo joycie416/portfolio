@@ -2,11 +2,16 @@
   <main class="main">
     <TopSection />
     <PostSection />
+    <CommentSection />
   </main>
 </template>
 
 <script setup lang="ts">
-import { PostSection, TopSection } from "@/components/features/blog";
+import {
+  CommentSection,
+  PostSection,
+  TopSection,
+} from "@/components/features/blog";
 </script>
 
 <style lang="scss" scoped>

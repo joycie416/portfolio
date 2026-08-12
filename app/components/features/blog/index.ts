@@ -1,3 +1,4 @@
+export { default as CommentSection } from "./CommentSection.vue";
 export { default as InputSearch } from "./InputSearch.vue";
 export { default as PostSection } from "./PostSection.vue";
 export { default as PostSectionSkeleton } from "./PostSectionSkeleton.vue";
