@@ -9,13 +9,21 @@ import {
   type GetCommentListWithSlugParams,
 } from "@/utils/supabase/comments";
 
-export const useGetComments = ({ postId }: { postId: number }) => {
+export const useGetComments = ({
+  postId,
+  server,
+  lazy,
+}: {
+  postId: number;
+  server?: boolean;
+  lazy?: boolean;
+}) => {
   const supabase = useSupabaseClient();
 
   return useLazyAsyncData<{ data: Comment[]; count: number }>(
     () => `comments:${postId}`,
     () => comments(supabase).getList(postId),
-    { default: () => ({ data: [], count: 0 }) }
+    { default: () => ({ data: [], count: 0 }), server, lazy }
   );
 };
 
