@@ -4,17 +4,17 @@
       <h2 class="comment-section__title">최근 댓글</h2>
       <div class="comment__container">
         <div class="comment__list">
-          <template v-if="!pending && !error && comments.length > 0">
+          <template v-if="status === 'success' && comments.length > 0">
             <CommentDetailItem
               v-for="comment in comments"
               :key="comment.id"
               :comment="comment"
             />
           </template>
-          <template v-else-if="!pending && !error && comments.length === 0">
+          <template v-else-if="status === 'success' && comments.length === 0">
             <Empty message="최근 댓글이 없습니다." class="h-50 md:h-80" />
           </template>
-          <template v-else-if="pending && !error">
+          <template v-else-if="status === 'pending' || status === 'idle'">
             <CommentDetailItemSkeleton v-for="i in 4" :key="i" />
           </template>
           <template v-else>
@@ -35,7 +35,7 @@ import CommentDetailItemSkeleton from "@/components/features/comment/CommentDeta
 import { Empty } from "@/components/common";
 import { useGetCommentsWithSlug } from "@/composables/useComment";
 
-const { data, pending, error } = useGetCommentsWithSlug({
+const { data, status } = useGetCommentsWithSlug({
   perPage: 4,
   page: 1,
   server: false,
