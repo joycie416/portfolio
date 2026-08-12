@@ -2,8 +2,12 @@ import type {
   Comment,
   CommentInsertType,
   CommentUpdateType,
+  CommentWithSlug,
 } from "@/types/supabase";
-import { comments } from "@/utils/supabase/comments";
+import {
+  comments,
+  type GetCommentListWithSlugParams,
+} from "@/utils/supabase/comments";
 
 export const useGetComments = ({ postId }: { postId: number }) => {
   const supabase = useSupabaseClient();
@@ -37,4 +41,24 @@ export const useDeleteComment = () => {
   const deleteComment = (commentId: number) =>
     comments(supabase).delete(commentId);
   return { deleteComment };
+};
+
+/**
+ * 블로그 홈/관리자 댓글 관리 사용
+ */
+export const useGetCommentsWithSlug = (
+  params: GetCommentListWithSlugParams & { server?: boolean; lazy?: boolean }
+) => {
+  const supabase = useSupabaseClient();
+
+  return useAsyncData<{ data: CommentWithSlug[]; count: number }>(
+    () =>
+      `comments:with-slug:${params.perPage || 10}:${params.page || 1}:${params.query || ""}`,
+    () => comments(supabase).getListWithSlug(params),
+    {
+      default: () => ({ data: [], count: 0 }),
+      server: params.server,
+      lazy: params.lazy,
+    }
+  );
 };

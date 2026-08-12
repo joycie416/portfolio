@@ -107,6 +107,10 @@ export type PostNeighbors = {
 };
 
 export type Comment = Tables<"comments">;
+export type CommentWithSlug = Omit<Comment, "password"> & {
+  post_title: string;
+  menu_slug: string;
+};
 export type CommentInsertType = OmitDefaultColumns<
   RequiredFields<
     TablesInsert<"comments">,
