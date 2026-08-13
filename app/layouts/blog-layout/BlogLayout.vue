@@ -12,7 +12,10 @@
         class="layout__backdrop"
         @click="closeSidebar"
       />
-      <slot />
+      <div class="layout__page">
+        <slot />
+        <Footer />
+      </div>
       <NuxtLink to="/blog/admin/posts/new" class="create-post-button">
         <Plus />
       </NuxtLink>
@@ -21,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { BlogHeader, Sidebar } from "@/components/layout";
+import { BlogHeader, Footer, Sidebar } from "@/components/layout";
 import { Plus } from "@lucide/vue";
 
 const runtimeConfig = useRuntimeConfig();
@@ -57,6 +60,15 @@ const closeSidebar = () => {
 
     display: flex;
     align-items: stretch;
+  }
+
+  // 사이드바 옆에서 slot + footer를 세로로 쌓음
+  &__page {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
   }
 
   &__backdrop {

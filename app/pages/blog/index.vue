@@ -16,6 +16,7 @@ import {
 
 <style lang="scss" scoped>
 .main {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 }
 </style>
