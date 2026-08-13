@@ -50,6 +50,17 @@
         v-html="post?.content"
         class="tiptap tiptap--readonly"
       />
+      <!-- 태그 목록 -->
+      <ul class="tag__list">
+        <li
+          v-for="tag in post?.tags"
+          :key="tag"
+          class="tag__item"
+          @click="() => onTagClick(tag)"
+        >
+          {{ tag }}
+        </li>
+      </ul>
       <!-- 게시글 하단 -->
       <hr class="border border-px border-gray-06" />
       <RelatedPostList />
@@ -206,4 +217,41 @@ const copyLink = () => {
     toast.error("링크 복사에 실패했습니다.");
   }
 };
+
+const onTagClick = (tag: string) => {
+  navigateTo(`/blog/search?query=${tag}`);
+};
 </script>
+
+<style lang="scss" scoped>
+.tag {
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  &__item {
+    padding: 2px 8px;
+    background-color: white;
+    border: 1px solid var(--color-primary-200);
+    border-radius: 99px;
+    font-size: 12px;
+    color: var(--color-primary-300);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &::before {
+      content: "#";
+    }
+
+    @include md {
+      padding: 2px 8px;
+      font-size: 14px;
+    }
+  }
+}
+</style>
