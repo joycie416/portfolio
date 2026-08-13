@@ -110,12 +110,12 @@ const displayItems = computed(() => props.items.slice(-2));
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    font-size: 1rem;
-    line-height: 1.5rem;
+    font-size: 14px;
+    line-height: 1.3rem;
 
     @include md {
-      font-size: 1.125rem;
-      line-height: calc(1.75 / 1.125) rem;
+      font-size: 18px;
+      line-height: 1.4;
     }
 
     color: var(--color-text-gray-04);

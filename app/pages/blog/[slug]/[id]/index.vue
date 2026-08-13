@@ -8,39 +8,17 @@
           type="tag"
           error-message="메뉴 조회에 실패했습니다."
         />
-        <h1 class="text-3xl leading-10 font-bold md:text-4xl md:leading-13">
+        <h1
+          class="text-2xl leading-7.5 font-bold text-center md:text-4xl md:leading-13"
+        >
           {{ post?.title }}
         </h1>
-        <div
-          class="px-3 py-1 flex items-center gap-2 bg-gray-09/50 rounded-full"
-        >
-          <p class="text-sm text-text-gray-05">
-            {{ formatDate(post?.created_at ?? "") }}
-          </p>
-          <Button
-            variant="ghost"
-            size="icon"
-            class="size-5 p-0 text-text-gray-05 hover:bg-transparent"
-            aria-label="copy-link"
-            @click="copyLink"
-          >
-            <Share2 />
-          </Button>
-          <DropdownMenu v-if="isAuthenticated">
-            <DropdownMenuTrigger
-              class="size-5 p-0 flex items-center justify-center text-text-gray-05 border-2 border-text-gray-05 rounded-full hover:bg-transparent"
-            >
-              <EllipsisVertical class="size-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent class="min-w-fit">
-              <DropdownMenuItem @click="onEditClick">수정</DropdownMenuItem>
-              <DropdownMenuItem @click="onChangeVisibilityClick">
-                {{ post?.hidden ? "공개" : "비공개" }}
-              </DropdownMenuItem>
-              <DropdownMenuItem @click="onDeleteClick">삭제</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <PostMeta
+          v-if="post"
+          :post="post"
+          type="badge"
+          @refresh-post="refresh"
+        />
       </div>
     </template>
     <template #content>
@@ -71,8 +49,15 @@
         v-html="post?.content"
         class="tiptap tiptap--readonly"
       />
+      <!-- 날짜, 공유, 관리자 기능 -->
+      <PostMeta
+        v-if="post"
+        :post="post"
+        type="default"
+        @refresh-post="refresh"
+      />
       <!-- 태그 목록 -->
-      <ul class="tag__list">
+      <ul v-if="post?.tags && post.tags.length > 0" class="tag__list">
         <li
           v-for="tag in post?.tags"
           :key="tag"
@@ -88,35 +73,15 @@
       <CommentSection :post-id="postId" />
     </template>
   </BlogInnerLayout>
-  <ConfirmDialog
-    title="게시글 삭제"
-    :open="deleteConfirmOpen"
-    confirm-text="삭제"
-    confirm-variant="destructive"
-    :loading="deleteLoading"
-    @confirm="handleDeleteConfirm"
-    @cancel="deleteConfirmOpen = false"
-  >
-    이 게시글을 삭제할까요?
-    <br />
-    삭제한 게시글은 복구할 수 없습니다.
-  </ConfirmDialog>
 </template>
 
 <script setup lang="ts">
-import { Breadcrumb, ConfirmDialog, FileItem } from "@/components/common";
+import { Breadcrumb, FileItem } from "@/components/common";
 import { BlogInnerLayout } from "@/components/layout";
-import { EllipsisVertical, Save, Share2 } from "@lucide/vue";
-import { toast } from "vue-sonner";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import CommentSection from "@/components/features/comment/CommentSection.vue";
+import PostMeta from "@/components/features/post/PostMeta.vue";
 import RelatedPostList from "@/components/features/post/RelatedPostList.vue";
+import { Save } from "@lucide/vue";
 
 definePageMeta({
   middleware: "validate-post",
@@ -167,77 +132,6 @@ useSeoMeta({
   ogImage,
   ogUrl: `${siteUrl}/blog/${route.params.slug}/${route.params.id}`,
 });
-
-// ------------ 관리자 기능 ------------
-const { isAuthenticated } = useAuth();
-
-const onEditClick = () => {
-  if (isAuthenticated.value) {
-    navigateTo(`/blog/admin/posts/new/${route.params.id}`);
-  } else {
-    toast.error("로그인 후 이용해주세요.");
-  }
-};
-
-const { bulkUpdateHidden } = useBulkPostActions();
-const { deletePost } = useDeletePost();
-
-const deleteConfirmOpen = ref(false);
-const deleteLoading = ref(false);
-
-const onChangeVisibilityClick = async () => {
-  const postId = post.value?.id;
-  if (!postId) return;
-
-  const wasHidden = post.value.hidden;
-
-  try {
-    const failures = await bulkUpdateHidden([postId], !wasHidden);
-    if (failures.length > 0) {
-      toast.error("공개 여부 변경에 실패했습니다.");
-      return;
-    }
-    toast.success(
-      wasHidden
-        ? "게시글이 공개되었습니다."
-        : "게시글이 비공개로 변경되었습니다."
-    );
-    await refresh();
-  } catch {
-    toast.error("공개 여부 변경에 실패했습니다.");
-  }
-};
-
-const onDeleteClick = () => {
-  deleteConfirmOpen.value = true;
-};
-
-const handleDeleteConfirm = async () => {
-  const postId = post.value?.id;
-  if (!postId || deleteLoading.value) return;
-
-  deleteLoading.value = true;
-  try {
-    await deletePost(postId);
-    toast.success("게시글이 삭제되었습니다.");
-    await navigateTo(`/blog/${route.params.slug}`);
-  } catch {
-    toast.error("게시글 삭제에 실패했습니다.");
-  } finally {
-    deleteLoading.value = false;
-    deleteConfirmOpen.value = false;
-  }
-};
-
-// ------------ 기타 ------------
-const copyLink = () => {
-  try {
-    navigator.clipboard.writeText(`${siteUrl}${route.fullPath}`);
-    toast.success("링크가 복사되었습니다.");
-  } catch {
-    toast.error("링크 복사에 실패했습니다.");
-  }
-};
 
 const onTagClick = (tag: string) => {
   navigateTo(`/blog/search?query=${tag}`);
