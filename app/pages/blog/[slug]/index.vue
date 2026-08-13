@@ -4,8 +4,15 @@
       <Breadcrumb
         :status="breadcrumbStatus"
         :items="breadcrumbItems"
+        type="badge"
         error-message="메뉴 조회에 실패했습니다."
       />
+      <h1
+        class="text-2xl leading-7.5 font-bold text-center md:text-4xl md:leading-13 my-auto"
+      >
+        {{ menuFamily?.menu.name }}
+      </h1>
+      <InputSearch theme="light" class="mx-auto my-auto" />
     </template>
     <template #content>
       <div class="post-list">
@@ -17,12 +24,12 @@
         </template>
         <Empty
           v-else-if="!error && posts.length === 0"
-          class="col-span-full"
+          class="col-span-full h-full min-h-50"
           message="등록된 게시글이 없습니다."
         />
         <Empty
           v-else
-          class="col-span-full"
+          class="col-span-full h-full min-h-50"
           message="게시글 조회에 실패했습니다."
         />
       </div>
@@ -42,6 +49,7 @@ import { Breadcrumb, Empty, Pagination } from "@/components/common";
 import PostItem from "@/components/features/post/PostItem.vue";
 import PostItemSkeleton from "@/components/features/post/PostItemSkeleton.vue";
 import { BlogInnerLayout } from "@/components/layout";
+import { InputSearch } from "~/components/features/blog";
 import { menus } from "~/utils/supabase/menus";
 
 definePageMeta({

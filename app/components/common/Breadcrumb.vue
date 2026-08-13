@@ -2,25 +2,27 @@
   <div
     v-if="status === 'success'"
     data-slot="breadcrumb"
-    :data-style="props.type === 'tag' ? 'tag' : 'default'"
+    :data-style="props.type === 'badge' ? 'badge' : 'default'"
     :class="cn('breadcrumb', props.class)"
   >
-    <DropdownMenu v-if="truncatedItems.length >= 1">
-      <DropdownMenuTrigger class="size-6 flex items-center justify-center">
-        <Ellipsis class="size-5 text-text-gray-03" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" class="border-gray-02">
-        <DropdownMenuItem v-for="item in truncatedItems" :key="item.label">
-          <NuxtLink v-if="item.href" :to="item.href">
-            {{ item.label }}
-          </NuxtLink>
-          <span v-else>
-            {{ item.label }}
-          </span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-    <div class="flex gap-1">
+    <div v-if="truncatedItems.length >= 1" class="breadcrumb__overflow">
+      <DropdownMenu>
+        <DropdownMenuTrigger class="size-6 flex items-center justify-center">
+          <Ellipsis class="size-5 text-text-gray-03" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" class="border-gray-02">
+          <DropdownMenuItem v-for="item in truncatedItems" :key="item.label">
+            <NuxtLink v-if="item.href" :to="item.href">
+              {{ item.label }}
+            </NuxtLink>
+            <span v-else>
+              {{ item.label }}
+            </span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+    <div class="breadcrumb__items">
       <div
         v-for="(item, index) in displayItems"
         :key="item.label"
@@ -33,10 +35,10 @@
           v-if="(props.items.length > 2 && index === 0) || index > 0"
           class="size-4 md:size-5"
         />
-        <NuxtLink v-if="item.href" :to="item.href">
+        <NuxtLink v-if="item.href" :to="item.href" :title="item.label">
           {{ item.label }}
         </NuxtLink>
-        <span v-else>
+        <span v-else :title="item.label">
           {{ item.label }}
         </span>
       </div>
@@ -45,7 +47,7 @@
   <div
     v-else-if="status === 'loading'"
     data-slot="breadcrumb"
-    :data-style="props.type === 'tag' ? 'tag' : 'default'"
+    :data-style="props.type === 'badge' ? 'badge' : 'default'"
     :class="cn('breadcrumb', props.class)"
   >
     <Skeleton class="h-4 w-15 md:h-5 md:w-20" />
@@ -55,7 +57,7 @@
   <div
     v-else
     data-slot="breadcrumb"
-    :data-style="props.type === 'tag' ? 'tag' : 'default'"
+    :data-style="props.type === 'badge' ? 'badge' : 'default'"
     :class="cn('breadcrumb text-text-primary-100', props.class)"
   >
     <TriangleAlert class="size-4" />
@@ -81,7 +83,7 @@ interface Item {
 interface Props {
   items: Item[];
   status: "success" | "loading" | "error";
-  type?: "default" | "tag";
+  type?: "default" | "badge";
   errorMessage?: string;
   class?: string;
 }
@@ -101,17 +103,49 @@ const displayItems = computed(() => props.items.slice(-2));
   gap: 0.25rem;
 
   width: fit-content;
+  max-width: 100%;
+  min-width: 0;
 
   .lucide {
+    flex-shrink: 0;
     color: var(--color-text-gray-03);
+  }
+
+  &__overflow {
+    flex-shrink: 0;
+  }
+
+  &__items {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.25rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
   }
 
   &__item {
     display: flex;
     align-items: center;
+    flex-wrap: nowrap;
     gap: 0.25rem;
     font-size: 14px;
     line-height: 1.3rem;
+    min-width: 0;
+    overflow: hidden;
+
+    & a,
+    & span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &:not(:last-child) {
+      flex: 0 1 auto;
+    }
 
     @include md {
       font-size: 18px;
@@ -121,6 +155,8 @@ const displayItems = computed(() => props.items.slice(-2));
     color: var(--color-text-gray-04);
 
     &:last-child {
+      flex: 0 0 auto;
+      max-width: 100%;
       color: var(--color-primary-500);
     }
 
@@ -135,7 +171,7 @@ const displayItems = computed(() => props.items.slice(-2));
     }
   }
 
-  &[data-style="tag"] {
+  &[data-style="badge"] {
     padding: 0.125rem 0.625rem;
     background-color: var(--color-primary-300);
     border-radius: 999px;
@@ -145,7 +181,7 @@ const displayItems = computed(() => props.items.slice(-2));
       color: var(--color-primary-100);
     }
   }
-  &[data-style="tag"] &__item {
+  &[data-style="badge"] &__item {
     color: var(--color-primary-100);
 
     &:last-child {

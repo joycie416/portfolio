@@ -1,11 +1,13 @@
 <template>
   <BlogInnerLayout :top-image="post?.thumbnail ?? undefined">
     <template #top>
-      <div class="size-full flex flex-col justify-between items-center">
+      <div
+        class="size-full min-w-0 flex flex-col justify-between items-center"
+      >
         <Breadcrumb
           :status="breadcrumbStatus"
           :items="breadcrumbItems"
-          type="tag"
+          type="badge"
           error-message="메뉴 조회에 실패했습니다."
         />
         <h1

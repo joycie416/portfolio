@@ -1,5 +1,5 @@
 <template>
-  <div class="search__container" :data-theme="theme">
+  <div :class="cn('search__container', props.class)" :data-theme="props.theme">
     <input
       type="text"
       placeholder="What are you looking for?"
@@ -16,9 +16,12 @@
 
 <script setup lang="ts">
 import { Search } from "@lucide/vue";
+import type { HTMLAttributes } from "vue";
+import { cn } from "@/lib/utils";
 
-defineProps<{
+const props = defineProps<{
   theme: "light" | "dark";
+  class?: HTMLAttributes["class"];
 }>();
 
 const query = ref("");
