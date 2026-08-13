@@ -18,9 +18,8 @@
       <component
         :is="href ? 'a' : 'p'"
         class="file-item__name"
-        :href="href || undefined"
+        :href="downloadHref"
         :download="href ? props.file.name : undefined"
-        :target="href ? '_blank' : undefined"
         :title="props.file.name"
       >
         <span class="file-item__name-base">{{ displayName.base }}</span>
@@ -34,9 +33,8 @@
     <a
       v-if="href"
       class="file-item__action"
-      :href="href"
+      :href="downloadHref"
       :download="props.file.name"
-      target="_blank"
       aria-label="다운로드"
     >
       <Download />
@@ -77,6 +75,20 @@ const emit = defineEmits<{
 }>();
 
 const formattedSize = computed(() => formatFileSize(props.file.size));
+
+// a[download]는 same-origin에서만 동작. Storage URL은 ?download= 로 강제 다운로드.
+const downloadHref = computed(() => {
+  if (!props.href) return undefined;
+  try {
+    const url = new URL(props.href);
+    if (url.pathname.includes("/storage/v1/object/")) {
+      url.searchParams.set("download", props.file.name);
+    }
+    return url.href;
+  } catch {
+    return props.href;
+  }
+});
 
 // 파일명이 길 때 확장자는 유지하고 앞부분만 ...으로 줄이기 위해 분리
 const displayName = computed(() => {

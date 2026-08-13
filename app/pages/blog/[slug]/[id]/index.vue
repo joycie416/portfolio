@@ -44,6 +44,27 @@
       </div>
     </template>
     <template #content>
+      <!-- 첨부파일 -->
+      <DropdownMenu v-if="files?.attachments && files.attachments.length > 0">
+        <DropdownMenuTrigger
+          class="flex items-center gap-0.5 md:gap-1 text-sm md:text-base self-end hover:underline"
+        >
+          첨부파일
+          <Save class="size-4 md:size-5" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          class="w-100 flex flex-col gap-1.5 p-2"
+        >
+          <FileItem
+            v-for="file in files?.attachments"
+            :key="file.key"
+            :file="{ name: file.key, size: file.size ?? 0 }"
+            :href="file.url"
+            :removable="false"
+          />
+        </DropdownMenuContent>
+      </DropdownMenu>
       <!-- 게시글 본문 -->
       <div
         ref="contentRef"
@@ -83,9 +104,9 @@
 </template>
 
 <script setup lang="ts">
-import { Breadcrumb, ConfirmDialog } from "@/components/common";
+import { Breadcrumb, ConfirmDialog, FileItem } from "@/components/common";
 import { BlogInnerLayout } from "@/components/layout";
-import { EllipsisVertical, Share2 } from "@lucide/vue";
+import { EllipsisVertical, Save, Share2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
 import { Button } from "@/components/ui/button";
 import {
