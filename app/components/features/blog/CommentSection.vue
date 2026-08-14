@@ -35,14 +35,12 @@ import CommentDetailItemSkeleton from "@/components/features/comment/CommentDeta
 import { Empty } from "@/components/common";
 import { useGetCommentsWithSlug } from "@/composables/useComment";
 
-const { data, status } = useGetCommentsWithSlug({
+const { data: comments, status } = useGetCommentsWithSlug({
   perPage: 4,
   page: 1,
   server: false,
   lazy: true,
 });
-
-const comments = computed(() => data.value?.data ?? []);
 </script>
 
 <style lang="scss" scoped>

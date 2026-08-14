@@ -14,13 +14,13 @@
         <p class="text-text-gray-03 text-sm md:text-base">
           {{ formatDate(comment.created_at) }}
         </p>
-        <!-- TODO: 삭제 코드 연동 -->
         <hr v-if="deleteable" class="w-px h-3.5 bg-gray-03 md:h-4" />
         <Button
           v-if="deleteable"
           variant="ghost"
           size="icon"
           class="size-5 md:size-6 p-0.5 text-red"
+          @click="openDeleteConfirm"
         >
           <Trash2 />
         </Button>
@@ -34,14 +34,34 @@
       </p>
     </div>
   </div>
+  <ConfirmDialog
+    v-if="deleteable"
+    title="댓글 삭제"
+    :open="deleteConfirmOpen"
+    confirm-text="삭제"
+    confirm-variant="destructive"
+    :loading="loading"
+    @confirm="handleDelete"
+    @cancel="deleteConfirmOpen = false"
+  >
+    댓글을 삭제할까요?
+    <br />
+    삭제한 댓글은 복구할 수 없습니다.
+  </ConfirmDialog>
 </template>
 
 <script setup lang="ts">
 import type { CommentWithSlug } from "@/types/supabase";
 import { Laugh, MoveUpRight, Smile, Trash2, UserRound } from "@lucide/vue";
 import { Button } from "@/components/ui/button";
+import { toast } from "vue-sonner";
+import { ConfirmDialog } from "@/components/common";
 
 const props = defineProps<{ comment: CommentWithSlug; deleteable?: boolean }>();
+
+const emit = defineEmits<{
+  "refresh-comments": [];
+}>();
 
 const COLORS = [
   "var(--color-highlight-blue)",
@@ -56,6 +76,30 @@ const avatarIcon = ICONS[props.comment.id % 3];
 
 const moveToPost = () => {
   navigateTo(`/blog/${props.comment.menu_slug}/${props.comment.post_id}`);
+};
+
+const { deleteComment } = useDeleteComment();
+const deleteConfirmOpen = ref(false);
+const loading = ref(false);
+
+const openDeleteConfirm = () => {
+  deleteConfirmOpen.value = true;
+};
+
+const handleDelete = async () => {
+  if (loading.value) return;
+
+  try {
+    loading.value = true;
+    await deleteComment(props.comment.id);
+    emit("refresh-comments");
+    deleteConfirmOpen.value = false;
+    toast.success("댓글이 삭제되었습니다.");
+  } catch {
+    toast.error("댓글 삭제에 실패했습니다.");
+  } finally {
+    loading.value = false;
+  }
 };
 </script>
 
