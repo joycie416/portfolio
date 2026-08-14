@@ -8,7 +8,7 @@
         v-if="status === 'success'"
         type="multiple"
         collapsible
-        :class="props.open ? 'block' : 'hidden'"
+        :class="props.open ? 'block min-w-0' : 'hidden'"
       >
         <AccordionItem
           v-for="parent in menus"
@@ -31,7 +31,7 @@
           </NuxtLink>
           <AccordionTrigger
             v-else
-            class="hover:no-underline"
+            class="hover:no-underline min-w-0 overflow-hidden"
             :class="{
               '[&_.lucide-chevron-down-icon]:hidden':
                 parent.children.length === 0,
@@ -214,9 +214,12 @@ const handleSignOut = async () => {
 }
 .menu {
   &__item {
+    min-width: 0;
     border: none;
 
     :deep(h3) {
+      min-width: 0;
+      overflow: hidden;
       padding-inline: 12px;
       border-radius: 12px;
 
@@ -274,10 +277,13 @@ const handleSignOut = async () => {
 
   &__label {
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
     gap: 4px;
   }
 
   &__name {
+    flex: 0 1 auto;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
