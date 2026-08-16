@@ -110,7 +110,7 @@ import type {
 import { TiptapEditor } from "@/components/tiptap";
 import { Button } from "@/components/ui/button";
 import { X } from "@lucide/vue";
-import TempPostModal from "@/components/features/post/TempPostModal.vue";
+import { TempPostModal } from "@/components/features/post";
 
 definePageMeta({
   middleware: "validate-edit-post",

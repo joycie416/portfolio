@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import PostItemSkeleton from "@/components/features/post/PostItemSkeleton.vue";
+import { PostItemSkeleton } from "@/components/features/post";
 
 const skeletonGroups = [
   { featuredSide: "left" as const, compactCount: 3 },

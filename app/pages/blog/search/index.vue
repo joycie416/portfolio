@@ -48,9 +48,11 @@
 
 <script setup lang="ts">
 import { Empty, Pagination, Card } from "@/components/common";
-import PostItem from "@/components/features/post/PostItem.vue";
-import PostItemSkeleton from "@/components/features/post/PostItemSkeleton.vue";
-import PostFilter from "@/components/features/post/PostFilter.vue";
+import {
+  PostItem,
+  PostItemSkeleton,
+  PostFilter,
+} from "@/components/features/post";
 import { parseQueryEnum, parseQueryParam } from "@/utils/query-params";
 import { POST_VISIBILITIES } from "@/utils/supabase/posts";
 

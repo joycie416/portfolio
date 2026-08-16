@@ -46,11 +46,10 @@
 
 <script setup lang="ts">
 import { Breadcrumb, Empty, Pagination } from "@/components/common";
-import PostItem from "@/components/features/post/PostItem.vue";
-import PostItemSkeleton from "@/components/features/post/PostItemSkeleton.vue";
+import { PostItem, PostItemSkeleton } from "@/components/features/post";
 import { BlogInnerLayout } from "@/components/layout";
-import { InputSearch } from "~/components/features/blog";
-import { menus } from "~/utils/supabase/menus";
+import { InputSearch } from "@/components/features/blog";
+import { menus } from "@/utils/supabase/menus";
 
 definePageMeta({
   middleware: "validate-menu",

@@ -57,10 +57,12 @@
 
 <script setup lang="ts">
 import { Empty, Checkbox, Pagination } from "@/components/common";
-import AdminPostItem from "@/components/features/post/AdminPostItem.vue";
-import AdminPostItemSkeleton from "@/components/features/post/AdminPostItemSkeleton.vue";
-import PostFilter from "@/components/features/post/PostFilter.vue";
-import PostBulkActions from "@/components/features/post/PostBulkActions.vue";
+import {
+  AdminPostItem,
+  AdminPostItemSkeleton,
+  PostFilter,
+  PostBulkActions,
+} from "@/components/features/post";
 import { parseQueryEnum, parseQueryParam } from "@/utils/query-params";
 import { POST_VISIBILITIES } from "@/utils/supabase/posts";
 

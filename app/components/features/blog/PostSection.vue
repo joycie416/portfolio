@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import type { TransformedPost } from "@/types/supabase";
 import { Empty } from "@/components/common";
-import PostItem from "@/components/features/post/PostItem.vue";
+import { PostItem } from "@/components/features/post";
 import { PostSectionSkeleton } from "./";
 
 type PostGroup = {

@@ -1,9 +1,7 @@
 <template>
   <BlogInnerLayout :top-image="post?.thumbnail ?? undefined">
     <template #top>
-      <div
-        class="size-full min-w-0 flex flex-col justify-between items-center"
-      >
+      <div class="size-full min-w-0 flex flex-col justify-between items-center">
         <Breadcrumb
           :status="breadcrumbStatus"
           :items="breadcrumbItems"
@@ -81,8 +79,7 @@
 import { Breadcrumb, FileItem } from "@/components/common";
 import { BlogInnerLayout } from "@/components/layout";
 import CommentSection from "@/components/features/comment/CommentSection.vue";
-import PostMeta from "@/components/features/post/PostMeta.vue";
-import RelatedPostList from "@/components/features/post/RelatedPostList.vue";
+import { PostMeta, RelatedPostList } from "@/components/features/post";
 import { Save } from "@lucide/vue";
 
 definePageMeta({
