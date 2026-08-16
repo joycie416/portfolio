@@ -78,7 +78,7 @@
 <script setup lang="ts">
 import { Breadcrumb, FileItem } from "@/components/common";
 import { BlogInnerLayout } from "@/components/layout";
-import CommentSection from "@/components/features/comment/CommentSection.vue";
+import { CommentSection } from "@/components/features/comment";
 import { PostMeta, RelatedPostList } from "@/components/features/post";
 import { Save } from "@lucide/vue";
 

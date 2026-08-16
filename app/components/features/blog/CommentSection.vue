@@ -30,8 +30,10 @@
 </template>
 
 <script setup lang="ts">
-import CommentDetailItem from "@/components/features/comment/CommentDetailItem.vue";
-import CommentDetailItemSkeleton from "@/components/features/comment/CommentDetailItemSkeleton.vue";
+import {
+  CommentDetailItem,
+  CommentDetailItemSkeleton,
+} from "@/components/features/comment";
 import { Empty } from "@/components/common";
 import { useGetCommentsWithSlug } from "@/composables/useComment";
 

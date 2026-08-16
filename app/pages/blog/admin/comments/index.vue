@@ -41,10 +41,12 @@
 </template>
 
 <script setup lang="ts">
-import CommentFilter from "@/components/features/comment/CommentFilter.vue";
+import {
+  CommentFilter,
+  CommentDetailItem,
+  CommentDetailItemSkeleton,
+} from "@/components/features/comment";
 import { parseQueryParam } from "@/utils/query-params";
-import CommentDetailItem from "@/components/features/comment/CommentDetailItem.vue";
-import CommentDetailItemSkeleton from "@/components/features/comment/CommentDetailItemSkeleton.vue";
 import { Empty, Pagination } from "@/components/common";
 
 const route = useRoute();
