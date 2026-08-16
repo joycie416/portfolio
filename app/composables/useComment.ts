@@ -11,15 +11,15 @@ export const useGetComments = ({
   server,
   lazy,
 }: {
-  postId: number;
+  postId: MaybeRefOrGetter<number>;
   server?: boolean;
   lazy?: boolean;
 }) => {
   const supabase = useSupabaseClient();
 
   return useLazyAsyncData<{ data: Comment[]; count: number }>(
-    () => `comments:${postId}`,
-    () => comments(supabase).getList(postId),
+    () => `comments:${toValue(postId)}`,
+    () => comments(supabase).getList(toValue(postId)),
     { default: () => ({ data: [], count: 0 }), server, lazy }
   );
 };

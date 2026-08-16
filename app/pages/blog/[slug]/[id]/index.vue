@@ -94,7 +94,7 @@ const { breadcrumbItems, breadcrumbStatus } = useMenuBreadcrumb(
 );
 
 const { data, refresh } = useGetPost({
-  id: postId.value,
+  id: postId,
   immediate: true,
 });
 const post = computed(() => data.value?.post);

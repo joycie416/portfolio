@@ -34,7 +34,7 @@ const props = defineProps<{
 }>();
 
 const { data, refresh, status } = useGetComments({
-  postId: props.postId,
+  postId: () => props.postId,
   server: false,
   lazy: true,
 });
