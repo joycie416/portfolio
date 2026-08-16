@@ -50,13 +50,12 @@
 </template>
 
 <script setup lang="ts">
-import MenuItem from "@/components/features/menu/MenuItem.vue";
-import { Button } from "@/components/ui/button";
-import { Pin } from "@lucide/vue";
 import type { MenuState } from "@/types/menu";
 import type { MenuInsertType, MenuUpdateType } from "@/types/supabase";
 import type { MenuThumbnailUpdate } from "@/utils/supabase/menus";
-import EditMenuModal from "@/components/features/menu/EditMenuModal.vue";
+import { MenuItem, EditMenuModal } from "@/components/features/menu";
+import { Button } from "@/components/ui/button";
+import { Pin } from "@lucide/vue";
 import { PostgrestError, StorageApiError } from "@supabase/supabase-js";
 import { toast } from "vue-sonner";
 
