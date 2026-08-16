@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
+import { SimpleLogo } from "@/components/logos";
 
 const route = useRoute();
 
@@ -105,6 +105,7 @@ onMounted(() => {
     padding-left: 20px;
   }
 }
+
 .icon {
   width: fit-content;
   height: fit-content;
@@ -134,6 +135,7 @@ onMounted(() => {
     font-size: 24px;
   }
 }
+
 .text {
   font-family: var(--font-rix);
   font-size: 12px;

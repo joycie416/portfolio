@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { Card } from "@/components/common";
-import { Skeleton } from "~/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 withDefaults(
   defineProps<{

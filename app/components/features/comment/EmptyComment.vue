@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import { MessageSquareText } from "@lucide/vue";
 import type { HTMLAttributes } from "vue";
+import { MessageSquareText } from "@lucide/vue";
 import { cn } from "@/lib/utils";
 
 const props = defineProps<{ class?: HTMLAttributes["class"] }>();

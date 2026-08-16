@@ -46,7 +46,6 @@ import {
   CommentDetailItem,
   CommentDetailItemSkeleton,
 } from "@/components/features/comment";
-import { parseQueryParam } from "@/utils/query-params";
 import { Empty, Pagination } from "@/components/common";
 
 const route = useRoute();

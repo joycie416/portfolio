@@ -24,11 +24,11 @@
 </template>
 
 <script setup lang="ts">
+import type { Columns } from "@/components/ui/data-table";
+import type { SimpleTempPost } from "@/types/supabase";
 import { Dialog } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
-import type { Columns } from "@/components/ui/data-table";
-import type { SimpleTempPost } from "@/types/supabase";
 import { Trash2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
 

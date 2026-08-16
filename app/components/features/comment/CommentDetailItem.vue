@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-2 md:gap-4 py-5 px-4 border-b last:border-b-0">
+  <div class="comment-detail">
     <div class="flex flex-col justify-between gap-2">
       <div class="comment-detail__post-title" @click="moveToPost">
         <p class="truncate">{{ comment.post_title }}</p>
@@ -105,6 +105,20 @@ const handleDelete = async () => {
 
 <style lang="scss" scoped>
 .comment-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--color-border);
+
+  @include md {
+    gap: 16px;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
   &__post-title {
     width: fit-content;
     max-width: 100%;
@@ -127,6 +141,7 @@ const handleDelete = async () => {
     }
   }
 }
+
 .avatar {
   display: flex;
   align-items: center;

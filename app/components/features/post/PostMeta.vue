@@ -41,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Post } from "@/types/supabase";
 import { ConfirmDialog } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,7 +50,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { Post } from "@/types/supabase";
 import { EllipsisVertical, Share2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
 

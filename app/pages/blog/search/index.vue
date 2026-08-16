@@ -53,7 +53,6 @@ import {
   PostItemSkeleton,
   PostFilter,
 } from "@/components/features/post";
-import { parseQueryEnum, parseQueryParam } from "@/utils/query-params";
 import { POST_VISIBILITIES } from "@/utils/supabase/posts";
 
 const route = useRoute();

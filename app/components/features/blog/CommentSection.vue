@@ -35,7 +35,6 @@ import {
   CommentDetailItemSkeleton,
 } from "@/components/features/comment";
 import { Empty } from "@/components/common";
-import { useGetCommentsWithSlug } from "@/composables/useComment";
 
 const { data: comments, status } = useGetCommentsWithSlug({
   perPage: 4,

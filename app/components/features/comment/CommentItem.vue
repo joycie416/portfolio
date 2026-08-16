@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-2 md:gap-4 py-5 px-4 border-b last:border-b-0">
+  <div class="comment-item">
     <div class="flex justify-between items-center gap-2">
       <div class="flex items-center gap-2">
         <div class="avatar" :style="{ '--avatar-color': avatarColor }">
@@ -12,9 +12,7 @@
         </p>
       </div>
       <DropdownMenu>
-        <DropdownMenuTrigger
-          class="p-1 hover:bg-gray-02 cursor-pointer rounded-sm transition-colors duration-150"
-        >
+        <DropdownMenuTrigger class="comment-item__menu-trigger">
           <EllipsisVertical class="size-4 md:size-5" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" class="min-w-fit border-border">
@@ -244,6 +242,33 @@ const handleDeleteComment = async () => {
 </script>
 
 <style lang="scss" scoped>
+.comment-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--color-border);
+
+  @include md {
+    gap: 16px;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &__menu-trigger {
+    padding: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 150ms;
+
+    &:hover {
+      background-color: var(--color-gray-02);
+    }
+  }
+}
+
 .avatar {
   display: flex;
   align-items: center;

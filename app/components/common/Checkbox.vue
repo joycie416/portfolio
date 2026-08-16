@@ -13,7 +13,7 @@
         type="checkbox"
         :checked="model"
         :disabled="props.disabled"
-        class="peer size-full appearance-none rounded-[2px] border border-border bg-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 checked:border-primary-600 checked:bg-primary-600"
+        class="checkbox"
         @change="model = ($event.target as HTMLInputElement).checked"
       />
       <Check
@@ -33,8 +33,8 @@
 
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue";
-import { Check } from "@lucide/vue";
 import type { InputGroupState } from "@/types/input-group";
+import { Check } from "@lucide/vue";
 import { cn } from "@/lib/utils";
 
 const props = withDefaults(
@@ -55,3 +55,25 @@ const stateStyle = computed(() =>
   props.state === "error" ? "text-red-04" : ""
 );
 </script>
+
+<style lang="scss" scoped>
+.checkbox {
+  width: 100%;
+  height: 100%;
+  appearance: none;
+  border-radius: 2px;
+  border: 1px solid var(--color-border);
+  background-color: white;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:checked {
+    border-color: var(--color-primary-600);
+    background-color: var(--color-primary-600);
+  }
+}
+</style>

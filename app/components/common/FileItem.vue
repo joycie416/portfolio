@@ -53,7 +53,6 @@
 
 <script setup lang="ts">
 import { File, X, Download } from "@lucide/vue";
-import { formatFileSize, getFileType } from "@/utils/format-file";
 
 const props = withDefaults(
   defineProps<{
@@ -61,7 +60,7 @@ const props = withDefaults(
     file: Pick<File, "name" | "size">;
     /** 업로드 완료 후 다운로드 URL. 있으면 다운로드 링크를 노출 */
     href?: string;
-    /** 삭제(x) 버튼 노출 여부 */
+    /** 삭제 버튼 노출 여부 */
     removable?: boolean;
   }>(),
   {

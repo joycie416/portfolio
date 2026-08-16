@@ -22,11 +22,11 @@
 </template>
 
 <script setup lang="ts">
+import type { HTMLAttributes } from "vue";
 import { InputGroup } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "@lucide/vue";
 import { cn } from "@/lib/utils";
-import type { HTMLAttributes } from "vue";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];

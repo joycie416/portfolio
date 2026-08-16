@@ -47,14 +47,12 @@
 </template>
 
 <script setup lang="ts">
+import type { HTMLAttributes } from "vue";
 import { InputGroup } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "@lucide/vue";
-import type { HTMLAttributes } from "vue";
 import { postFilterSchema, type PostFilterForm } from "@/schemas/post";
 import { cn } from "@/lib/utils";
-import { toMenuOptions } from "@/utils/menu";
-import { getVisibilityOptions } from "@/utils/post";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 

@@ -11,7 +11,7 @@
         variant="ghost"
         size="icon"
         data-slot="pagination-first"
-        class="size-6"
+        class="size-5 md:size-6"
         :disabled="page === 1"
         @click="() => emit('update:page', 1)"
       >
@@ -21,7 +21,7 @@
         variant="ghost"
         size="icon"
         data-slot="pagination-previous"
-        class="size-6"
+        class="size-5 md:size-6"
         :disabled="page === 1"
         @click="() => emit('update:page', page - 1)"
       >
@@ -31,7 +31,7 @@
         v-for="p in pageList"
         :key="p"
         :value="p"
-        class="size-6"
+        class="size-5 md:size-6"
         :class="[
           page === p && 'text-primary hover:bg-transparent cursor-default',
           page !== p && 'text-text-gray-02',
@@ -41,7 +41,7 @@
         variant="ghost"
         size="icon"
         data-slot="pagination-next"
-        class="size-6"
+        class="size-5 md:size-6"
         :disabled="page === totalPage"
         @click="() => emit('update:page', page + 1)"
       >
@@ -51,7 +51,7 @@
         variant="ghost"
         size="icon"
         data-slot="pagination-last"
-        class="size-6"
+        class="size-5 md:size-6"
         :disabled="page === totalPage"
         @click="() => emit('update:page', totalPage)"
       >

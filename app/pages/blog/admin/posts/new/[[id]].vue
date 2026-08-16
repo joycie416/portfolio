@@ -93,12 +93,6 @@
 </template>
 
 <script setup lang="ts">
-import { toTypedSchema } from "@vee-validate/zod";
-import { useForm } from "vee-validate";
-import { PostgrestError } from "@supabase/supabase-js";
-import { toast } from "vue-sonner";
-import { Checkbox, InputGroup } from "@/components/common";
-import { postSchema } from "@/schemas/post";
 import type { InputGroupState } from "@/types/input-group";
 import type {
   PostFile,
@@ -107,6 +101,12 @@ import type {
   PostUpdateFile,
   PostUpdateType,
 } from "@/types/supabase";
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { PostgrestError } from "@supabase/supabase-js";
+import { toast } from "vue-sonner";
+import { Checkbox, InputGroup } from "@/components/common";
+import { postSchema } from "@/schemas/post";
 import { TiptapEditor } from "@/components/tiptap";
 import { Button } from "@/components/ui/button";
 import { X } from "@lucide/vue";

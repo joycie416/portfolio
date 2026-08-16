@@ -26,7 +26,6 @@ withDefaults(
   defineProps<{
     open: boolean;
     title: string;
-    /** 본문 텍스트. 커스텀 내용이 필요하면 기본 슬롯을 사용한다. */
     description?: string;
     confirmText?: string;
     cancelText?: string;

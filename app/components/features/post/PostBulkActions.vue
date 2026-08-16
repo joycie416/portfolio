@@ -85,6 +85,7 @@
 </template>
 
 <script setup lang="ts">
+import type { PostBulkFailure } from "@/types/supabase";
 import { ConfirmDialog } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import {
@@ -97,9 +98,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, Eye, EyeOff } from "@lucide/vue";
 import { PostgrestError } from "@supabase/supabase-js";
-import { toMenuOptions } from "@/utils/menu";
-import { useBulkPostActions } from "@/composables/usePost";
-import type { PostBulkFailure } from "@/types/supabase";
 import { toast } from "vue-sonner";
 
 const props = defineProps<{

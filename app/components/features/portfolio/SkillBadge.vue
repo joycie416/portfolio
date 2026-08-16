@@ -11,9 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { Badge } from "@/components/ui/badge";
 import type { BadgeVariants } from "@/components/ui/badge";
 import type { Skill } from "@/types/common";
+import { Badge } from "@/components/ui/badge";
 
 const props = defineProps<{
   skill: Skill;

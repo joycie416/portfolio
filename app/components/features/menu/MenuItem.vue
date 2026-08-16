@@ -85,9 +85,9 @@
 </template>
 
 <script setup lang="ts">
+import type { MenuGroup } from "@/types/menu";
 import { VueDraggable } from "vue-draggable-plus";
 import { Eye, EyeOff, GripVertical, Pencil, Trash2 } from "@lucide/vue";
-import type { MenuGroup } from "@/types/menu";
 import { Button } from "@/components/ui/button";
 import { PostgrestError } from "@supabase/supabase-js";
 import { toast } from "vue-sonner";

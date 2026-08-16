@@ -1,5 +1,5 @@
 <template>
-  <div class="px-2 py-3 flex items-center gap-3 border-b first:border-t">
+  <div class="admin-post-item">
     <div class="flex items-center justify-center">
       <Checkbox
         :model-value="props.checked"
@@ -8,15 +8,13 @@
     </div>
     <div class="flex-1 min-w-0">
       <NuxtLink
-        class="text-[18px] line-clamp-1 hover:underline md:text-xl"
+        class="admin-post-item__title"
         :to="`/blog/${props.post.menu_slug}/${props.post.id}`"
         prefetch-on="interaction"
       >
         {{ props.post.title }}
       </NuxtLink>
-      <div
-        class="flex items-center gap-x-2 flex-wrap text-xs md:text-sm text-text-gray-03"
-      >
+      <div class="admin-post-item__info">
         <p class="max-w-1/2 truncate">{{ props.post.menu_full_name }}</p>
         <div class="w-px h-3 bg-text-gray-03" />
         <p>{{ formatDate(props.post.created_at) }}</p>
@@ -39,7 +37,6 @@
 <script setup lang="ts">
 import type { TransformedPost } from "@/types/supabase";
 import { Checkbox } from "@/components/common";
-import { formatDate } from "@/utils/format-date";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "@lucide/vue";
 import { toast } from "vue-sonner";
@@ -66,3 +63,50 @@ const handleDelete = async () => {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.admin-post-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--color-border);
+
+  &:first-child {
+    border-top: 1px solid var(--color-border);
+  }
+
+  &__title {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    font-size: 18px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    @include md {
+      font-size: 20px;
+      line-height: 28px;
+    }
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    column-gap: 8px;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--color-text-gray-03);
+
+    @include md {
+      font-size: 14px;
+      line-height: 20px;
+    }
+  }
+}
+</style>

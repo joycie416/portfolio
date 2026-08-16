@@ -1,11 +1,7 @@
 <template>
   <header class="header">
     <div class="sidebar__top" :data-open="props.isSidebarOpen">
-      <Button
-        variant="ghost"
-        class="logo__button w-fit h-fit px-2 py-1 md:px-2 md:py-1 gap-2 font-rix text-primary-800 text-base md:text-xl lg:text-2xl"
-        @click="navigateTo('/blog')"
-      >
+      <Button variant="ghost" class="logo__button" @click="navigateTo('/blog')">
         <SimpleLogo class="size-5 md:size-7 lg:size-8" />
         Haein
       </Button>
@@ -25,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
+import { SimpleLogo } from "@/components/logos";
 import { Button } from "@/components/ui/button";
 import { PanelLeft } from "@lucide/vue";
 
@@ -41,6 +37,27 @@ const emit = defineEmits<{
 </script>
 
 <style lang="scss" scoped>
+.logo__button {
+  width: fit-content;
+  height: fit-content;
+  padding: 4px 8px;
+  gap: 8px;
+
+  font-family: var(--font-rix);
+  color: var(--color-primary-800);
+  font-size: 16px;
+  line-height: 24px;
+
+  @include md {
+    font-size: 20px;
+    line-height: 28px;
+  }
+  @include lg {
+    font-size: 24px;
+    line-height: 32px;
+  }
+}
+
 .header {
   position: fixed;
   top: 0;
@@ -59,6 +76,7 @@ const emit = defineEmits<{
 
   z-index: 10;
 }
+
 .text {
   font-family: var(--font-rix);
   font-size: 12px;
@@ -78,6 +96,7 @@ const emit = defineEmits<{
     font-size: 16px;
   }
 }
+
 .sidebar {
   &__top {
     height: 100%;

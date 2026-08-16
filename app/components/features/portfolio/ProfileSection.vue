@@ -1,12 +1,5 @@
-<script setup lang="ts">
-import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
-</script>
-
 <template>
-  <section
-    id="profile"
-    class="relative min-h-fit px-5 py-10 lg:min-h-screen lg:px-0 lg:py-20"
-  >
+  <section id="profile" class="profile-section">
     <!-- 배경 이미지 -->
     <NuxtImg
       src="/images/BackgroundImage01.jpg"
@@ -42,13 +35,9 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
         </div>
 
         <!-- 내 정보 -->
-        <div
-          class="flex-1 md:max-w-[360px] lg:max-w-[420px] md:mx-auto space-y-10"
-        >
+        <div class="profile__info">
           <div>
-            <p
-              class="text-base font-semibold tracking-tight text-text-gray-02 text-center whitespace-nowrap lg:text-xl"
-            >
+            <p class="profile__quote">
               수학의 증명 과정처럼, 프로그래밍 역시
               <br />
               주어진 조건을 분석하고 원하는 결과에 도달하는
@@ -95,7 +84,22 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
   </section>
 </template>
 
+<script setup lang="ts">
+import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
+</script>
+
 <style lang="scss" scoped>
+.profile-section {
+  position: relative;
+  min-height: fit-content;
+  padding: 40px 20px;
+
+  @include lg {
+    min-height: 100vh;
+    padding: 80px 0;
+  }
+}
+
 .profile {
   width: 100%;
   height: fit-content;
@@ -137,6 +141,35 @@ import { Cake, GraduationCap, Mail, MapPinHouse, UserRound } from "@lucide/vue";
     }
     @include lg {
       max-width: 320px;
+    }
+  }
+
+  &__info {
+    flex: 1;
+
+    > * + * {
+      margin-top: 40px;
+    }
+
+    @include md {
+      max-width: 360px;
+      margin-inline: auto;
+    }
+    @include lg {
+      max-width: 420px;
+    }
+  }
+
+  &__quote {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    text-align: center;
+    white-space: nowrap;
+    color: var(--color-text-gray-02);
+
+    @include lg {
+      font-size: 20px;
     }
   }
 

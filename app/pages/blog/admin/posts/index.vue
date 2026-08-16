@@ -45,7 +45,7 @@
         :page="page"
         :total="filteredCount"
         :items-per-page="pageSize"
-        class="mt-auto"
+        class="mt-auto pt-3"
         @update:page="onPageChange"
       />
     </div>
@@ -63,7 +63,6 @@ import {
   PostFilter,
   PostBulkActions,
 } from "@/components/features/post";
-import { parseQueryEnum, parseQueryParam } from "@/utils/query-params";
 import { POST_VISIBILITIES } from "@/utils/supabase/posts";
 
 const route = useRoute();
