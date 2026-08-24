@@ -16,7 +16,11 @@
         <slot />
         <Footer />
       </div>
-      <NuxtLink to="/blog/admin/posts/new" class="create-post-button">
+      <NuxtLink
+        v-if="isAuthenticated"
+        to="/blog/admin/posts/new"
+        class="create-post-button"
+      >
         <Plus />
       </NuxtLink>
     </div>
@@ -46,6 +50,8 @@ const toggleSidebar = () => {
 const closeSidebar = () => {
   isSidebarOpen.value = false;
 };
+
+const { isAuthenticated } = useAuth();
 </script>
 
 <style scoped lang="scss">
