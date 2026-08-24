@@ -406,6 +406,9 @@ watch(
     if (current.isEmpty && next === "") return;
 
     current.commands.setContent(next, { emitUpdate: false });
+    // 수정 모드에서 불러온 본문의 대표이미지 표시를 thumbnail 값에 반영
+    // (emitUpdate: false라 onUpdate가 호출되지 않으므로 직접 동기화)
+    syncThumbnailWithDoc(current as Editor);
   }
 );
 
@@ -648,6 +651,45 @@ const setThumbnail = (key: string | null) => {
   thumbnailKey.value = key;
 };
 
+// 본문에서 data-thumbnail이 켜진 이미지의 data-inline-key를 찾음
+const findDocThumbnailKey = (target: Editor): string | null => {
+  let key: string | null = null;
+  target.state.doc.descendants((node) => {
+    if (node.type.name === "image" && node.attrs["data-thumbnail"]) {
+      key = (node.attrs["data-inline-key"] as string | null) ?? null;
+    }
+  });
+  return key;
+};
+
+// 현재 thumbnail 값이 본문 이미지 중 하나를 가리키는지 확인
+// 저장된 게시글을 다시 열면 이 값이 key가 아니라 저장된 url이므로 src도 함께 비교함
+const isThumbnailInDoc = (target: Editor, value: string): boolean => {
+  let exists = false;
+  target.state.doc.descendants((node) => {
+    if (node.type.name !== "image") return;
+    if (node.attrs["data-inline-key"] === value || node.attrs.src === value) {
+      exists = true;
+    }
+  });
+  return exists;
+};
+
+// 본문 기준으로 thumbnail 값을 맞춤
+// 본문에 대표이미지 표시가 있으면 그 key를 사용
+// 표시가 없으면 현재 값이 본문에 남아 있을 때만 유지함
+const syncThumbnailWithDoc = (target: Editor) => {
+  const docKey = findDocThumbnailKey(target);
+  if (docKey) {
+    thumbnailKey.value = docKey;
+    return;
+  }
+
+  if (thumbnailKey.value && !isThumbnailInDoc(target, thumbnailKey.value)) {
+    thumbnailKey.value = null;
+  }
+};
+
 // ------------ 에디터 ------------
 // create a lowlight instance
 const lowlight = createLowlight(all);
@@ -698,12 +740,7 @@ const editor = useEditor({
   ],
   onCreate: ({ editor: createdEditor }) => {
     // 기존 콘텐츠(수정 모드 등)에 이미 썸네일이 표시돼 있으면 그 값을 초기값으로 사용
-    createdEditor.state.doc.descendants((node) => {
-      if (node.type.name === "image" && node.attrs["data-thumbnail"]) {
-        thumbnailKey.value =
-          (node.attrs["data-inline-key"] as string | null) ?? null;
-      }
-    });
+    syncThumbnailWithDoc(createdEditor);
   },
   onUpdate: ({ editor: updatedEditor }) => {
     // 내용이 없을 때 Tiptap은 `<p></p>`를 반환하므로,
@@ -712,18 +749,7 @@ const editor = useEditor({
 
     // 썸네일로 지정된 이미지가 본문에서 삭제된 경우
     // 썸네일 정보도 함께 제거
-    if (thumbnailKey.value) {
-      let stillExists = false;
-      updatedEditor.state.doc.descendants((node) => {
-        if (
-          node.type.name === "image" &&
-          node.attrs["data-inline-key"] === thumbnailKey.value
-        ) {
-          stillExists = true;
-        }
-      });
-      if (!stillExists) thumbnailKey.value = null;
-    }
+    syncThumbnailWithDoc(updatedEditor);
   },
 });
 
