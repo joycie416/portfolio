@@ -4,12 +4,13 @@
     <div class="content">
       <h1>
         <span class="text-primary-500">Hi</span>
-        , I'm
+        <span>,</span>
+        I'm
         <span>
           <span class="text-primary-700">H</span>
-          ae
+          <span>ae</span>
           <span class="text-primary-700">i</span>
-          n!
+          <span>n!</span>
         </span>
       </h1>
       <p>A blog for notes on what I learn while developing</p>

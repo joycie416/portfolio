@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
+import { SimpleLogo } from "@/components/logos";
 import { Card } from "@/components/common";
 
 const runtimeConfig = useRuntimeConfig();
