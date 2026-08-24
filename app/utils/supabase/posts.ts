@@ -37,7 +37,12 @@ export interface GetPostListParams {
 const LIST_COLUMNS =
   "id, title, created_at, menu_id, hidden, thumbnail, excerpt" as const;
 
-type PostRowWithMenuSlug = SimplePost & { menus?: { slug: string } };
+// menus를 항상 inner join 한다.
+// 비로그인 사용자에게는 menus RLS(hidden=false)로 숨김 메뉴 행이 보이지 않으므로,
+// inner join이 그 메뉴에 속한 게시글까지 함께 제외해준다.
+const LIST_SELECT_COLUMNS = `${LIST_COLUMNS}, menus!inner(slug)` as const;
+
+type PostRowWithMenuSlug = SimplePost & { menus: { slug: string } };
 
 export type PostsGetById = {
   (id: number, temp: true): Promise<TempPost>;
@@ -552,9 +557,6 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
       const to = from + perPage - 1;
 
       const keyword = q?.trim();
-      const selectColumns = slug
-        ? `${LIST_COLUMNS}, menus!inner(slug)`
-        : LIST_COLUMNS;
 
       // 검색어가 있으면 RPC, 없으면 기본 테이블에서 조회
       let query = keyword
@@ -564,8 +566,8 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
               { q: keyword },
               { count: "exact" }
             )
-            .select(selectColumns)
-        : client.from(POST).select(selectColumns, { count: "exact" });
+            .select(LIST_SELECT_COLUMNS)
+        : client.from(POST).select(LIST_SELECT_COLUMNS, { count: "exact" });
 
       if (slug) query = query.eq("menus.slug", slug);
       if (visibility === "public") query = query.eq("hidden", false);
@@ -583,7 +585,7 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
       return {
         data: rows.map(({ menus, ...post }) => ({
           ...post,
-          menu_slug: menus?.slug ?? "null",
+          menu_slug: menus.slug,
         })),
         count: count ?? 0,
       };

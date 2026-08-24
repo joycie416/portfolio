@@ -18,23 +18,14 @@
         v-for="(group, groupIndex) in postGroups"
         :key="groupIndex"
         class="post-group"
-        :class="
-          group.featuredSide === 'left'
-            ? 'post-group--featured-left'
-            : 'post-group--featured-right'
-        "
+        :class="`post-group--${group.variant}`"
       >
         <PostItem
-          v-if="group.featured"
-          :post="group.featured"
-          variant="vertical"
-          with-menu-tag
-        />
-        <PostItem
-          v-for="post in group.compact"
-          :key="post.id"
-          :post="post"
-          variant="horizontal"
+          v-for="item in group.items"
+          :key="item.post.id"
+          :post="item.post"
+          :variant="item.featured ? 'vertical' : 'horizontal'"
+          :class="{ 'post-group__featured': item.featured }"
           with-menu-tag
         />
       </div>
@@ -48,41 +39,50 @@ import { Empty } from "@/components/common";
 import { PostItem } from "@/components/features/post";
 import { PostSectionSkeleton } from "./";
 
-type PostGroup = {
-  featuredSide: "left" | "right";
-  featured: TransformedPost;
-  compact: TransformedPost[];
+type PostGroupItem = {
+  post: TransformedPost;
+  featured: boolean;
 };
+
+type PostGroup = {
+  variant: "featured-left" | "featured-right" | "compact-only";
+  items: PostGroupItem[];
+};
+
+const GROUP_SIZE = 4;
 
 const {
   data: posts,
   pending,
   error,
 } = useGetPosts({
-  perPage: 8,
+  perPage: GROUP_SIZE * 2,
   page: 1,
-  visibility: "public",
 });
 
 const postGroups = computed<PostGroup[]>(() => {
   const list = posts.value ?? [];
   const groups: PostGroup[] = [];
 
-  const first = list.slice(0, 4);
-  if (first[0]) {
+  const first = list.slice(0, GROUP_SIZE);
+  if (first.length > 0) {
     groups.push({
-      featuredSide: "left",
-      featured: first[0],
-      compact: first.slice(1),
+      variant: "featured-left",
+      items: first.map((post, index) => ({ post, featured: index === 0 })),
     });
   }
 
-  const second = list.slice(4, 8);
-  if (second[0]) {
+  const second = list.slice(GROUP_SIZE, GROUP_SIZE * 2);
+  if (second.length > 0) {
+    // 두 번째 그룹은 4개가 모두 채워질 때만 마지막 글을 오른쪽 대표 카드로 배치하고,
+    // 그 전까지는 왼쪽 열에 위에서부터 채운다.
+    const hasFeatured = second.length === GROUP_SIZE;
     groups.push({
-      featuredSide: "right",
-      featured: second[0],
-      compact: second.slice(1),
+      variant: hasFeatured ? "featured-right" : "compact-only",
+      items: second.map((post, index) => ({
+        post,
+        featured: hasFeatured && index === second.length - 1,
+      })),
     });
   }
 
@@ -151,7 +151,7 @@ const postGroups = computed<PostGroup[]>(() => {
     @include md {
       grid-template-columns: 2fr 3fr;
 
-      > :first-child {
+      .post-group__featured {
         grid-column: 1;
         grid-row: 1 / 4;
       }
@@ -162,9 +162,23 @@ const postGroups = computed<PostGroup[]>(() => {
     @include md {
       grid-template-columns: 3fr 2fr;
 
-      > :first-child {
+      .post-group__featured {
         grid-column: 2;
         grid-row: 1 / 4;
+      }
+    }
+  }
+
+  // 대표 카드 없이 왼쪽 열에만 위에서부터 쌓이는 그룹
+  &--compact-only {
+    @include md {
+      grid-template-columns: 3fr 2fr;
+      grid-template-rows: none;
+      grid-auto-rows: 160px;
+      min-height: 0;
+
+      > :deep(.post-item) {
+        grid-column: 1;
       }
     }
   }

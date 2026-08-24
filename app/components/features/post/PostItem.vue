@@ -128,8 +128,9 @@ const handleClick = () => {
 
     .post-item--vertical & {
       @include md {
-        flex: 0 0 65%;
+        flex: 1 1 0;
         align-self: auto;
+        min-height: 0;
       }
     }
   }
@@ -166,7 +167,7 @@ const handleClick = () => {
 
     .post-item--vertical & {
       @include md {
-        flex: 0 0 35%;
+        flex: 0 0 auto;
       }
     }
   }

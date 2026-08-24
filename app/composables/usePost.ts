@@ -31,7 +31,7 @@ export const useGetPosts = (params: UseGetPostsParams) => {
   const supabase = useSupabaseClient();
   const pageSize = params.perPage ?? POSTS_PAGE_SIZE;
 
-  // admin 목록: menu_full_name 매핑용 (조회 자체는 slug join으로 menus와 무관)
+  // menu_full_name 매핑용 (게시글 조회 자체는 getList의 menus inner join이 담당)
   const { data: menus, error: menusError } = useGetMenus();
 
   const page = computed(() => toValue(params.page));
