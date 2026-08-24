@@ -11,6 +11,8 @@
         ? 'mt-1 ml-4 md:mt-2 md:ml-6 min-h-6 md:min-h-8'
         : 'min-h-6 md:min-h-8'
     "
+    :data-depth="depth"
+    :on-move="handleMove"
     @start="handleDragStart"
     @end="handleDragEnd"
   >
@@ -23,6 +25,7 @@
           ? 'p-1.5 pl-1 pt-1 md:p-3 md:pt-2'
           : 'p-1 pl-2 md:px-3 md:py-2'
       "
+      :data-has-children="item.children.length > 0"
     >
       <div class="flex items-center gap-1 md:gap-2">
         <GripVertical
@@ -86,6 +89,7 @@
 
 <script setup lang="ts">
 import type { MenuGroup } from "@/types/menu";
+import type { MoveEvent } from "sortablejs";
 import { VueDraggable } from "vue-draggable-plus";
 import { Eye, EyeOff, GripVertical, Pencil, Trash2 } from "@lucide/vue";
 import { Button } from "@/components/ui/button";
@@ -136,6 +140,15 @@ const handleDragStart = (evt: { oldIndex?: number }) => {
 
 const handleDragEnd = () => {
   onMenuDragEnd?.();
+};
+
+// 3 depth 이상이 되지 않도록 방지
+// vue-draggable-plus 내부 sortablejs의 onMove 이벤트에 적용됨 : @move 대신 :on-move(props)로 전달
+const handleMove = (evt: MoveEvent) => {
+  const toDepth = Number(evt.to.dataset.depth ?? 0);
+  const hasChildren = evt.dragged.dataset.hasChildren === "true";
+
+  return !(hasChildren && toDepth > 0);
 };
 
 const { updateHidden } = useUpdateHidden();
