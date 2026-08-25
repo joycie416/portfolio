@@ -72,7 +72,7 @@ import { toast } from "vue-sonner";
 const props = defineProps<{ postId: number }>();
 
 const emit = defineEmits<{
-  "refresh-comments": [];
+  refreshComments: [];
 }>();
 
 const { defineField, errors, meta, handleSubmit, resetForm } = useForm({
@@ -108,7 +108,7 @@ const handleSubmitComment = handleSubmit(async () => {
       password: toValue(password) ?? "",
       content: toValue(content) ?? "",
     });
-    emit("refresh-comments");
+    emit("refreshComments");
     resetForm();
     toast.success("댓글이 등록되었습니다.");
   } catch {

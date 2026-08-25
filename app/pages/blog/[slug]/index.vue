@@ -36,7 +36,7 @@
       <Pagination
         :page="page"
         :total="filteredCount"
-        :itemsPerPage="PER_PAGE"
+        :items-per-page="PER_PAGE"
         class="mt-auto"
         @update:page="onPageChange"
       />

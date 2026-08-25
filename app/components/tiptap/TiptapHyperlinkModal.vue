@@ -22,14 +22,14 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  "update:set-link": [value: string];
+  setLink: [value: string];
   close: [];
 }>();
 
 const url = ref("");
 
 const save = () => {
-  emit("update:set-link", url.value);
+  emit("setLink", url.value);
   close();
 };
 

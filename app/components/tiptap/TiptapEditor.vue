@@ -321,7 +321,7 @@
     :editor="editor"
     :open="hyperlinkModalOpen"
     @close="hyperlinkModalOpen = false"
-    @update:set-link="setLink"
+    @set-link="setLink"
   />
 </template>
 

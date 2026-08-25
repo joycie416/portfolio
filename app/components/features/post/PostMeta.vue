@@ -64,7 +64,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  "refresh-post": [];
+  refreshPost: [];
 }>();
 
 const route = useRoute();
@@ -104,7 +104,7 @@ const onChangeVisibilityClick = async () => {
         ? "게시글이 공개되었습니다."
         : "게시글이 비공개로 변경되었습니다."
     );
-    emit("refresh-post");
+    emit("refreshPost");
   } catch {
     toast.error("공개 여부 변경에 실패했습니다.");
   }

@@ -117,7 +117,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  "refresh-comments": [];
+  refreshComments: [];
 }>();
 
 const { updateComment } = useUpdateComment();
@@ -211,7 +211,7 @@ const handleUpdateComment = async () => {
       content: nextContent,
     });
     toast.success("댓글이 수정되었습니다.");
-    emit("refresh-comments");
+    emit("refreshComments");
     resetState();
   } catch {
     toast.error("댓글 수정에 실패했습니다.");
@@ -231,7 +231,7 @@ const handleDeleteComment = async () => {
     loading.value = true;
     await deleteComment(props.comment.id);
     toast.success("댓글이 삭제되었습니다.");
-    emit("refresh-comments");
+    emit("refreshComments");
     resetState();
   } catch {
     toast.error("댓글 삭제에 실패했습니다.");

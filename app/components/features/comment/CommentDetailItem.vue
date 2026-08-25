@@ -60,7 +60,7 @@ import { ConfirmDialog } from "@/components/common";
 const props = defineProps<{ comment: CommentWithSlug; deleteable?: boolean }>();
 
 const emit = defineEmits<{
-  "refresh-comments": [];
+  refreshComments: [];
 }>();
 
 const COLORS = [
@@ -92,7 +92,7 @@ const handleDelete = async () => {
   try {
     loading.value = true;
     await deleteComment(props.comment.id);
-    emit("refresh-comments");
+    emit("refreshComments");
     deleteConfirmOpen.value = false;
     toast.success("댓글이 삭제되었습니다.");
   } catch {
