@@ -59,8 +59,9 @@ const route = useRoute();
 const slug = computed(() => route.params.slug as string);
 const { page, onPageChange } = usePagination();
 
-const { breadcrumbItems, breadcrumbStatus, menuFamily } =
-  useMenuBreadcrumb(slug);
+const { breadcrumbItems, breadcrumbStatus, menuFamily } = useMenuBreadcrumb({
+  slug,
+});
 
 // ------------ SEO ------------
 const title = computed(() => {

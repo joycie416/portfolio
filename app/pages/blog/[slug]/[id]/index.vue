@@ -89,9 +89,9 @@ definePageMeta({
 const route = useRoute();
 const postId = computed(() => Number(route.params.id));
 
-const { breadcrumbItems, breadcrumbStatus } = useMenuBreadcrumb(
-  () => route.params.slug as string
-);
+const { breadcrumbItems, breadcrumbStatus } = useMenuBreadcrumb({
+  slug: () => route.params.slug as string,
+});
 
 const { data, refresh } = useGetPost({
   id: postId,

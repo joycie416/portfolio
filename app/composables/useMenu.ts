@@ -36,10 +36,8 @@ export const useUpdateHidden = () => {
 export const useUpdateMenu = () => {
   const supabase = useSupabaseClient();
 
-  const updateMenu = (
-    data: MenuUpdateType,
-    thumbnail?: MenuThumbnailUpdate
-  ) => menus(supabase).update(data, thumbnail);
+  const updateMenu = (data: MenuUpdateType, thumbnail?: MenuThumbnailUpdate) =>
+    menus(supabase).update(data, thumbnail);
 
   return { updateMenu };
 };
@@ -63,7 +61,11 @@ export const useReorderMenus = () => {
   return { reorderMenus };
 };
 
-export const useMenuBreadcrumb = (slug: MaybeRefOrGetter<string>) => {
+export const useMenuBreadcrumb = ({
+  slug,
+}: {
+  slug: MaybeRefOrGetter<string>;
+}) => {
   const { data: menus, status } = useGetMenus();
 
   const menuFamily = computed(() =>
