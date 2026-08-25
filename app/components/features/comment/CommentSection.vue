@@ -39,5 +39,4 @@ const { data, refresh, status } = useGetComments({
   lazy: true,
 });
 const comments = computed(() => data.value?.data ?? []);
-const totalComments = computed(() => data.value?.count ?? 0);
 </script>
