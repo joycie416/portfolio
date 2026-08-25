@@ -55,8 +55,6 @@ const props = withDefaults(
   }
 );
 
-const post = computed(() => props.post);
-
 const excerptClampStyle = computed(() => {
   const style: Record<string, number> = {};
   if (props.lineClamp != null) style["--excerpt-line-clamp"] = props.lineClamp;
@@ -66,7 +64,7 @@ const excerptClampStyle = computed(() => {
 });
 
 const handleClick = () => {
-  navigateTo(`/blog/${post.value.menu_slug}/${post.value.id}`);
+  navigateTo(`/blog/${props.post.menu_slug}/${props.post.id}`);
 };
 </script>
 

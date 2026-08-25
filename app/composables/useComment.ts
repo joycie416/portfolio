@@ -73,7 +73,10 @@ export const useGetCommentsWithSlug = (
   const page = computed(() => toValue(params.page));
   const query = computed(() => toValue(params.query));
 
-  const result = useAsyncData<{ data: CommentWithSlug[]; count: number }>(
+  const { data, pending, error, refresh, ...result } = useAsyncData<{
+    data: CommentWithSlug[];
+    count: number;
+  }>(
     () =>
       `comments:with-slug:${page.value}:${pageSize}:${query.value?.trim() ?? ""}`,
     () =>
@@ -89,20 +92,18 @@ export const useGetCommentsWithSlug = (
     }
   );
 
-  const data = computed(() => result.data.value?.data ?? []);
-  const pending = computed(() => result.pending.value);
-  const error = computed(() => result.error.value ?? null);
-  const filteredCount = computed(() => result.data.value?.count ?? 0);
+  const commentList = computed(() => data.value?.data ?? []);
+  const filteredCount = computed(() => data.value?.count ?? 0);
   const totalPages = computed(() =>
     Math.max(1, Math.ceil(filteredCount.value / pageSize))
   );
 
   return {
     ...result,
-    data,
+    data: commentList,
     pending,
     error,
-    refresh: result.refresh,
+    refresh,
     page,
     totalPages,
     pageSize,

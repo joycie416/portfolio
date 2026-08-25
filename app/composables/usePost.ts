@@ -41,7 +41,7 @@ export const useGetPosts = (params: UseGetPostsParams) => {
     () => toValue(params.visibility) ?? "all"
   );
 
-  const result = useAsyncData<{
+  const { data, pending, error, refresh, ...result } = useAsyncData<{
     data: SimplePostWithMenuSlug[];
     count: number;
   }>(
@@ -59,8 +59,8 @@ export const useGetPosts = (params: UseGetPostsParams) => {
   );
 
   // menu_full_name 추가
-  const data = computed<TransformedPost[]>(() => {
-    const postList = result.data.value?.data ?? [];
+  const transformedData = computed<TransformedPost[]>(() => {
+    const postList = data.value?.data ?? [];
 
     // 메뉴 조회 에러 시
     if (menusError.value) {
@@ -73,11 +73,8 @@ export const useGetPosts = (params: UseGetPostsParams) => {
     return postsTransformer(postList, menus.value ?? []);
   });
 
-  const pending = computed(() => result.pending.value);
-  const error = computed(() => result.error.value ?? null);
-
   // 필터 반영된 전체 개수 (페이지 수 계산용)
-  const filteredCount = computed(() => result.data.value?.count ?? 0);
+  const filteredCount = computed(() => data.value?.count ?? 0);
 
   const totalPages = computed(() =>
     Math.max(1, Math.ceil(filteredCount.value / pageSize))
@@ -85,10 +82,10 @@ export const useGetPosts = (params: UseGetPostsParams) => {
 
   return {
     ...result,
-    data,
+    data: transformedData,
     pending,
     error,
-    refresh: result.refresh,
+    refresh,
     page,
     totalPages,
     pageSize,

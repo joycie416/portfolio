@@ -6,7 +6,6 @@ import type { Database } from "@/types/extended-database.types";
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
   const route = useRoute();
-  const path = computed(() => route.path);
 
   const supabase = createBrowserClient<Database>(
     config.public.supabaseUrl,
@@ -19,7 +18,7 @@ export default defineNuxtPlugin(() => {
   supabase.auth.onAuthStateChange((_event, session) => {
     if (_event === "SIGNED_OUT") {
       user.value = null;
-      if (path.value.startsWith("/blog/admin")) {
+      if (route.path.startsWith("/blog/admin")) {
         navigateTo("/blog");
         return;
       }
