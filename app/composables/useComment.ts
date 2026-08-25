@@ -6,20 +6,23 @@ import type {
 } from "@/types/supabase";
 import { comments } from "@/utils/supabase/comments";
 
+export type UseGetCommentsParams = {
+  postId: MaybeRefOrGetter<number>;
+  server?: boolean;
+  lazy?: boolean;
+};
+
 export const useGetComments = ({
   postId,
   server,
   lazy,
-}: {
-  postId: MaybeRefOrGetter<number>;
-  server?: boolean;
-  lazy?: boolean;
-}) => {
+}: UseGetCommentsParams) => {
   const supabase = useSupabaseClient();
+  const id = computed(() => toValue(postId));
 
   return useLazyAsyncData<{ data: Comment[]; count: number }>(
-    () => `comments:${toValue(postId)}`,
-    () => comments(supabase).getList(toValue(postId)),
+    () => `comments:${id.value}`,
+    () => comments(supabase).getList(id.value),
     { default: () => ({ data: [], count: 0 }), server, lazy }
   );
 };

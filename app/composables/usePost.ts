@@ -207,7 +207,6 @@ export function useGetPost({
     {
       default: () => null,
       immediate,
-      watch: [() => toValue(id), () => toValue(temp)],
     }
   );
 }
@@ -263,7 +262,6 @@ export const useGetPostNeighbors = (params: UseGetPostNeighborsParams) => {
     {
       server: false,
       default: () => null,
-      watch: [postId],
     }
   );
 
