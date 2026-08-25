@@ -79,6 +79,11 @@
 import { Breadcrumb, FileItem } from "@/components/common";
 import { BlogInnerLayout } from "@/components/layout";
 import { CommentSection } from "@/components/features/comment";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from "@/components/ui/dropdown-menu";
 import { PostMeta, RelatedPostList } from "@/components/features/post";
 import { Save } from "@lucide/vue";
 
