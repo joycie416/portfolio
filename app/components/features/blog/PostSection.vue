@@ -1,5 +1,6 @@
 <template>
   <section id="post" class="post-section">
+    <InputSearch theme="gray" class="mx-auto mb-10" />
     <h2 class="post-section__title">최신글</h2>
 
     <Empty
@@ -38,6 +39,7 @@ import type { TransformedPost } from "@/types/supabase";
 import { Empty } from "@/components/common";
 import { PostItem } from "@/components/features/post";
 import { PostSectionSkeleton } from "./";
+import InputSearch from "./InputSearch.vue";
 
 type PostGroupItem = {
   post: TransformedPost;

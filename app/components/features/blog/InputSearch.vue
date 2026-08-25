@@ -20,7 +20,7 @@ import type { HTMLAttributes } from "vue";
 import { cn } from "@/lib/utils";
 
 const props = defineProps<{
-  theme: "light" | "dark";
+  theme: "light" | "dark" | "gray";
   class?: HTMLAttributes["class"];
 }>();
 
@@ -41,12 +41,24 @@ const handleSearch = () => {
 .search__container[data-theme="light"] {
   --background-color: white;
   --text-color: black;
+  --button-color: var(--color-primary-500);
+  --button-text-color: var(--color-primary-45);
 }
 
 .search__container[data-theme="dark"] {
   --background-color: black;
   --text-color: white;
+  --button-color: var(--color-primary-500);
+  --button-text-color: var(--color-primary-45);
 }
+
+.search__container[data-theme="gray"] {
+  --background-color: var(--color-gray-300);
+  --text-color: black;
+  --button-color: var(--color-primary-400);
+  --button-text-color: var(--color-primary-45);
+}
+
 .search__container {
   width: 100%;
   height: 32px;
@@ -96,8 +108,8 @@ const handleSearch = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-primary-500);
-  color: var(--color-primary-45);
+  background: var(--button-color);
+  color: var(--button-text-color);
   cursor: pointer;
 
   @include md {
