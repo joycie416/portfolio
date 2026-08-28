@@ -49,7 +49,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      siteUrl: "https://localhost:3000",
+      siteUrl: "https://portfolio-haein.vercel.app",
       supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
       supabasePublishableKey: process.env.NUXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     },
@@ -57,7 +57,7 @@ export default defineNuxtConfig({
 
   // 사이트맵 생성 시 필요한 정보
   site: {
-    url: "https://localhost:3000",
+    url: "https://portfolio-haein.vercel.app",
     name: "Haein's Portfolio",
   },
 
