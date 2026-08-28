@@ -29,20 +29,19 @@
               </span>
             </span>
           </NuxtLink>
-          <AccordionTrigger
-            v-else
-            class="hover:no-underline min-w-0 overflow-hidden"
-            :class="{
-              '[&_.lucide-chevron-down-icon]:hidden':
-                parent.children.length === 0,
-            }"
-          >
-            <span class="menu__label">
-              <span class="menu__name">{{ parent.name }}</span>
-              <span class="menu__count">
-                ({{ parent.postCount.toLocaleString() }})
-              </span>
-            </span>
+          <AccordionTrigger v-else class="hover:no-underline flex-none">
+            <template #leading>
+              <NuxtLink
+                :to="`/blog/${parent.slug}`"
+                prefetch-on="interaction"
+                class="menu__label"
+              >
+                <span class="menu__name">{{ parent.name }}</span>
+                <span class="menu__count">
+                  ({{ parent.postCount.toLocaleString() }})
+                </span>
+              </NuxtLink>
+            </template>
           </AccordionTrigger>
           <AccordionContent v-if="parent.children.length > 0" class="pl-6 pb-0">
             <ul>
@@ -223,10 +222,6 @@ const handleSignOut = async () => {
       padding-inline: 12px;
       border-radius: 12px;
 
-      &:hover {
-        text-decoration: none;
-      }
-
       transition: all 150ms ease-in-out;
 
       &[data-state="open"] {
@@ -252,15 +247,14 @@ const handleSignOut = async () => {
     display: flex;
     align-items: center;
     min-width: 0;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
   }
 
   &__parent {
     padding-block: 16px;
     padding-inline: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-
     &:hover {
       text-decoration: underline;
     }
@@ -269,6 +263,7 @@ const handleSignOut = async () => {
   &__child {
     padding-block: 8px;
     gap: 4px;
+    font-weight: 400;
 
     &:hover {
       text-decoration: underline;
@@ -277,9 +272,14 @@ const handleSignOut = async () => {
 
   &__label {
     flex: 1;
+    // align-self: stretch;
     min-width: 0;
     overflow: hidden;
     gap: 4px;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   &__name {
