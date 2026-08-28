@@ -106,6 +106,25 @@ export const toMenuOptions = ({
 };
 
 /**
+ * 게시글 목록 필터용 slug 배열.
+ * 부모면 자신 + 자식, 자식이면 자신만. 메뉴 목록에 없으면 요청 slug만 반환.
+ */
+export const getMenuSlugsWithChildren = (
+  slug: string,
+  menus: Menu[]
+): string[] => {
+  const current = menus.find((menu) => menu.slug === slug);
+  if (!current) return [slug];
+  if (current.parent_id) return [current.slug];
+
+  const childSlugs = menus
+    .filter((menu) => menu.parent_id === current.id)
+    .map((menu) => menu.slug);
+
+  return [current.slug, ...childSlugs];
+};
+
+/**
  * 메뉴의 slug를 사용해 메뉴 계층을 찾아 반환
  * 해당 메뉴의 parent가 있는 경우 parent 정보도 함께 반환해 breadcrumb 에서 사용
  */

@@ -29,7 +29,7 @@ const ATTACHMENTS = "attachments" as const;
 export interface GetPostListParams {
   page: number;
   perPage: number;
-  slug?: string;
+  slugs?: string[];
   query?: string;
   visibility?: PostVisibility;
 }
@@ -549,7 +549,7 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
     getList: async ({
       page,
       perPage,
-      slug,
+      slugs: slug,
       query: q,
       visibility = "all",
     }: GetPostListParams) => {
@@ -569,7 +569,7 @@ export const posts = (client: SupabaseClient<Database>): PostsApi => {
             .select(LIST_SELECT_COLUMNS)
         : client.from(POST).select(LIST_SELECT_COLUMNS, { count: "exact" });
 
-      if (slug) query = query.eq("menus.slug", slug);
+      if (slug?.length) query = query.in("menus.slug", slug);
       if (visibility === "public") query = query.eq("hidden", false);
       else if (visibility === "private") query = query.eq("hidden", true);
 

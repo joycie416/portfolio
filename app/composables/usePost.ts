@@ -1,4 +1,5 @@
 import { posts, type PostVisibility } from "@/utils/supabase/posts";
+import { getMenuSlugsWithChildren } from "@/utils/menu";
 import { postsTransformer } from "@/utils/post";
 import type {
   Post,
@@ -31,8 +32,9 @@ export const useGetPosts = (params: UseGetPostsParams) => {
   const supabase = useSupabaseClient();
   const pageSize = params.perPage ?? POSTS_PAGE_SIZE;
 
-  // menu_full_name 매핑용 (게시글 조회 자체는 getList의 menus inner join이 담당)
-  const { data: menus, error: menusError } = useGetMenus();
+  // menu_full_name 매핑용 + 부모 메뉴의 자식 slug 조회용
+  const menusAsyncData = useGetMenus();
+  const { data: menus, error: menusError } = menusAsyncData;
 
   const page = computed(() => toValue(params.page));
   const slug = computed(() => toValue(params.slug));
@@ -47,14 +49,25 @@ export const useGetPosts = (params: UseGetPostsParams) => {
   }>(
     () =>
       `posts:${page.value}:${pageSize}:${slug.value ?? "all"}:${visibility.value}:${query.value?.trim() ?? ""}`,
-    () =>
-      posts(supabase).getList({
+    async () => {
+      const currentSlug = slug.value;
+
+      // 부모 메뉴면 자식 slug까지 모아 넘긴다.
+      // 메뉴는 "menus" 키로 공유되므로 대개 이미 로드된 상태이며, 아직이면 그 요청만 기다린다.
+      if (currentSlug) await menusAsyncData;
+
+      const slugFilter = currentSlug
+        ? getMenuSlugsWithChildren(currentSlug, menus.value ?? [])
+        : undefined;
+
+      return posts(supabase).getList({
         page: page.value,
         perPage: pageSize,
-        slug: slug.value,
+        slugs: slugFilter,
         query: query.value,
         visibility: visibility.value,
-      }),
+      });
+    },
     { default: () => ({ data: [], count: 0 }), server: params.server }
   );
 

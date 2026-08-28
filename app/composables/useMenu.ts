@@ -79,7 +79,7 @@ export const useMenuBreadcrumb = ({
     const { parent, menu } = family;
     return parent
       ? [
-          { label: parent.name },
+          { label: parent.name, href: `/blog/${parent.slug}` },
           { label: menu.name, href: `/blog/${menu.slug}` },
         ]
       : [{ label: menu.name, href: `/blog/${menu.slug}` }];
