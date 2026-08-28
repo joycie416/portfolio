@@ -24,7 +24,11 @@ const naverSiteMeta = naverSiteVerification
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  css: ["./app/assets/css/main.css"],
+  css: [
+    "vue-sonner/style.css",
+    "./app/assets/css/main.css",
+    "./app/assets/css/tiptap-editor.scss",
+  ],
 
   vite: {
     plugins: [tailwindcss()],
@@ -46,6 +50,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       siteUrl: "https://portfolio-haein.vercel.app",
+      supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL,
+      supabasePublishableKey: process.env.NUXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     },
   },
 
@@ -57,7 +63,20 @@ export default defineNuxtConfig({
 
   routeRules: {
     "/": {
+      redirect: "/blog",
+    },
+    "/portfolio": {
       prerender: true,
+      appLayout: "portfolio-layout",
+    },
+    "/blog/**": {
+      appLayout: "blog-layout",
+    },
+    "/blog/admin/**": {
+      appLayout: "blog-admin-layout",
+    },
+    "/blog/admin/login": {
+      appLayout: false,
     },
   },
   app: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-10">
+  <div class="w-[600px] flex flex-col gap-10 pb-30">
     <div class="flex flex-col gap-3">
       <h2>버튼</h2>
       <div class="space-y-1">
@@ -26,9 +26,9 @@
           <Button size="sm" variant="secondary">Small</Button>
           <Button variant="secondary">Default</Button>
           <Button size="lg" variant="secondary">Large</Button>
-          <Button size="sm" variant="outline">Outline</Button>
-          <Button variant="outline">Outline</Button>
-          <Button size="lg" variant="outline">Outline</Button>
+          <Button size="sm" variant="outline">Small</Button>
+          <Button variant="outline">Default</Button>
+          <Button size="lg" variant="outline">Large</Button>
         </div>
       </div>
     </div>
@@ -36,12 +36,104 @@
       <h2>테이블</h2>
       <DataTable table-id="test-table" :data="sampleData" :columns="columns" />
     </div>
+    <div class="flex flex-col gap-3">
+      <h2>카드</h2>
+      <Card title="카드 제목">
+        <p>카드 내용</p>
+      </Card>
+      <Card class="bg-primary-300"><p>제목 없는 카드</p></Card>
+    </div>
+    <div class="flex flex-col gap-3">
+      <h2>인풋 그룹</h2>
+      <InputGroup
+        v-model="form.email"
+        type="text"
+        label="기본"
+        placeholder="이메일을 입력해주세요."
+        hint="이메일을 입력해주세요."
+      />
+      <InputGroup
+        v-model="form.email"
+        type="text"
+        label="필수+에러 상태"
+        required
+        state="error"
+        placeholder="이메일을 입력해주세요."
+        hint="이메일을 입력해주세요."
+      />
+      <InputGroup
+        v-model="form.email"
+        type="text"
+        label="disabled 상태"
+        disabled
+        placeholder="이메일을 입력해주세요."
+        hint="이메일을 입력해주세요."
+      />
+      <InputGroup
+        v-model="form.email"
+        type="password"
+        label="비밀번호"
+        placeholder="비밀번호를 입력해주세요."
+        hint="비밀번호를 입력해주세요."
+      />
+      <div>
+        <InputGroup
+          v-model="form.checkbox"
+          type="checkbox"
+          label="체크박스"
+          :options="checkboxOptions"
+        />
+        <p class="text-sm text-text-gray-04">선택된 값: {{ form.checkbox }}</p>
+      </div>
+      <InputGroup
+        v-model="form.dropdown"
+        type="dropdown"
+        label="드롭다운"
+        :options="dropdownOptions"
+        required
+        placeholder="드롭다운을 선택해주세요."
+        hint="드롭다운을 선택해주세요."
+      />
+      <InputGroup
+        v-model="form.dropdown"
+        type="dropdown"
+        label="disabled 상태"
+        disabled
+        :options="dropdownOptions"
+        placeholder="드롭다운을 선택해주세요."
+        hint="드롭다운을 선택해주세요."
+      />
+    </div>
+    <div class="flex flex-col gap-3">
+      <h2>Tiptap</h2>
+      <TiptapEditor v-model="tiptapContent" />
+      <FileItem :file="sampleFile" href="https://www.google.com" />
+    </div>
+    <div class="flex flex-col gap-3">
+      <h2>토글</h2>
+      <Toggle v-model="toggle" />
+      <Toggle v-model="toggle" label="Small Size" size="sm" />
+      <Toggle
+        v-model="toggle"
+        label="라벨 있음"
+        :classes="{ track: 'bg-yellow' }"
+      />
+      <Toggle v-model="toggle">slot</Toggle>
+      <Toggle v-model="toggle" label="Disabled" disabled />
+      <Toggle v-model="toggle" label="Error" state="error" />
+      <Toggle :model-value="toggle" @update:model-value="handleToggleChange">
+        업데이트 이벤트 핸들러
+      </Toggle>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { DataTable, type Columns } from "@/components/ui/data-table";
+import { Card, FileItem, InputGroup, Toggle } from "@/components/common";
+import type { InputOption } from "@/types/common";
+import { TiptapEditor } from "@/components/tiptap";
 
 type SampleDataType = {
   id: string;
@@ -118,4 +210,55 @@ const columns = computed<Columns<SampleDataType>>(() => [
     cell: ({ row }) => h("div", null, row.original.createdAt),
   },
 ]);
+
+const form = reactive<{ email: string; checkbox: string[]; dropdown: string }>({
+  email: "",
+  checkbox: [],
+  dropdown: "",
+});
+
+const checkboxOptions = ref<InputOption<string>[]>([
+  { label: "옵션 1", value: "option1" },
+  { label: "옵션옵션옵션옵션 2", value: "option2" },
+  { label: "옵션 3 disabled", value: "option3", disabled: true },
+]);
+
+const dropdownOptions = ref<InputOption<string>[]>([
+  { label: "옵션 A", value: "optionA" },
+  { label: "옵션옵션옵션옵션 B", value: "optionB" },
+  { label: "옵션 C", value: "optionC" },
+  { label: "옵션 D", value: "optionD" },
+  { label: "옵션 E", value: "optionE" },
+  { label: "옵션 F", value: "optionF" },
+  { label: "옵션 G", value: "optionG" },
+  { label: "옵션 H", value: "optionH" },
+  { label: "옵션 I", value: "optionI" },
+  { label: "옵션 J", value: "optionJ" },
+  { label: "옵션 K", value: "optionK" },
+  { label: "옵션 L", value: "optionL" },
+  { label: "옵션 M", value: "optionM" },
+  { label: "옵션 N", value: "optionN" },
+  { label: "옵션 O", value: "optionO" },
+  { label: "옵션 P", value: "optionP" },
+  { label: "옵션 Q", value: "optionQ" },
+  { label: "옵션 R", value: "optionR" },
+  { label: "옵션 S", value: "optionS" },
+]);
+
+const tiptapContent = ref("");
+
+// FileItem 미리보기용 임시 txt 파일 (크기가 보이도록 내용 채움)
+const sampleFile = new File(
+  [new Uint8Array(1536)],
+  "메모 아주 긴 이름으로 짓고 싶은데 이게 되려나 언제까지 작성해야 할까 이름좀 줄여줘봐.txt"
+);
+
+const toggle = ref(false);
+
+const handleToggleChange = (next: boolean) => {
+  const isConfirmed = confirm("정말 변경하시겠습니까?");
+  if (isConfirmed) {
+    toggle.value = next;
+  }
+};
 </script>

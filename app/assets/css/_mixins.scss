@@ -12,3 +12,10 @@ $breakpoint-lg: 1024px;
     @content;
   }
 }
+
+@mixin toggle-sizes($thumb-size, $track-width, $track-height, $gap: 2px) {
+  --toggle-thumb-size: #{$thumb-size};
+  --toggle-track-width: #{$track-width};
+  --toggle-track-height: #{$track-height};
+  --toggle-thumb-gap: #{$gap};
+}

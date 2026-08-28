@@ -10,7 +10,7 @@ const props = withDefaults(
   {
     class: "size-8",
     fill: "var(--color-primary-800)",
-  },
+  }
 );
 </script>
 

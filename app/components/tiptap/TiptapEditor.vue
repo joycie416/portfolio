@@ -1,0 +1,817 @@
+<template>
+  <div class="tiptap__container" :class="props.class">
+    <div class="tiptap__toolbar">
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" class="tiptap__toolbar__button">
+            <Pilcrow />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" class="min-w-fit">
+          <DropdownMenuItem
+            class="text-[1.4rem] font-semibold"
+            @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
+          >
+            제목 1
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="text-[1.2rem] font-semibold"
+            @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
+          >
+            제목 2
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="text-[1.1rem] font-semibold"
+            @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
+          >
+            제목 3
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            @click="editor?.chain().focus().setParagraph().run()"
+          >
+            본문
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleBold().run()"
+      >
+        <Bold />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleItalic().run()"
+      >
+        <Italic />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleUnderline().run()"
+      >
+        <Underline />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleStrike().run()"
+      >
+        <Strikethrough />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleBold().run()"
+      >
+        <Type />
+      </Button>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" class="tiptap__toolbar__button">
+            <Highlighter />
+          </Button>
+          <DropdownMenuContent align="start" class="min-w-fit flex">
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="
+                editor
+                  ?.chain()
+                  .focus()
+                  .toggleHighlight({ color: 'var(--color-highlight-yellow)' })
+                  .run()
+              "
+            >
+              <span class="bg-highlight-yellow size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="
+                editor
+                  ?.chain()
+                  .focus()
+                  .toggleHighlight({ color: 'var(--color-highlight-red)' })
+                  .run()
+              "
+            >
+              <span class="bg-highlight-red size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="
+                editor
+                  ?.chain()
+                  .focus()
+                  .toggleHighlight({ color: 'var(--color-highlight-blue)' })
+                  .run()
+              "
+            >
+              <span class="bg-highlight-blue size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="
+                editor
+                  ?.chain()
+                  .focus()
+                  .toggleHighlight({ color: 'var(--color-highlight-gray)' })
+                  .run()
+              "
+            >
+              <span class="bg-highlight-gray size-4 rounded-full" />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenuTrigger>
+      </DropdownMenu>
+      <div class="tiptap__toolbar__divider" />
+
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().setTextAlign('left').run()"
+      >
+        <TextAlignStart />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().setTextAlign('center').run()"
+      >
+        <TextAlignCenter />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().setTextAlign('right').run()"
+      >
+        <TextAlignEnd />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().setTextAlign('justify').run()"
+      >
+        <TextAlignJustify />
+      </Button>
+      <div class="tiptap__toolbar__divider" />
+
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleBlockquote().run()"
+      >
+        <TextQuote />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleBulletList().run()"
+      >
+        <List />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleOrderedList().run()"
+      >
+        <ListOrdered />
+      </Button>
+      <div class="tiptap__toolbar__divider" />
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().setHorizontalRule().run()"
+      >
+        <Minus />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="editor?.chain().focus().toggleCode().run()"
+      >
+        <CodeXml />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="openHyperlinkModal"
+      >
+        <Link />
+      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" class="tiptap__toolbar__button">
+            <Table />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="start"
+          class="min-w-fit grid grid-cols-5 grid-rows-2"
+        >
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="
+              editor?.chain().focus().insertTable({ rows: 3, cols: 3 }).run()
+            "
+          >
+            <Grid2X2Plus title="테이블 추가" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().addColumnAfter().run()"
+          >
+            <BetweenVerticalStart title="행 추가" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().addRowAfter().run()"
+          >
+            <BetweenHorizontalStart title="열 추가" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().deleteColumn().run()"
+          >
+            <TableColumnsSplit title="열 제거" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().deleteRow().run()"
+          >
+            <TableRowsSplit title="행 제거" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().mergeCells().run()"
+          >
+            <TableCellsMerge title="셀 병합" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().splitCell().run()"
+          >
+            <TableCellsSplit title="셀 분할" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().toggleHeaderRow().run()"
+          >
+            <Sheet title="행 헤더" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().toggleHeaderColumn().run()"
+          >
+            <Sheet title="열 헤더" class="rotate-270" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            class="p-1.5"
+            @click="editor?.chain().focus().deleteTable().run()"
+          >
+            <Grid2X2X title="테이블 제거" />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="openImagePicker"
+      >
+        <Image />
+      </Button>
+      <Button
+        variant="ghost"
+        class="tiptap__toolbar__button"
+        @click="openFilePicker"
+      >
+        <Paperclip />
+      </Button>
+      <input
+        ref="imageInputRef"
+        type="file"
+        :accept="INLINE_IMAGE_ACCEPT"
+        multiple
+        class="hidden"
+        @change="onImageInputChange"
+      />
+      <input
+        ref="fileInputRef"
+        type="file"
+        multiple
+        class="hidden"
+        @change="onFileInputChange"
+      />
+    </div>
+    <editor-content :editor="editor" class="tiptap__editor" />
+    <div v-if="attachmentList.length" class="tiptap__attachments">
+      <FileItem
+        v-for="attachment in attachmentList"
+        :key="attachment.key"
+        :file="attachment.file"
+        :href="attachment.href"
+        @remove="removeAttachment(attachment.key)"
+      />
+    </div>
+  </div>
+  <TiptapHyperlinkModal
+    v-if="editor"
+    :editor="editor"
+    :open="hyperlinkModalOpen"
+    @close="hyperlinkModalOpen = false"
+    @set-link="setLink"
+  />
+</template>
+
+<script lang="ts" setup>
+import { useEditor, EditorContent } from "@tiptap/vue-3";
+import type { Editor } from "@tiptap/core";
+import { Button } from "@/components/ui/button";
+import StarterKit from "@tiptap/starter-kit";
+import Blockquote from "@tiptap/extension-blockquote";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import FileHandler from "@tiptap/extension-file-handler";
+import Highlight from "@tiptap/extension-highlight";
+import TextAlign from "@tiptap/extension-text-align";
+import { TextStyleKit } from "@tiptap/extension-text-style";
+import { TableKit } from "@tiptap/extension-table";
+import { all, createLowlight } from "lowlight";
+import {
+  BetweenHorizontalStart,
+  BetweenVerticalStart,
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
+  Type,
+  Highlighter,
+  TextAlignStart,
+  TextAlignCenter,
+  TextAlignEnd,
+  TextAlignJustify,
+  TextQuote,
+  List,
+  ListOrdered,
+  Minus,
+  Link,
+  Paperclip,
+  Image,
+  Table,
+  Pilcrow,
+  CodeXml,
+  TableColumnsSplit,
+  TableRowsSplit,
+  TableCellsMerge,
+  TableCellsSplit,
+  Sheet,
+  Grid2X2Plus,
+  Grid2X2X,
+} from "@lucide/vue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "vue-sonner";
+import { TiptapHyperlinkModal } from ".";
+import { InlineImage } from "./extensions";
+import { FileItem } from "@/components/common";
+import type { PostStorageFile } from "@/types/supabase";
+import type { HTMLAttributes } from "vue";
+
+const props = defineProps<{
+  class?: HTMLAttributes["class"];
+  existingAttachments?: PostStorageFile[];
+}>();
+
+const model = defineModel<string | undefined>();
+// 대표이미지로 지정된 inline 이미지의 key (없으면 null). 부모 폼의 thumbnail 필드와 동기화된다.
+const thumbnailKey = defineModel<string | null>("thumbnail", {
+  default: null,
+});
+
+// 폼 리셋/수정 모드 등 외부에서 값이 바뀌면 에디터에 반영한다.
+// (emitUpdate: false로 onUpdate 재호출에 의한 무한 루프를 방지)
+watch(
+  () => model.value,
+  (value) => {
+    const current = editor.value;
+    if (!current) return;
+
+    const next = value ?? "";
+    if (current.getHTML() === next) return;
+    if (current.isEmpty && next === "") return;
+
+    current.commands.setContent(next, { emitUpdate: false });
+    // 수정 모드에서 불러온 본문의 대표이미지 표시를 thumbnail 값에 반영
+    // (emitUpdate: false라 onUpdate가 호출되지 않으므로 직접 동기화)
+    syncThumbnailWithDoc(current as Editor);
+  }
+);
+
+// ------------ 파일 ------------
+
+// inline 이미지로 허용하는 확장자/타입 (첨부파일은 제한 없음)
+const INLINE_IMAGE_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+] as const;
+const INLINE_IMAGE_ACCEPT = ".jpg,.jpeg,.png,.gif";
+
+// 파일 업로드 관리
+// 게시글 내 이미지
+const inlineImages = ref<Map<string, File>>(new Map());
+// 첨부 파일 (새로 추가된 File만 — 저장 시 업로드 대상)
+const files = ref<Map<string, File>>(new Map());
+// 기존 첨부파일 중 사용자가 삭제한 key (업데이트 시 스토리지 정리에 사용)
+const removedAttachmentKeys = ref<string[]>([]);
+const MAX_FILE_SIZE = 1024 * 1024 * 10; // 10MB
+const MAX_FULL_ATTACHMENT_SIZE = 1024 * 1024 * 50; // 50MB
+
+// 기존 첨부 목록이 바뀌면(임시글/수정글 로드 등) 삭제 추적도 초기화
+watch(
+  () => props.existingAttachments,
+  () => {
+    removedAttachmentKeys.value = [];
+  }
+);
+
+// inline 이미지로 삽입 가능한 타입인지 판별 (jpg/jpeg/png/gif만)
+const isInlineInsertable = (file: File): boolean =>
+  (INLINE_IMAGE_MIME_TYPES as readonly string[]).includes(file.type);
+
+// 파일명 확장자를 추출한다 (없으면 빈 문자열)
+const getFileExtension = (filename: string): string => {
+  const dotIndex = filename.lastIndexOf(".");
+  return dotIndex === -1 ? "" : filename.slice(dotIndex);
+};
+
+// 파일을 지정한 맵에 등록하고 매핑에 사용할 key를 반환
+// 동일 파일(이름/크기/수정시각)은 기존 key를 재사용해 중복 저장을 방지
+// key는 원본 파일명이 아닌 UUID로 생성: 원본 파일명 사용시 비-ASCII 문자 오류 발생 방지
+const registerFileInMap = (target: Map<string, File>, file: File): string => {
+  for (const [existingKey, storedFile] of target) {
+    if (
+      storedFile.name === file.name &&
+      storedFile.size === file.size &&
+      storedFile.lastModified === file.lastModified
+    ) {
+      return existingKey;
+    }
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    toast.error("각 파일은 최대 10MB까지 업로드 가능합니다.");
+    return "";
+  }
+
+  const totalSize = Array.from(target.values()).reduce(
+    (acc, file) => acc + file.size,
+    0
+  );
+  if (totalSize + file.size > MAX_FULL_ATTACHMENT_SIZE) {
+    toast.error("첨부파일은 게시글 당 최대 50MB까지 업로드 가능합니다.");
+    return "";
+  }
+
+  const key = `${crypto.randomUUID()}${getFileExtension(file.name)}`;
+  target.set(key, file);
+  return key;
+};
+
+// 붙여넣은 이미지를 inlineImages에 등록하고, 본문 이미지와 매핑할 key를 반환
+const registerInlineImage = (file: File): string =>
+  registerFileInMap(inlineImages.value, file);
+
+// 첨부파일을 files 맵에 등록하고 매핑에 사용할 key를 반환
+const registerFile = (file: File): string =>
+  registerFileInMap(files.value, file);
+
+// 이미지: base64로 읽어 inline 이미지 노드로 삽입
+const insertInlineImage = (targetEditor: Editor, file: File) => {
+  const key = registerInlineImage(file);
+  const fileReader = new FileReader();
+
+  fileReader.readAsDataURL(file);
+  fileReader.onload = () => {
+    targetEditor
+      .chain()
+      .insertContentAt(targetEditor.state.selection.anchor, {
+        type: "image",
+        attrs: {
+          src: fileReader.result,
+          "data-inline-key": key,
+        },
+      })
+      .focus()
+      .run();
+  };
+};
+
+// 첨부파일: 본문에 넣지 않고 files 맵에만 등록 (별도 목록으로 표시)
+const addAttachment = (file: File): void => {
+  registerFile(file);
+  // ref 내부 Map 변경을 반응형으로 반영하기 위해 재할당
+  files.value = new Map(files.value);
+};
+
+// 첨부파일 목록: 기존(스토리지) + 새로 추가한 파일
+const attachmentList = computed(() => {
+  const existing = (props.existingAttachments ?? [])
+    .filter(
+      (attachment) => !removedAttachmentKeys.value.includes(attachment.key)
+    )
+    .map((attachment) => ({
+      key: attachment.key,
+      file: { name: attachment.key, size: attachment.size ?? 0 },
+      href: attachment.url,
+    }));
+
+  const added = Array.from(files.value, ([key, file]) => ({
+    key,
+    file: { name: file.name, size: file.size },
+    href: undefined as string | undefined,
+  }));
+
+  return [...existing, ...added];
+});
+
+const removeAttachment = (key: string) => {
+  // 새로 추가한 파일: 맵에서만 제거 (아직 스토리지에 없으므로 removed 추적 불필요)
+  if (files.value.has(key)) {
+    files.value.delete(key);
+    files.value = new Map(files.value);
+    return;
+  }
+
+  // 기존 첨부파일: 삭제 목록에 기록해 업데이트 시 스토리지에서도 제거
+  if (
+    (props.existingAttachments ?? []).some(
+      (attachment) => attachment.key === key
+    ) &&
+    !removedAttachmentKeys.value.includes(key)
+  ) {
+    removedAttachmentKeys.value = [...removedAttachmentKeys.value, key];
+  }
+};
+
+// 붙여넣기/드롭: 허용 이미지(jpg/jpeg/png/gif)만 inline 삽입, 그 외 파일은 무시
+const onFilePaste = (
+  editor: Editor,
+  pastedFiles: File[],
+  _pasteContent?: string | undefined
+) => {
+  pastedFiles.forEach((file) => {
+    if (isInlineInsertable(file)) insertInlineImage(editor, file);
+  });
+};
+
+const onFileDrop = (editor: Editor, droppedFiles: File[], _pos: number) => {
+  droppedFiles.forEach((file) => {
+    if (isInlineInsertable(file)) insertInlineImage(editor, file);
+  });
+};
+
+// 툴바 이미지 버튼: 선택한 파일을 inline 이미지로 저장
+const imageInputRef = ref<HTMLInputElement | null>(null);
+
+const openImagePicker = () => {
+  imageInputRef.value?.click();
+};
+
+const onImageInputChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (!input.files || !editor.value) return;
+
+  Array.from(input.files).forEach((file) => {
+    // 이미지 버튼은 jpg/jpeg/png/gif만 허용
+    if (!isInlineInsertable(file)) {
+      toast.error(
+        `${file.name}은(는) 지원하지 않는 이미지 형식입니다. (jpg, jpeg, png, gif만 가능)`
+      );
+      return;
+    }
+    insertInlineImage(editor.value as Editor, file);
+  });
+
+  // 동일 파일을 다시 선택해도 change가 발생하도록 초기화
+  input.value = "";
+};
+
+// 툴바 클립 버튼: 선택한 파일을 첨부파일로 저장
+const fileInputRef = ref<HTMLInputElement | null>(null);
+
+const openFilePicker = () => {
+  fileInputRef.value?.click();
+};
+
+const onFileInputChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (!input.files) return;
+
+  Array.from(input.files).forEach((file) => {
+    addAttachment(file);
+  });
+
+  // 동일 파일을 다시 선택해도 change가 발생하도록 초기화
+  input.value = "";
+};
+
+// ------------ 썸네일 ------------
+// 문서 내 이미지 노드의 data-thumbnail 사용
+// key가 있으면 해당 이미지만 켜고 나머지는 모두 끄며, key가 null이면 전부 끔
+const setThumbnail = (key: string | null) => {
+  const currentEditor = editor.value;
+  if (!currentEditor) return;
+
+  currentEditor
+    .chain()
+    .command(({ tr }) => {
+      currentEditor.state.doc.descendants((node, pos) => {
+        if (node.type.name !== "image") return;
+
+        const nodeKey =
+          (node.attrs["data-inline-key"] as string | null) ?? null;
+        const shouldBeThumbnail = key !== null && nodeKey === key;
+        if (Boolean(node.attrs["data-thumbnail"]) === shouldBeThumbnail) return;
+
+        tr.setNodeMarkup(pos, undefined, {
+          ...node.attrs,
+          "data-thumbnail": shouldBeThumbnail,
+        });
+      });
+      return true;
+    })
+    .run();
+
+  thumbnailKey.value = key;
+};
+
+// 본문에서 data-thumbnail이 켜진 이미지의 data-inline-key를 찾음
+const findDocThumbnailKey = (target: Editor): string | null => {
+  let key: string | null = null;
+  target.state.doc.descendants((node) => {
+    if (node.type.name === "image" && node.attrs["data-thumbnail"]) {
+      key = (node.attrs["data-inline-key"] as string | null) ?? null;
+    }
+  });
+  return key;
+};
+
+// 현재 thumbnail 값이 본문 이미지 중 하나를 가리키는지 확인
+// 저장된 게시글을 다시 열면 이 값이 key가 아니라 저장된 url이므로 src도 함께 비교함
+const isThumbnailInDoc = (target: Editor, value: string): boolean => {
+  let exists = false;
+  target.state.doc.descendants((node) => {
+    if (node.type.name !== "image") return;
+    if (node.attrs["data-inline-key"] === value || node.attrs.src === value) {
+      exists = true;
+    }
+  });
+  return exists;
+};
+
+// 본문 기준으로 thumbnail 값을 맞춤
+// 본문에 대표이미지 표시가 있으면 그 key를 사용
+// 표시가 없으면 현재 값이 본문에 남아 있을 때만 유지함
+const syncThumbnailWithDoc = (target: Editor) => {
+  const docKey = findDocThumbnailKey(target);
+  if (docKey) {
+    thumbnailKey.value = docKey;
+    return;
+  }
+
+  if (thumbnailKey.value && !isThumbnailInDoc(target, thumbnailKey.value)) {
+    thumbnailKey.value = null;
+  }
+};
+
+// ------------ 에디터 ------------
+// create a lowlight instance
+const lowlight = createLowlight(all);
+
+const editor = useEditor({
+  content: model.value,
+  extensions: [
+    StarterKit.configure({
+      bulletList: {
+        keepMarks: true,
+      },
+      orderedList: {
+        keepMarks: true,
+      },
+      heading: {
+        levels: [1, 2, 3],
+      },
+    }),
+    Blockquote,
+    CodeBlockLowlight.configure({
+      lowlight,
+    }),
+    FileHandler.configure({
+      // 붙여넣기/드롭은 inline 이미지(jpg/jpeg/png/gif)만 허용
+      allowedMimeTypes: [...INLINE_IMAGE_MIME_TYPES],
+      onPaste: onFilePaste,
+      onDrop: onFileDrop,
+    }),
+    Highlight.configure({
+      multicolor: true,
+    }),
+    InlineImage.configure({
+      onToggleThumbnail: setThumbnail,
+      resize: {
+        enabled: true,
+        minWidth: 100,
+        minHeight: 100,
+        alwaysPreserveAspectRatio: true,
+      },
+    }),
+    TextAlign.configure({
+      types: ["heading", "paragraph"],
+    }),
+    TextStyleKit,
+    TableKit.configure({
+      table: { resizable: true },
+    }),
+  ],
+  onCreate: ({ editor: createdEditor }) => {
+    // 기존 콘텐츠(수정 모드 등)에 이미 썸네일이 표시돼 있으면 그 값을 초기값으로 사용
+    syncThumbnailWithDoc(createdEditor);
+  },
+  onUpdate: ({ editor: updatedEditor }) => {
+    // 내용이 없을 때 Tiptap은 `<p></p>`를 반환하므로,
+    // 폼 검증(min(1))이 동작하도록 빈 값은 빈 문자열로 정규화한다.
+    model.value = updatedEditor.isEmpty ? "" : updatedEditor.getHTML();
+
+    // 썸네일로 지정된 이미지가 본문에서 삭제된 경우
+    // 썸네일 정보도 함께 제거
+    syncThumbnailWithDoc(updatedEditor);
+  },
+});
+
+onBeforeUnmount(() => {
+  editor.value?.destroy();
+});
+
+// 저장 시 사용할 데이터/헬퍼를 부모에 노출
+// - files: 새로 추가된 첨부파일(key -> File). 본문과 분리되어 별도 목록으로 관리되므로 개별 업로드 후 저장
+// - inlineImages: 본문 이미지(key -> File). 본문에는 key만 저장되므로 업로드 후 src 치환에 사용
+// - removedAttachmentKeys: 기존 첨부파일 중 삭제한 key 목록 (업데이트 시 스토리지 정리)
+defineExpose({
+  files,
+  inlineImages,
+  removedAttachmentKeys,
+  getHTML: () => editor.value?.getHTML() ?? "",
+  /** 저장 성공 후 호출: 이미 업로드된 pending File 맵을 비워 재업로드(duplicate)를 방지 */
+  clearPendingFiles: () => {
+    inlineImages.value = new Map();
+    files.value = new Map();
+    removedAttachmentKeys.value = [];
+  },
+  /**
+   * key -> URL 매핑으로 본문 inline 이미지의 src를 실제 URL로 치환한다.
+   * 이미지 업로드가 끝난 뒤 저장 직전에 호출한다.
+   * (첨부파일은 본문에 없으므로 files 맵을 별도로 업로드해 저장한다.)
+   */
+  applyUploadedUrls: (urlByKey: Record<string, string>) => {
+    const current = editor.value;
+    if (!current) return "";
+
+    current.state.doc.descendants((node, pos) => {
+      if (node.type.name === "image") {
+        const key = node.attrs["data-inline-key"] as string | null;
+        if (key && urlByKey[key]) {
+          current
+            .chain()
+            .command(({ tr }) => {
+              tr.setNodeMarkup(pos, undefined, {
+                ...node.attrs,
+                src: urlByKey[key],
+              });
+              return true;
+            })
+            .run();
+        }
+      }
+    });
+
+    return editor.value?.getHTML() ?? "";
+  },
+});
+
+// ------------ 하이퍼링크 ------------
+const hyperlinkModalOpen = ref(false);
+
+const openHyperlinkModal = () => {
+  hyperlinkModalOpen.value = true;
+};
+
+const setLink = (url: string) => {
+  editor.value?.chain().focus().setLink({ href: url }).run();
+  hyperlinkModalOpen.value = false;
+};
+</script>

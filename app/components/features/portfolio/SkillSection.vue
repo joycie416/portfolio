@@ -1,13 +1,9 @@
 <template>
-  <section id="skills" class="min-h-fit bg-primary-100 px-5 py-10 lg:min-h-screen lg:px-0 lg:py-20"">
-    <div
-      class="w-full max-w-[1024px] h-full flex flex-col mx-auto py-5 space-y-6 lg:py-10 lg:space-y-10"
-    >
+  <section id="skills" class="skill-section">
+    <div class="skill-section__container">
       <div>
-        <h2 class="text-2xl font-bold tracking-tight md:text-3xl lg:text-5xl">
-          Skills
-        </h2>
-        <p class="mt-3 text-sm font-medium text-text-gray-02 md:text-base lg:mt-5 lg:text-lg">
+        <h2 class="skill-section__title">Skills</h2>
+        <p class="skill-section__description">
           새로운 기술을 빠르게 학습하고, 실제 서비스에 적용하는 것을 좋아합니다.
         </p>
       </div>
@@ -49,9 +45,9 @@
 </template>
 
 <script setup lang="ts">
+import type { SkillGroup } from "@/types/common";
 import { CodeXml, Command, Database, Layers, Paintbrush } from "@lucide/vue";
 import SkillBadge from "./SkillBadge.vue";
-import type { SkillGroup } from "@/types";
 
 const skillSets: SkillGroup[] = [
   {
@@ -111,6 +107,74 @@ const skillSets: SkillGroup[] = [
 </script>
 
 <style lang="scss" scoped>
+.skill-section {
+  min-height: fit-content;
+  padding: 40px 20px;
+  background-color: var(--color-primary-100);
+
+  @include lg {
+    min-height: 100vh;
+    padding: 80px 0;
+  }
+
+  &__container {
+    width: 100%;
+    max-width: 1024px;
+    height: 100%;
+    margin-inline: auto;
+    padding-block: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    > * + * {
+      margin-top: 24px;
+    }
+
+    @include lg {
+      padding-block: 40px;
+
+      > * + * {
+        margin-top: 40px;
+      }
+    }
+  }
+
+  &__title {
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+
+    @include md {
+      font-size: 30px;
+      line-height: 36px;
+    }
+    @include lg {
+      font-size: 48px;
+      line-height: 1;
+    }
+  }
+
+  &__description {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--color-text-gray-02);
+
+    @include md {
+      font-size: 16px;
+      line-height: 24px;
+    }
+    @include lg {
+      margin-top: 20px;
+      font-size: 18px;
+      line-height: 28px;
+    }
+  }
+}
+
 .skill {
   display: grid;
   grid-template-columns: 1fr;
@@ -136,7 +200,6 @@ const skillSets: SkillGroup[] = [
     @include md {
       padding: 24px 28px;
       border-radius: 24px;
-
     }
 
     &__icon {
@@ -163,8 +226,8 @@ const skillSets: SkillGroup[] = [
       }
 
       @include lg {
-      width: 52px;
-      height: 52px;
+        width: 52px;
+        height: 52px;
       }
 
       svg {

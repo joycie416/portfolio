@@ -27,6 +27,6 @@ export const badgeVariants = cva(
       variant: "default",
       size: "default",
     },
-  },
+  }
 );
 export type BadgeVariants = VariantProps<typeof badgeVariants>;

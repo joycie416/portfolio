@@ -1,0 +1,174 @@
+<template>
+  <!-- eslint-disable vue/no-multiple-template-root -->
+  <div class="flex flex-col gap-2">
+    <div class="flex justify-end gap-2">
+      <Button v-if="hasOrderChanges" variant="outline" @click="cancelReorder">
+        취소
+      </Button>
+      <Button
+        v-if="hasOrderChanges"
+        :disabled="isSaveLoading"
+        @click="handleSaveReorder"
+      >
+        순서 저장
+      </Button>
+      <Button v-if="!hasOrderChanges" @click="openCreateModal">
+        메뉴 추가
+      </Button>
+    </div>
+    <div class="flex flex-col gap-1">
+      <ClientOnly>
+        <template v-if="status === 'success'">
+          <div
+            v-if="fixedMenu"
+            class="rounded-sm md:rounded-md border bg-gray-01 p-1.5 md:px-3 md:py-2 flex items-center gap-1 md:gap-2"
+          >
+            <Pin class="size-3.5 md:size-4 shrink-0 text-text-gray-03" />
+            <span class="text-sm font-medium">{{ fixedMenu.name }}</span>
+          </div>
+
+          <MenuItem
+            v-model="draggableMenus"
+            :disabled="isSaveLoading"
+            :button-disabled="isSaveLoading || hasOrderChanges"
+            :active-menu-id="activeMenuId"
+          />
+        </template>
+        <template #fallback>
+          <p class="text-sm text-muted-foreground">로딩중...</p>
+        </template>
+      </ClientOnly>
+    </div>
+  </div>
+  <EditMenuModal
+    v-if="menuState !== null"
+    :menu="menuState.menu"
+    @close="closeModal"
+    @create="handleCreate"
+    @edit="handleEdit"
+  />
+</template>
+
+<script setup lang="ts">
+import type { MenuState } from "@/types/menu";
+import type { MenuInsertType, MenuUpdateType } from "@/types/supabase";
+import type { MenuThumbnailUpdate } from "@/utils/supabase/menus";
+import { MenuItem, EditMenuModal } from "@/components/features/menu";
+import { Button } from "@/components/ui/button";
+import { Pin } from "@lucide/vue";
+import { PostgrestError, StorageApiError } from "@supabase/supabase-js";
+import { toast } from "vue-sonner";
+
+// 메뉴 목록
+const { data: menus, status, refresh } = useGetMenus();
+
+// 순서 변경
+const {
+  transformedMenus,
+  fixedMenu,
+  draggableMenus,
+  hasOrderChanges,
+  activeMenuId,
+  startDrag,
+  endDrag,
+  loading: isSaveLoading,
+  save: saveReorder,
+  cancel: cancelReorder,
+} = useMenuReorder(menus, refresh);
+
+const handleSaveReorder = async () => {
+  try {
+    await saveReorder();
+    toast.success("메뉴 순서가 변경되었습니다.");
+  } catch (error) {
+    if (error instanceof PostgrestError) {
+      toast.error(error.message);
+    }
+    toast.error("메뉴 순서 변경에 실패했습니다.");
+  }
+};
+
+// 모달 상태
+const menuState = ref<MenuState>(null);
+
+const openCreateModal = () => {
+  if (isSaveLoading.value) return;
+
+  menuState.value = { menu: null };
+};
+
+const openEditModal = (id: string) => {
+  if (isSaveLoading.value) return;
+
+  const menuToEdit = menus.value?.find((menu) => menu.id === id);
+  if (!menuToEdit) return;
+  menuState.value = { menu: menuToEdit };
+};
+
+const closeModal = () => {
+  menuState.value = null;
+};
+
+// Provide
+provide("refreshMenus", refresh);
+provide("openEditModal", openEditModal);
+provide("onMenuDragStart", startDrag);
+provide("onMenuDragEnd", endDrag);
+
+// CRUD
+const { createMenu } = useCreateMenu();
+const handleCreate = async (data: MenuInsertType, thumbnail: File | null) => {
+  try {
+    const orderIdx = transformedMenus.value.length + 1;
+    await createMenu({ ...data, order_idx: orderIdx }, thumbnail);
+    await refresh();
+    closeModal();
+    toast.success("메뉴가 추가되었습니다.");
+  } catch (error) {
+    if (error instanceof PostgrestError) {
+      if (
+        error.message.includes("duplicate key value") &&
+        error.message.includes("menus_slug_key")
+      ) {
+        toast.error("이미 존재하는 slug입니다.");
+        return;
+      }
+      toast.error(error.message);
+      return;
+    } else if (error instanceof StorageApiError) {
+      toast.error(error.message);
+      return;
+    }
+    toast.error("메뉴 추가에 실패했습니다.");
+  }
+};
+
+const { updateMenu } = useUpdateMenu();
+const handleEdit = async (
+  data: MenuUpdateType,
+  thumbnail: MenuThumbnailUpdate
+) => {
+  try {
+    await updateMenu(data, thumbnail);
+    await refresh();
+    closeModal();
+    toast.success("메뉴가 수정되었습니다.");
+  } catch (error) {
+    if (error instanceof PostgrestError) {
+      if (
+        error.message.includes("duplicate key value") &&
+        error.message.includes("menus_slug_key")
+      ) {
+        toast.error("이미 존재하는 slug입니다.");
+        return;
+      }
+      toast.error(error.message);
+      return;
+    } else if (error instanceof StorageApiError) {
+      toast.error(error.message);
+      return;
+    }
+    toast.error("메뉴 수정에 실패했습니다.");
+  }
+};
+</script>

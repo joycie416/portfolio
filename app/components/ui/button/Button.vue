@@ -13,7 +13,10 @@ interface Props extends PrimitiveProps {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  variant: "default",
+  size: "default",
   as: "button",
+  class: "",
 });
 </script>
 

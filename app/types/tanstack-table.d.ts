@@ -1,5 +1,5 @@
 import "@tanstack/table-core";
-import type { Align } from "@/types/index.js";
+import type { Align } from "@/types/common";
 
 declare module "@tanstack/table-core" {
   interface ColumnMeta {

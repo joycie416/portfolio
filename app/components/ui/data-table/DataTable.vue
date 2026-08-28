@@ -11,12 +11,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Empty } from "@/components/common";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const props = defineProps<{
+interface Props {
   tableId: string;
   columns: Columns<TData, TValue>;
   data: TData[];
-}>();
+  status?: "loading" | "success" | "error";
+  loadingRows?: number;
+  classNames?: {
+    tableContainer?: HTMLDivElement["className"];
+    tableHeader?: HTMLTableSectionElement["className"];
+    emptyRow?: HTMLTableCellElement["className"];
+  };
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  status: "success",
+  loadingRows: 3,
+  classNames: () => ({}),
+});
 
 const table = useVueTable({
   get data() {
@@ -31,9 +46,9 @@ const table = useVueTable({
 </script>
 
 <template>
-  <div>
-    <Table class="bg-transparent">
-      <TableHeader class="border-b-red">
+  <div :class="cn(classNames?.tableContainer)">
+    <Table class="bg-transparent table-fixed">
+      <TableHeader :class="cn(classNames?.tableHeader)">
         <TableRow
           v-for="headerGroup in table.getHeaderGroups()"
           :key="headerGroup.id"
@@ -45,7 +60,7 @@ const table = useVueTable({
               cn(
                 'h-8 border-b border-b-gray-04',
                 getAlignClassName(header.column.columnDef.meta?.aligns?.header),
-                header.column.columnDef.meta?.classNames?.header,
+                header.column.columnDef.meta?.classNames?.header
               )
             "
           >
@@ -58,7 +73,9 @@ const table = useVueTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        <template v-if="table.getRowModel().rows?.length">
+        <template
+          v-if="status === 'success' && table.getRowModel().rows?.length"
+        >
           <TableRow
             v-for="row in table.getRowModel().rows"
             :key="row.id"
@@ -71,7 +88,7 @@ const table = useVueTable({
               :class="
                 cn(
                   getAlignClassName(cell.column.columnDef.meta?.aligns?.cell),
-                  cell.column.columnDef.meta?.classNames?.cell,
+                  cell.column.columnDef.meta?.classNames?.cell
                 )
               "
             >
@@ -82,10 +99,32 @@ const table = useVueTable({
             </TableCell>
           </TableRow>
         </template>
-        <template v-else>
+        <template
+          v-else-if="status === 'success' && !table.getRowModel().rows?.length"
+        >
           <TableRow>
-            <TableCell :colspan="columns.length" class="h-24 text-center">
-              No results.
+            <TableCell
+              :colspan="columns.length"
+              :class="cn(classNames?.emptyRow)"
+            >
+              <Empty message="데이터가 없습니다." />
+            </TableCell>
+          </TableRow>
+        </template>
+        <template v-else-if="status === 'error'">
+          <TableRow>
+            <TableCell
+              :colspan="columns.length"
+              :class="cn(classNames?.emptyRow)"
+            >
+              <Empty message="오류가 발생했습니다." />
+            </TableCell>
+          </TableRow>
+        </template>
+        <template v-else-if="status === 'loading'">
+          <TableRow v-for="i in loadingRows || 4" :key="i" class="border-b-0">
+            <TableCell v-for="j in columns.length" :key="j" class="px-1.5 py-1">
+              <Skeleton class="w-full h-7" />
             </TableCell>
           </TableRow>
         </template>

@@ -34,10 +34,10 @@
       <div
         v-for="link in props.project.links"
         :key="link.url"
-        class="project__card__link"
+        class="project__link"
       >
         <Button variant="ghost" class="h-5 px-1 py-0 text-sm lg:text-base">
-          <NuxtImg
+          <img
             v-if="link.type === 'github'"
             src="/icons/github-logo.svg"
             alt="github"
@@ -71,9 +71,9 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from "@/components/ui/button/index.js";
+import type { Project } from "@/types/common";
+import { Button } from "@/components/ui/button";
 import SkillBadge from "./SkillBadge.vue";
-import type { Project } from "@/types/index.js";
 import { BookText, Link2, SquareArrowOutUpRight } from "@lucide/vue";
 
 const props = defineProps<{ project: Project }>();
@@ -106,16 +106,16 @@ const props = defineProps<{ project: Project }>();
         color: var(--color-primary-700);
       }
     }
+  }
 
-    &__link {
-      display: flex;
-      align-items: center;
-      height: fit-content;
+  &__link {
+    display: flex;
+    align-items: center;
+    height: fit-content;
 
-      &:not(:first-child) {
-        padding-left: 10px;
-        border-left: 1px solid var(--color-gray-02);
-      }
+    &:not(:first-child) {
+      padding-left: 10px;
+      border-left: 1px solid var(--color-gray-02);
     }
   }
 }

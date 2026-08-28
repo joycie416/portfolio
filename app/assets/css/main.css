@@ -47,6 +47,8 @@
   --radius-xl: calc(var(--radius) + 4px);
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
+  --shadow-sm: 0 4px 10px 0 rgba(0, 0, 0, 0.05);
+  --shadow-thumbnail: 0 1px 2px rgba(0, 0, 0, 0.08);
 
   --color-primary-45: var(--primary-45);
   --color-primary-50: var(--primary-50);
@@ -80,10 +82,18 @@
   --color-red-04: var(--red-04);
   --color-red-05: var(--red-05);
 
+  --color-yellow: var(--yellow-04);
+  --color-yellow-01: var(--yellow-01);
+  --color-yellow-02: var(--yellow-02);
+  --color-yellow-03: var(--yellow-03);
+  --color-yellow-04: var(--yellow-04);
+  --color-yellow-05: var(--yellow-05);
+
   --color-text-gray-01: var(--gray-10);
   --color-text-gray-02: var(--gray-08);
   --color-text-gray-03: var(--gray-06);
-  --color-text-gray-04: var(--gray-00);
+  --color-text-gray-04: var(--gray-04);
+  --color-text-gray-05: var(--gray-00);
 
   /* 스킬 색상 */
   --color-skill-typescript: var(--skill-typescript);
@@ -109,6 +119,13 @@
   --color-skill-group-data-state: var(--skill-group-data-state);
   --color-skill-group-ui-styling: var(--skill-group-ui-styling);
   --color-skill-group-forms-utilities: var(--skill-group-forms-utilities);
+
+  /* tiptap 관련 */
+  --color-highlight-blue: var(--highlight-blue);
+  --color-highlight-red: var(--highlight-red);
+  --color-highlight-yellow: var(--highlight-yellow);
+  --color-highlight-gray: var(--highlight-gray);
+  --color-code-keyword: var(--code-keyword);
 }
 
 :root {
@@ -124,12 +141,13 @@
   --secondary: var(--gray-07);
   --secondary-foreground: var(--gray-00);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  /* --muted-foreground: oklch(0.556 0 0); */
+  --muted-foreground: var(--gray-06);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: var(--red-04);
-  --border: var(--gray-02);
-  --input: var(--gray-02);
+  --border: var(--gray-03);
+  --input: var(--gray-03);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -147,6 +165,9 @@
 
   /* 커스텀 변수 */
   --header-height: 40px;
+  --animate-sidebar-content-fade-out: sidebar-content-fade-out 200ms forwards;
+  --animate-sidebar-content-fade-in: sidebar-content-fade-out 200ms reverse
+    forwards;
 
   --primary-45: #f8fcff;
   --primary-50: #f2f8fd;
@@ -179,6 +200,12 @@
   --red-04: #f5485d;
   --red-05: #b92e43;
 
+  --yellow-01: #fff8e1;
+  --yellow-02: #ffefb3;
+  --yellow-03: #ffe083;
+  --yellow-04: #ffd24d;
+  --yellow-05: #b8860b;
+
   /* 스킬 색상 */
   --skill-typescript: #3178c6;
   --skill-javascript: #f7df1e;
@@ -204,6 +231,13 @@
   --skill-group-data-state: #8b5cf6;
   --skill-group-ui-styling: #ec4899;
   --skill-group-forms-utilities: #f97316;
+
+  /* tiptap 관련 */
+  --highlight-blue: var(--primary-300);
+  --highlight-red: var(--red-03);
+  --highlight-yellow: var(--yellow-03);
+  --highlight-gray: var(--gray-03);
+  --code-keyword: #6034db;
 }
 
 @media (width >= theme(--breakpoint-md)) {
@@ -233,8 +267,8 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: var(--red-04);
-  --border: var(--gray-02);
-  --input: var(--gray-02);
+  --border: var(--gray-03);
+  --input: var(--gray-03);
   --ring: oklch(0.556 0 0);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
@@ -282,6 +316,12 @@
   --red-04: #f5485d;
   --red-05: #b92e43;
 
+  --yellow-01: #fff8e1;
+  --yellow-02: #ffefb3;
+  --yellow-03: #ffe083;
+  --yellow-04: #ffd24d;
+  --yellow-05: #b8860b;
+
   /* 스킬 색상 */
   --skill-typescript: #3178c6;
   --skill-javascript: #f7df1e;
@@ -307,13 +347,16 @@
   --skill-group-data-state: #8b5cf6;
   --skill-group-ui-styling: #ec4899;
   --skill-group-forms-utilities: #f97316;
+
+  /* tiptap 관련 */
+  --highlight-blue: var(--primary-300);
+  --highlight-red: var(--red-03);
+  --highlight-yellow: var(--yellow-03);
+  --highlight-gray: var(--gray-03);
+  --code-keyword: #5a29e4;
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-
   section[id] {
     scroll-padding-top: var(--header-height);
   }
@@ -323,5 +366,25 @@
   }
   body {
     @apply bg-background text-text-gray-01 font-pretendard;
+  }
+
+  /* Edge 비밀번호 눈버튼 제거 */
+  input[type="password"]::-ms-reveal {
+    display: none;
+  }
+}
+
+@keyframes sidebar-content-fade-out {
+  0% {
+    opacity: 1;
+    display: flex;
+  }
+  60% {
+    opacity: 0;
+    display: none;
+  }
+  100% {
+    opacity: 0;
+    display: none;
   }
 }

@@ -1,43 +1,3 @@
-<script setup lang="ts">
-import SimpleLogo from "@/components/ui/logos/SimpleLogo.vue";
-
-const route = useRoute();
-
-const sectionIds = ["profile", "skills", "projects"] as const;
-const activeSection = ref<(typeof sectionIds)[number] | null>(null);
-
-const scrollToSection = async (id: (typeof sectionIds)[number]) => {
-  if (route.path !== "/") {
-    await navigateTo("/");
-  }
-  await nextTick();
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-};
-
-onMounted(() => {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        // 섹션이 화면에 보이면 해당 섹션의 ID를 activeSection에 저장
-        if (entry.isIntersecting) {
-          activeSection.value = entry.target.id as (typeof sectionIds)[number];
-        }
-      }
-    },
-    { rootMargin: "-40% 0px -40% 0px", threshold: 0 },
-  );
-
-  // 각 섹션을 관찰 대상으로 등록
-  for (const id of sectionIds) {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  }
-
-  // 언마운트 시 관찰 중단
-  onUnmounted(() => observer.disconnect());
-});
-</script>
-
 <template>
   <header class="header">
     <button
@@ -74,9 +34,50 @@ onMounted(() => {
       >
         Projects
       </button>
+      <NuxtLink type="button" class="text" to="/blog">Blog</NuxtLink>
     </div>
   </header>
 </template>
+
+<script setup lang="ts">
+import { SimpleLogo } from "@/components/logos";
+
+const route = useRoute();
+
+const sectionIds = ["profile", "skills", "projects"] as const;
+const activeSection = ref<(typeof sectionIds)[number] | null>(null);
+
+const scrollToSection = async (id: (typeof sectionIds)[number]) => {
+  if (route.path !== "/portfolio") {
+    await navigateTo("/portfolio");
+  }
+  await nextTick();
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+};
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        // 섹션이 화면에 보이면 해당 섹션의 ID를 activeSection에 저장
+        if (entry.isIntersecting) {
+          activeSection.value = entry.target.id as (typeof sectionIds)[number];
+        }
+      }
+    },
+    { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
+  );
+
+  // 각 섹션을 관찰 대상으로 등록
+  for (const id of sectionIds) {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  }
+
+  // 언마운트 시 관찰 중단
+  onUnmounted(() => observer.disconnect());
+});
+</script>
 
 <style lang="scss" scoped>
 .header {
@@ -86,17 +87,25 @@ onMounted(() => {
   width: 100%;
   height: var(--header-height);
 
-  padding: 8px 20px;
+  padding: 8px 20px 8px 12px;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  background-color: var(--color-primary-45);
+  background-color: var(--color-white);
   border-bottom: solid 1px var(--color-gray-02);
 
   z-index: 10;
+
+  @include md {
+    padding-left: 16px;
+  }
+  @include lg {
+    padding-left: 20px;
+  }
 }
+
 .icon {
   width: fit-content;
   height: fit-content;
@@ -126,9 +135,10 @@ onMounted(() => {
     font-size: 24px;
   }
 }
+
 .text {
-  font-size: 14px;
-  font-weight: 600;
+  font-family: var(--font-rix);
+  font-size: 12px;
   background: none;
   border: none;
   padding: 0;
@@ -147,10 +157,10 @@ onMounted(() => {
   }
 
   @include md {
-    font-size: 16px;
+    font-size: 14px;
   }
   @include lg {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 </style>
