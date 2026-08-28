@@ -37,7 +37,7 @@
         class="project__link"
       >
         <Button variant="ghost" class="h-5 px-1 py-0 text-sm lg:text-base">
-          <NuxtImg
+          <img
             v-if="link.type === 'github'"
             src="/icons/github-logo.svg"
             alt="github"

@@ -4,9 +4,10 @@
     <NuxtImg
       src="/images/BackgroundImage01.jpg"
       alt=""
-      format="webp"
       fit="cover"
       class="absolute inset-0 h-full object-cover"
+      format="webp"
+      quality="75"
     />
     <!-- 배경 이미지 오버레이 -->
     <div aria-hidden="true" class="absolute inset-0 bg-gray-02 opacity-65" />
@@ -28,9 +29,12 @@
           <NuxtImg
             src="/images/ProfileImage.jpg"
             alt="profile_image"
-            format="webp"
             fit="cover"
             class="size-full"
+            format="webp"
+            width="320"
+            height="427"
+            fetchpriority="high"
           />
         </div>
 
