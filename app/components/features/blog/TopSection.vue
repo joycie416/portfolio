@@ -1,6 +1,16 @@
 <template>
   <section id="top" class="top-section">
-    <NuxtImg src="/images/BackgroundImage02.jpg" class="background-image" />
+    <NuxtImg
+      src="/images/BackgroundImage02.jpg"
+      class="background-image"
+      fit="cover"
+      height="1080"
+      width="1920"
+      format="webp"
+      quality="75"
+      loading="eager"
+      fetchpriority="high"
+    />
     <div class="content">
       <h1>
         <code class="code-card">
