@@ -14,6 +14,11 @@
         :src="post.thumbnail"
         :alt="post.title"
         class="size-full object-cover"
+        format="webp"
+        quality="75"
+        :sizes="sizes"
+        :loading="loading"
+        :fetchpriority="fetchpriority"
       />
       <div v-else class="size-full flex justify-center items-center bg-gray-02">
         <LogoIcon class="size-15" fill="#fff" />
@@ -49,9 +54,18 @@ const props = withDefaults(
     lineClamp?: number;
     /** md+ excerpt line-clamp. 미지정 시 lineClamp 또는 variant별 기본값(vertical md+ 4) */
     lineClampMd?: number;
+    /** 썸네일 srcset 계산용 표시 크기. 레이아웃이 다른 화면에서만 덮어쓴다 */
+    sizes?: string;
+    /**
+     * 첫 화면 밖에 놓이는 목록에서만 "lazy"를 넘긴다.
+     * 미지정 시 브라우저 기본 동작(뷰포트 안이면 우선순위 자동 상향)을 따른다.
+     */
+    loading?: "lazy" | "eager";
+    fetchpriority?: "high" | "low" | "auto";
   }>(),
   {
     withMenuTag: false,
+    sizes: "sm:30vw md:400px",
   }
 );
 

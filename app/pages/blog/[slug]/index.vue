@@ -17,7 +17,12 @@
     <template #content>
       <div class="post-list">
         <template v-if="!pending && !error && posts.length > 0">
-          <PostItem v-for="post in posts" :key="post.id" :post="post" />
+          <PostItem
+            v-for="(post, index) in posts"
+            :key="post.id"
+            :post="post"
+            :loading="index < EAGER_POST_COUNT ? undefined : 'lazy'"
+          />
         </template>
         <template v-else-if="pending">
           <PostItemSkeleton v-for="i in 6" :key="i" />
@@ -85,6 +90,8 @@ useSeoMeta({
 
 // ------------ 게시글 조회 ------------
 const PER_PAGE = 12;
+// 상단 3개는 eager loading
+const EAGER_POST_COUNT = 3;
 const {
   data: posts,
   filteredCount,
