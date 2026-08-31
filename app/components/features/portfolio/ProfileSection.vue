@@ -5,9 +5,12 @@
       src="/images/BackgroundImage01.jpg"
       alt=""
       fit="cover"
-      class="absolute inset-0 h-full object-cover"
+      class="absolute inset-0 size-full object-cover"
+      height="1080"
+      width="1920"
       format="webp"
       quality="75"
+      loading="eager"
     />
     <!-- 배경 이미지 오버레이 -->
     <div aria-hidden="true" class="absolute inset-0 bg-gray-02 opacity-65" />
@@ -30,11 +33,12 @@
             src="/images/ProfileImage.jpg"
             alt="profile_image"
             fit="cover"
-            class="size-full"
+            class="size-full object-cover"
             format="webp"
             width="320"
             height="427"
             fetchpriority="high"
+            loading="eager"
           />
         </div>
 
