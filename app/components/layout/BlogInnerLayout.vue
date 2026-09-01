@@ -1,11 +1,18 @@
 <template>
   <main class="layout__main">
     <div class="layout__top">
-      <img
+      <NuxtImg
         v-if="props.topImage"
         :src="props.topImage"
-        alt="top-image"
+        alt=""
         class="layout__top__image"
+        fit="cover"
+        format="webp"
+        width="1920"
+        height="768"
+        quality="75"
+        loading="eager"
+        fetchpriority="high"
       />
       <div class="layout__top__overlay">
         <div class="layout__top__content">

@@ -1,5 +1,5 @@
 <template>
-  <BlogInnerLayout :top-image="topImage">
+  <BlogInnerLayout :top-image="thumbnail">
     <template #top>
       <Breadcrumb
         :status="breadcrumbStatus"
@@ -54,7 +54,7 @@ import { Breadcrumb, Empty, Pagination } from "@/components/common";
 import { PostItem, PostItemSkeleton } from "@/components/features/post";
 import { BlogInnerLayout } from "@/components/layout";
 import { InputSearch } from "@/components/features/blog";
-import { menus } from "@/utils/supabase/menus";
+import { useMenuThumbnail } from "@/composables/useMenu";
 
 definePageMeta({
   middleware: "validate-menu",
@@ -103,30 +103,11 @@ const {
   perPage: PER_PAGE,
 });
 
-// ------------ 탑 이미지 ------------
-
+// ------------ 썸네일 ------------
 const { menuId } = useMenuRoute();
-const supabase = useSupabaseClient();
-
-const DEFAULT_TOP_IMAGE = "/images/BackgroundImage01.jpg";
-const topImage = ref(DEFAULT_TOP_IMAGE);
-
-watch(
+const { data: thumbnail } = useMenuThumbnail({
   menuId,
-  async (id) => {
-    if (!id) {
-      topImage.value = DEFAULT_TOP_IMAGE;
-      return;
-    }
-
-    const thumbnailUrl = await menus(supabase).hasThumbnail(id);
-    // 비동기 요청 중 menuId가 바뀌었으면 무시
-    if (menuId.value !== id) return;
-
-    topImage.value = thumbnailUrl || DEFAULT_TOP_IMAGE;
-  },
-  { immediate: true }
-);
+});
 </script>
 
 <style lang="scss" scoped>

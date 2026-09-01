@@ -94,3 +94,23 @@ export const useMenuBreadcrumb = ({
 
   return { breadcrumbItems, breadcrumbStatus, menuFamily };
 };
+
+export const useMenuThumbnail = ({
+  menuId,
+}: {
+  menuId: MaybeRefOrGetter<string | null>;
+}) => {
+  const supabase = useSupabaseClient();
+
+  return useAsyncData<string>(
+    () => `menu-thumbnail:${toValue(menuId)}`,
+    async () => {
+      const id = toValue(menuId);
+      if (!id) return "/images/BackgroundImage01.jpg";
+
+      const thumbnailUrl = await menus(supabase).hasThumbnail(id);
+      return thumbnailUrl || "/images/BackgroundImage01.jpg";
+    },
+    { default: () => "/images/BackgroundImage01.jpg" }
+  );
+};
