@@ -7,8 +7,19 @@ import type { BreadcrumbItem } from "@/types/common";
 
 export const useGetMenus = () => {
   const supabase = useSupabaseClient();
-  return useAsyncData<Menu[], PostgrestError>("menus", () =>
-    menus(supabase).getAll()
+  return useAsyncData<Menu[], PostgrestError>(
+    "menus",
+    () => menus(supabase).getAll(),
+    {
+      dedupe: "defer", // 같은 페이지에 여러번 호출되는 경우, 진행 중인 요청을 취소하지 않음
+      getCachedData: (key, nuxtApp, ctx) => {
+        // 각각 수동 새로고침(refresh, execute) 시, refreshNuxtData 호출 시 캐시된 데이터를 반환하지 않음 : 데이터 재조회
+        if (ctx.cause === "refresh:manual" || ctx.cause === "refresh:hook") {
+          return undefined;
+        }
+        return nuxtApp.payload.data[key] ?? nuxtApp.static.data[key];
+      },
+    }
   );
 };
 
