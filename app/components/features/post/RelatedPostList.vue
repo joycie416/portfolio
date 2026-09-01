@@ -29,7 +29,12 @@
       <div class="space-y-5">
         <p class="ml-2 text-base md:text-lg">관련글</p>
         <div class="related-post-list">
-          <PostItem v-for="post in recent" :key="post.id" :post="post" />
+          <PostItem
+            v-for="post in recent"
+            :key="post.id"
+            :post="post"
+            loading="lazy"
+          />
         </div>
       </div>
     </template>

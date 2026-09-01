@@ -21,12 +21,14 @@
           </p>
           <div class="grid auto-rows-[100px] md:auto-rows-[148px] gap-4">
             <PostItem
-              v-for="post in posts"
+              v-for="(post, index) in posts"
               :key="post.id"
               :post="post"
               variant="horizontal"
               :line-clamp="1"
               :line-clamp-md="2"
+              :loading="index < EAGER_POST_COUNT ? undefined : 'lazy'"
+              sizes="sm:30vw"
               with-menu-tag
             />
           </div>
@@ -56,6 +58,9 @@ import {
 import { POST_VISIBILITIES } from "@/utils/supabase/posts";
 
 const route = useRoute();
+
+// 상단 4개는 eager loading
+const EAGER_POST_COUNT = 4;
 
 const { page, onPageChange } = usePagination();
 

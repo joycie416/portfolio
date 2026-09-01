@@ -21,6 +21,10 @@ const naverSiteMeta = naverSiteVerification
     ]
   : [];
 
+// supabase storage 이미지 도메인 허용 : 미적용 시 최적화하지 않고 원본 url 적용됨
+const supabaseUrl = process.env.NUXT_PUBLIC_SUPABASE_URL;
+const supabaseImageDomains = supabaseUrl ? [new URL(supabaseUrl).hostname] : [];
+
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
@@ -45,6 +49,10 @@ export default defineNuxtConfig({
   shadcn: {
     prefix: "",
     componentDir: "./components/ui",
+  },
+
+  image: {
+    domains: supabaseImageDomains,
   },
 
   runtimeConfig: {

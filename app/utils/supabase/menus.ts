@@ -100,7 +100,7 @@ export const menus = (client: SupabaseClient<Database>) => ({
       data: { publicUrl },
     } = client.storage.from("menus").getPublicUrl(id);
     const res = await fetch(publicUrl, { method: "HEAD" });
-    return res.ok ? withCacheBust(publicUrl) : false;
+    return res.ok ? publicUrl : false;
   },
   uploadThumbnail: (id: string, file: File) =>
     uploadThumbnail(client, id, file),

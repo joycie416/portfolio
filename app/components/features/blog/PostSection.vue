@@ -27,6 +27,8 @@
           :post="item.post"
           :variant="item.featured ? 'vertical' : 'horizontal'"
           :class="{ 'post-group__featured': item.featured }"
+          loading="lazy"
+          sizes="30vw md:600px"
           with-menu-tag
         />
       </div>
