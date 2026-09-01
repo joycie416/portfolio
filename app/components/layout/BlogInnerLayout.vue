@@ -10,9 +10,12 @@
         format="webp"
         width="1920"
         height="768"
+        sizes="sm:100vw md:100vw lg:100vw xl:100vw 2xl:100vw 1920:100vw"
+        densities="1"
         quality="75"
         loading="eager"
         fetchpriority="high"
+        :preload="{ fetchPriority: 'high' }"
       />
       <div class="layout__top__overlay">
         <div class="layout__top__content">
