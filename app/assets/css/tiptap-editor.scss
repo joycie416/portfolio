@@ -214,6 +214,10 @@
     border-radius: 4px;
   }
 
+  hr {
+    margin-block: 16px;
+  }
+
   table {
     border-collapse: collapse;
     margin: 0;
@@ -353,4 +357,9 @@
   min-height: unset;
   max-height: unset;
   padding: 0;
+
+  // 저장된 게시글을 보여줄 때, 빈 줄에 공백 문자를 넣어 줄 높이를 유지
+  p:empty::before {
+    content: "\00a0";
+  }
 }
