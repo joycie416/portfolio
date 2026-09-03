@@ -691,11 +691,29 @@ const syncThumbnailWithDoc = (target: Editor) => {
 };
 
 // ------------ 에디터 ------------
+// Windows 클립보드는 HTML을 아래처럼 저장함
+//   <html>\n<body>\n<!--StartFragment-->\n ... \n<!--EndFragment-->\n</body>\n</html>
+// ProseMirror는 이 개행 문자를 그대로 붙여넣어 위아래에 빈 줄이 2줄씩 생김
+// https://discuss.prosemirror.net/t/space-added-on-paste/1274/6
+const transformClipboard = (html: string): string => {
+  const startIndex = "<!--StartFragment-->";
+  const endIndex = "<!--EndFragment-->";
+  const start = html.indexOf(startIndex);
+  const end = html.indexOf(endIndex);
+  if (start !== -1 && end !== -1 && end > start) {
+    return html.slice(start + startIndex.length, end).trim();
+  }
+  return html.trim();
+};
+
 // create a lowlight instance
 const lowlight = createLowlight(all);
 
 const editor = useEditor({
   content: model.value,
+  editorProps: {
+    transformPastedHTML: transformClipboard,
+  },
   extensions: [
     StarterKit.configure({
       bulletList: {
