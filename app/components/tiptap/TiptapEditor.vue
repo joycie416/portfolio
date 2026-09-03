@@ -61,14 +61,64 @@
       >
         <Strikethrough />
       </Button>
-      <Button
-        variant="ghost"
-        class="tiptap__toolbar__button"
-        @click="editor?.chain().focus().toggleBold().run()"
-      >
-        <Type />
-      </Button>
 
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" class="tiptap__toolbar__button">
+            <Type :style="{ color: textColor }" />
+          </Button>
+          <DropdownMenuContent
+            align="start"
+            class="min-w-fit grid grid-cols-5 grid-rows-2"
+          >
+            <DropdownMenuItem class="p-1.5" @click="handleTextColor()">
+              <span class="bg-text-gray-01 size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-text-gray-02)')"
+            >
+              <span class="bg-text-gray-02 size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-text-gray-03)')"
+            >
+              <span class="bg-text-gray-03 size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-text-gray-04)')"
+            >
+              <span class="bg-text-gray-04 size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-text-gray-05)')"
+            >
+              <span class="bg-text-gray-05 size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-yellow)')"
+            >
+              <span class="bg-yellow size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-red)')"
+            >
+              <span class="bg-red size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-primary)')"
+            >
+              <span class="bg-primary size-4 rounded-full" />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenuTrigger>
+      </DropdownMenu>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button variant="ghost" class="tiptap__toolbar__button">
@@ -122,6 +172,12 @@
               "
             >
               <span class="bg-highlight-gray size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="editor?.chain().focus().unsetHighlight().run()"
+            >
+              <Ban class="size-4 text-red" />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenuTrigger>
@@ -368,6 +424,7 @@ import {
   Sheet,
   Grid2X2Plus,
   Grid2X2X,
+  Ban,
 } from "@lucide/vue";
 import {
   DropdownMenu,
@@ -691,11 +748,29 @@ const syncThumbnailWithDoc = (target: Editor) => {
 };
 
 // ------------ 에디터 ------------
+// Windows 클립보드는 HTML을 아래처럼 저장함
+//   <html>\n<body>\n<!--StartFragment-->\n ... \n<!--EndFragment-->\n</body>\n</html>
+// ProseMirror는 이 개행 문자를 그대로 붙여넣어 위아래에 빈 줄이 2줄씩 생김
+// https://discuss.prosemirror.net/t/space-added-on-paste/1274/6
+const transformClipboard = (html: string): string => {
+  const startIndex = "<!--StartFragment-->";
+  const endIndex = "<!--EndFragment-->";
+  const start = html.indexOf(startIndex);
+  const end = html.indexOf(endIndex);
+  if (start !== -1 && end !== -1 && end > start) {
+    return html.slice(start + startIndex.length, end).trim();
+  }
+  return html.trim();
+};
+
 // create a lowlight instance
 const lowlight = createLowlight(all);
 
 const editor = useEditor({
   content: model.value,
+  editorProps: {
+    transformPastedHTML: transformClipboard,
+  },
   extensions: [
     StarterKit.configure({
       bulletList: {
@@ -802,6 +877,23 @@ defineExpose({
     return editor.value?.getHTML() ?? "";
   },
 });
+
+// ------------ 텍스트 색상 ------------
+const DEFAULT_TEXT_COLOR = undefined;
+const textColor = ref<string | undefined>(DEFAULT_TEXT_COLOR);
+
+const handleTextColor = (color?: string) => {
+  if (!color) {
+    editor.value?.chain().focus().unsetColor().run();
+    textColor.value = DEFAULT_TEXT_COLOR;
+    return;
+  }
+
+  editor.value?.chain().focus().toggleTextStyle({ color }).run();
+  textColor.value =
+    (editor.value?.getAttributes("textStyle").color as string | undefined) ??
+    DEFAULT_TEXT_COLOR;
+};
 
 // ------------ 하이퍼링크 ------------
 const hyperlinkModalOpen = ref(false);
