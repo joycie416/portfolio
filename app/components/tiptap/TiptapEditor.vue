@@ -61,14 +61,64 @@
       >
         <Strikethrough />
       </Button>
-      <Button
-        variant="ghost"
-        class="tiptap__toolbar__button"
-        @click="editor?.chain().focus().toggleBold().run()"
-      >
-        <Type />
-      </Button>
 
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" class="tiptap__toolbar__button">
+            <Type :style="{ color: textColor }" />
+          </Button>
+          <DropdownMenuContent
+            align="start"
+            class="min-w-fit grid grid-cols-5 grid-rows-2"
+          >
+            <DropdownMenuItem class="p-1.5" @click="handleTextColor()">
+              <span class="bg-text-gray-01 size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-text-gray-02)')"
+            >
+              <span class="bg-text-gray-02 size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-text-gray-03)')"
+            >
+              <span class="bg-text-gray-03 size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-text-gray-04)')"
+            >
+              <span class="bg-text-gray-04 size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-text-gray-05)')"
+            >
+              <span class="bg-text-gray-05 size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-yellow)')"
+            >
+              <span class="bg-yellow size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-red)')"
+            >
+              <span class="bg-red size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="handleTextColor('var(--color-primary)')"
+            >
+              <span class="bg-primary size-4 rounded-full" />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenuTrigger>
+      </DropdownMenu>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button variant="ghost" class="tiptap__toolbar__button">
@@ -122,6 +172,12 @@
               "
             >
               <span class="bg-highlight-gray size-4 rounded-full" />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              class="p-1.5"
+              @click="editor?.chain().focus().unsetHighlight().run()"
+            >
+              <Ban class="size-4 text-red" />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenuTrigger>
@@ -368,6 +424,7 @@ import {
   Sheet,
   Grid2X2Plus,
   Grid2X2X,
+  Ban,
 } from "@lucide/vue";
 import {
   DropdownMenu,
@@ -820,6 +877,23 @@ defineExpose({
     return editor.value?.getHTML() ?? "";
   },
 });
+
+// ------------ 텍스트 색상 ------------
+const DEFAULT_TEXT_COLOR = undefined;
+const textColor = ref<string | undefined>(DEFAULT_TEXT_COLOR);
+
+const handleTextColor = (color?: string) => {
+  if (!color) {
+    editor.value?.chain().focus().unsetColor().run();
+    textColor.value = DEFAULT_TEXT_COLOR;
+    return;
+  }
+
+  editor.value?.chain().focus().toggleTextStyle({ color }).run();
+  textColor.value =
+    (editor.value?.getAttributes("textStyle").color as string | undefined) ??
+    DEFAULT_TEXT_COLOR;
+};
 
 // ------------ 하이퍼링크 ------------
 const hyperlinkModalOpen = ref(false);
