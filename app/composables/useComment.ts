@@ -1,8 +1,7 @@
 import type {
-  Comment,
   CommentInsertType,
-  CommentUpdateType,
   CommentWithSlug,
+  PublicComment,
 } from "@/types/supabase";
 import { comments } from "@/utils/supabase/comments";
 
@@ -20,7 +19,7 @@ export const useGetComments = ({
   const supabase = useSupabaseClient();
   const id = computed(() => toValue(postId));
 
-  return useLazyAsyncData<{ data: Comment[]; count: number }>(
+  return useLazyAsyncData<{ data: PublicComment[]; count: number }>(
     () => `comments:${id.value}`,
     () => comments(supabase).getList(id.value),
     { default: () => ({ data: [], count: 0 }), server, lazy }
@@ -35,19 +34,39 @@ export const useCreateComment = () => {
   return { createComment };
 };
 
-export const useUpdateComment = () => {
-  const supabase = useSupabaseClient();
-
-  const updateComment = (formData: CommentUpdateType) =>
-    comments(supabase).update(formData);
-  return { updateComment };
-};
-
+// 관리자용: 비밀번호 없이 직접 삭제
 export const useDeleteComment = () => {
   const supabase = useSupabaseClient();
 
   const deleteComment = (commentId: number) =>
     comments(supabase).delete(commentId);
+  return { deleteComment };
+};
+
+// 비로그인 사용자용: 비밀번호 검증 (UI 잠금 해제용, 수정/삭제 없음)
+export const useVerifyCommentPassword = () => {
+  const supabase = useSupabaseClient();
+
+  const verifyPassword = (id: number, password: string) =>
+    comments(supabase).verifyPassword(id, password);
+  return { verifyPassword };
+};
+
+// 비로그인 사용자용: 비밀번호 재검증 후 수정
+export const useUpdateCommentWithPassword = () => {
+  const supabase = useSupabaseClient();
+
+  const updateComment = (id: number, password: string, content: string) =>
+    comments(supabase).updateWithPassword(id, password, content);
+  return { updateComment };
+};
+
+// 비로그인 사용자용: 비밀번호 재검증 후 삭제
+export const useDeleteCommentWithPassword = () => {
+  const supabase = useSupabaseClient();
+
+  const deleteComment = (id: number, password: string) =>
+    comments(supabase).deleteWithPassword(id, password);
   return { deleteComment };
 };
 
