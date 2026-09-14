@@ -189,6 +189,32 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      comment_anon_delete: {
+        Args: { p_id: number; p_password: string };
+        Returns: number;
+      };
+      comment_anon_update: {
+        Args: { p_content: string; p_id: number; p_password: string };
+        Returns: {
+          content: string;
+          created_at: string;
+          id: number;
+          modified_at: string;
+          nickname: string;
+          password: string;
+          post_id: number;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "comments";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      comment_anon_verify_password: {
+        Args: { p_id: number; p_password: string };
+        Returns: boolean;
+      };
       fn_menus_reorder: { Args: { updates: Json }; Returns: undefined };
       get_post_neighbors: { Args: { p_post_id: number }; Returns: Json };
       posts_bulk_delete: {
