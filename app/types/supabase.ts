@@ -107,7 +107,9 @@ export type PostNeighbors = {
 };
 
 export type Comment = Tables<"comments">;
-export type CommentWithSlug = Omit<Comment, "password"> & {
+// 목록/상세 조회 시 비밀번호(해시)는 클라이언트에 내려줄 필요가 없어 제외
+export type PublicComment = Omit<Comment, "password">;
+export type CommentWithSlug = PublicComment & {
   post_title: string;
   menu_slug: string;
 };
@@ -117,9 +119,6 @@ export type CommentInsertType = OmitDefaultColumns<
     "content" | "post_id" | "nickname" | "password"
   >,
   true
->;
-export type CommentUpdateType = OmitDefaultColumns<
-  RequiredFields<TablesUpdate<"comments">, "id">
 >;
 
 //-------------- 에러 타입 ----------------

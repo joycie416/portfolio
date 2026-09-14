@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Comment } from "@/types/supabase";
+import type { PublicComment } from "@/types/supabase";
 import { EllipsisVertical, Laugh, Smile, UserRound } from "@lucide/vue";
 import { ConfirmDialog, InputGroup } from "@/components/common";
 import { Button } from "@/components/ui/button";
@@ -113,15 +113,16 @@ import {
 import { toast } from "vue-sonner";
 
 const props = defineProps<{
-  comment: Comment;
+  comment: PublicComment;
 }>();
 
 const emit = defineEmits<{
   refreshComments: [];
 }>();
 
-const { updateComment } = useUpdateComment();
-const { deleteComment } = useDeleteComment();
+const { verifyPassword } = useVerifyCommentPassword();
+const { updateComment } = useUpdateCommentWithPassword();
+const { deleteComment } = useDeleteCommentWithPassword();
 
 const COLORS = [
   "var(--color-highlight-blue)",
@@ -170,9 +171,18 @@ const onDeleteClick = () => {
 const validatePassword = async () => {
   if (loading.value) return;
 
-  if (password.value !== props.comment.password) {
-    toast.error("비밀번호가 일치하지 않습니다.");
+  try {
+    loading.value = true;
+    const isValid = await verifyPassword(props.comment.id, password.value);
+    if (!isValid) {
+      toast.error("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+  } catch {
+    toast.error("비밀번호 확인에 실패했습니다.");
     return;
+  } finally {
+    loading.value = false;
   }
 
   isPasswordValid.value = true;
@@ -206,10 +216,7 @@ const handleUpdateComment = async () => {
 
   try {
     loading.value = true;
-    await updateComment({
-      id: props.comment.id,
-      content: nextContent,
-    });
+    await updateComment(props.comment.id, password.value, nextContent);
     toast.success("댓글이 수정되었습니다.");
     emit("refreshComments");
     resetState();
@@ -229,7 +236,7 @@ const handleDeleteComment = async () => {
 
   try {
     loading.value = true;
-    await deleteComment(props.comment.id);
+    await deleteComment(props.comment.id, password.value);
     toast.success("댓글이 삭제되었습니다.");
     emit("refreshComments");
     resetState();
