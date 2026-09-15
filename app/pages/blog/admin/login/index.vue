@@ -37,12 +37,8 @@ interface LoginForm {
 }
 
 const loginForm = reactive<LoginForm>({ email: "", password: "" });
-const { signIn, loading, error, isAuthenticated } = useAuth();
+const { signIn, loading, error } = useAuth();
 const { resolveRedirectTarget } = usePostLoginRedirect();
-
-if (isAuthenticated.value) {
-  await navigateTo(resolveRedirectTarget());
-}
 
 async function handleSubmit() {
   try {
