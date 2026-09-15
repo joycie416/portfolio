@@ -2,13 +2,13 @@
 
 개인 경력·프로젝트를 소개하는 **포트폴리오**와, Supabase 기반으로 직접 만든 **블로그 CMS**를 함께 운영하는 Nuxt 4 프로젝트입니다.
 
-배포 링크 : https://portfolio-haein.vercel.app
+배포 링크 : [https://portfolio-haein.vercel.app](https://portfolio-haein.vercel.app)
 
 ## 1. 소개
 
 - **포트폴리오**: 프로필, 기술 스택, 참여했던 프로젝트의 기여 내용을 소개하는 페이지
 - **블로그**: 글을 읽고 검색하고 댓글을 남길 수 있는 공개 영역과, 직접 만든 관리자 화면(글 작성/수정, 댓글·메뉴 관리)을 갖춘 **자체 제작 CMS**
-- Supabase(Auth / Database / Storage)를 활용해 백엔드 서버를 구축해 인증과 데이터를 처리
+- Supabase(Auth / Database / Storage)를 활용해 별도의 백엔드 서버 없이 인증, 데이터, 파일 저장을 처리
 - **Vercel**에 배포되어 있으며, Lighthouse로 이미지 최적화 등 성능 개선을 지속적으로 측정
 
 ## 2. 주요 기능
@@ -48,12 +48,12 @@
 
 ## 4. 아키텍처
 
-#### 인증 / 미들웨어 체계
+#### 1) 인증 / 미들웨어 체계
 
 - Supabase Auth(이메일/비밀번호) 기반 인증을 사용. 별도 회원가입 없이 관리자 계정만 운영.
-- 전역 미들웨어 2단계로 로그인 흐름을 분리
-  - `01.admin-auth.global.ts`: `/blog/admin/**` 접근 시 인증 여부를 확인하고, 비로그인 사용자는 원래 경로를 redirect 쿼리에 저장한 뒤 로그인 페이지로 이동
-    - /blog/admin/login은 관리자 경로 하위에 있으므로 인증 검사에서 예외 처리해 리다이렉트 루프를 방지
+- 전역 미들웨어 2단계로 로그인 흐름을 분리.
+  - `01.admin-auth.global.ts`: `/blog/admin/**` 접근 시 인증 여부를 확인하고, 비로그인 사용자는 원래 경로를 redirect 쿼리에 저장한 뒤 로그인 페이지로 이동.
+    - /blog/admin/login은 관리자 경로 하위에 있으므로 인증 검사에서 예외 처리해 리다이렉트 루프를 방지.
   - `02.auth-redirect.global.ts`: 로그인 페이지 접근 시 `redirect` 쿼리가 없으면 이전 경로(`from.fullPath`)로 자동 설정.
   - 로그인 성공 후 `usePostLoginRedirect`가 `redirect` 쿼리 -> `referrer` -> 기본 경로(`/blog`) 순으로 복귀 위치를 결정.
 - 페이지 단위 미들웨어(`validate-post`, `validate-menu`, `validate-edit-post`)로 존재하지 않는 게시글/메뉴 접근을 차단.
@@ -67,24 +67,95 @@
 
 > 비회원 댓글 수정/삭제는 직접 테이블을 수정하지 않고, 비밀번호 검증 RPC를 통해서만 처리.
 
-#### Supabase 데이터베이스 설계
+<!---->
+
+#### 2) Supabase 데이터베이스 설계
 
 - **주요 테이블**
-  - `menus` : 메뉴(카테고리), 자기참조 `parent_id`로 최대 2단계 (부모, 부모-자식) 구조
+  - `menus` : 메뉴(카테고리), 자기참조 `parent_id`로 최대 2단계의 부모-자식 구조
   - `posts` : 게시글
   - `temp_posts` : 임시저장 게시글
   - `comments` : 비회원 댓글
 - **메뉴 순서 / 공개 상태**
-  - `fn_menus_reorder` (RPC): 드래그로 바뀐 순서(`order_idx`, `parent_id`)를 한 번에 반영.
-  - `fn_menus_reorder_on_delete` (트리거): 메뉴 삭제 시 남은 형제들의 `order_idx`를 재정렬하고, 삭제된 부모의 자식들을 최상위로 승격.
-  - `fn_menus_sync_hidden` 부모-자식의 `hidden` 상태를 동기화.
+  - `fn_menus_reorder` : 드래그로 바뀐 순서(`order_idx`, `parent_id`)를 한 번에 반영.
+  - `fn_menus_reorder_on_delete` : 메뉴 삭제 시 남은 형제들의 `order_idx`를 재정렬하고, 삭제된 부모의 자식들을 최상위로 승격.
+  - `fn_menus_sync_hidden` : 부모-자식의 `hidden` 상태를 동기화.
 - **게시글 관리**
   - `posts_bulk_delete`, `posts_bulk_move_menu`, `posts_bulk_update_hidden`: 관리자 화면의 다중 선택 일괄 처리용 RPC.
     - 실패한 행만 반환해 부분 실패를 구분할 수 있게 함.
   - `search_posts_or_title_phrase_or_tags_any` : 제목 부분 일치 또는 태그 기반 검색.
   - `get_post_neighbors` : 게시글 상세의 이전/다음 글 조회.
 - **비회원 댓글**
-  - `fn_comments_hash_password` (트리거): 댓글 저장/수정 시 비밀번호를 `pgcrypto`(bcrypt)로 해싱.
+  - `fn_comments_hash_password` : 댓글 저장/수정 시 비밀번호를 `pgcrypto`(bcrypt)로 해싱.
   - `comment_anon_verify_password`, `comment_anon_update`, `comment_anon_delete`: 비밀번호 검증에 성공했을 때만 수정/삭제를 허용하는 `SECURITY DEFINER` RPC.
+
+## 5. 트러블슈팅
+
+#### 1) 댓글 비밀번호를 클라이언트에서 분리하고 DB에서 검증
+
+초기에는 댓글 조회 시 비밀번호 컬럼까지 함께 조회하고, 수정/삭제 요청 시 클라이언트에서 비밀번호를 비교하는 구조였습니다. 이 경우 브라우저 네트워크 응답을 통해 비밀번호 데이터가 클라이언트에 전달되고, Supabase REST API를 직접 조회했을 때도 해당 값에 접근할 수 있다는 문제가 있었습니다.
+
+이를 개선하기 위해 비밀번호를 클라이언트에서 직접 다루지 않도록 검증 구조를 변경했습니다.
+
+- 댓글 조회 시 `password` 컬럼을 제외해 비밀번호 데이터가 클라이언트로 전달되지 않도록 변경
+- 댓글 저장·수정 시 비밀번호를 `pgcrypto`의 bcrypt로 해싱해 평문으로 저장하지 않도록 처리
+- 비회원 댓글 수정·삭제는 `comment_anon_verify_password`, `comment_anon_update`, `comment_anon_delete` RPC에 위임해 DB 내부에서만 비밀번호를 검증
+
+이렇게 변경하여 클라이언트는 비밀번호 원문이나 해시 값을 직접 조회하거나 비교하지 않고, 검증이 완료된 수정/삭제 작업의 결과만 전달받도록 책임을 분리했습니다.
+
+<!---->
+
+#### 2) 게시글 저장 전에 파일 업로드 경로에 postId가 필요한 문제
+
+게시글 인라인 이미지, 첨부파일의 저장 경로가 `{postId}/...` 형태라, 일반적인 INSERT 흐름과 달리, 게시글이 저장되기 전에 `postId`가 우선적으로 필요했습니다. 따라서 게시글 id를 선점하는 RPC(`reserve_post_id`, `reserve_temp_post_id`)를 생성해 id 발급 -> 파일 업로드 -> URL 반영 -> 게시글 저장 순서로 처리하도록 했습니다.
+
+또한 업로드 실패 시 스토리지 데이터도 삭제해 고아 파일이 없도록 했습니다.
+
+<!---->
+
+#### 3) 이미지 최적화를 통한 LCP 개선
+
+초기 Lighthouse 측정에서 이미지 포맷을 WebP로 변경하고 `fetchpriority="high"`를 적용했음에도 Performance가 84점에 머물렀고, LCP 개선이 충분하지 않았습니다. Lighthouse의 진단 결과를 바탕으로 이미지의 **전송 크기와 요청 시점**을 나누어 개선했습니다.
+
+- `format="webp"`를 적용해 이미지 전송 용량 축소
+- 실제 렌더링 크기에 맞게 `width` / `height`를 지정하고, `sizes`를 통해 적절한 `srcset` 후보가 선택되도록 구성
+- 첫 화면의 LCP 후보 이미지에는 `loading="eager"`와 `fetchpriority="high"`를 적용해 요청을 앞당김
+- 화면 밖 목록 이미지는 `loading="lazy"`로 지연 로딩
+
+그 결과 프로필 이미지 다운로드 용량을 `247.8KB → 69.5KB`로 약 **72% 감소**시켰고, Lighthouse 기준 LCP는 `2.754s → 0.550s`로 약 **80% 감소**, Performance 점수는 `84 → 100`으로 개선했습니다.
+
+이미지 후보 선택 과정과 `width` / `height`, `sizes`, `fetchpriority`, `loading`이 LCP에 미치는 영향은 [블로그 글](https://portfolio-haein.vercel.app/blog/project/30)에 자세히 정리했습니다.
+
+<!---->
+
+#### 4) 메뉴 썸네일 조회를 `watch` 대신 `useAsyncData`로 SSR에서 처리
+
+기존에는 `watch` 내부에서 썸네일 존재 여부를 비동기로 확인해 SSR 시점에는 기본 이미지가 렌더링되고, 하이드레이션 이후 실제 이미지로 교체되는 깜빡임이 발생했습니다.
+
+이를 `useAsyncData` 기반 `useMenuThumbnail` composable로 옮겨 SSR 단계에서 최종 이미지 URL을 확정하도록 변경했습니다. 또한 Storage 파일 존재 여부는 public URL 생성만으로 확인할 수 없어, 파일 전체를 다운로드하지 않고 `HEAD` 요청으로 상태 코드만 확인하도록 개선했습니다.
+
+위와 같이 변경하여 초기 HTML부터 최종 이미지가 포함되어 화면 깜빡임을 제거하고, LCP 대상 이미지도 초기 렌더링 시점에 확정되도록 했습니다.
+
+<!---->
+
+#### 5) slug와 id 사용 구간을 분리하고, SSR 조회 값을 재사용
+
+메뉴 정보는 URL에서는 `slug`, Storage와 일부 내부 로직에서는 `id`를 사용하기 때문에, 필요한 값에 따라 조회 방식을 다르게 구성했습니다.
+
+게시글 목록처럼 URL 기준으로 `slug` 필터링이 필요한 경우에는 `posts` 조회 시 `menus`를 inner join해 바로 조건을 적용했습니다. 별도로 `slug → id`를 조회할 필요가 없고, 비로그인 사용자에게는 메뉴 RLS(`hidden = false`)가 적용되어 숨김 메뉴가 join 대상에서 제외되므로 해당 메뉴의 게시글도 함께 노출되지 않도록 처리할 수 있었습니다.
+
+반대로 메뉴 썸네일처럼 Storage 경로에 실제 메뉴 `id`가 필요한 경우에는 join으로 해결하지 않고, `validate-menu` 미들웨어가 라우트 검증 과정에서 이미 조회한 `id`를 `useState` 기반 `useMenuRoute`에 저장해 페이지와 컴포저블에서 재사용했습니다.
+
+이렇게 `slug`와 `id`의 사용 목적에 따라 조회 방식을 나누고, SSR에서 이미 조회한 값은 `useState`로 공유해 불필요한 추가 조회를 줄였습니다.
+
+<!---->
+
+#### 6) 미들웨어 리다이렉트 재실행으로 인한 중복 검증 방지
+
+`validate-post`, `validate-edit-post`는 잘못된 `slug`나 불필요한 `temp` 쿼리 등을 발견하면 `navigateTo`로 URL을 교정합니다. 이때 새로운 라우팅이 발생하면서 미들웨어 체인이 다시 실행되어, 방금 수행한 검증 쿼리를 반복하거나 조건에 따라 리다이렉트가 반복될 수 있었습니다.
+
+지역 변수는 미들웨어가 다시 실행될 때 초기화되므로, 리다이렉트 직전에 목적지 경로를 `useState`에 기록했습니다. 다음 실행에서 현재 경로가 저장된 목적지와 같으면 자신이 발생시킨 리다이렉트로 판단하고 검증을 건너뛰도록 처리했습니다.
+
+이 방식으로 URL 교정 이후 동일한 검증 로직과 데이터 조회가 다시 수행되는 것을 막고, 불필요한 중복 처리도 줄였습니다.
 
 ---
