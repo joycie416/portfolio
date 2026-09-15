@@ -1,75 +1,49 @@
-# Nuxt Minimal Starter
+# Haein's Portfolio
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+개인 경력·프로젝트를 소개하는 **포트폴리오**와, Supabase 기반으로 직접 만든 **블로그 CMS**를 함께 운영하는 Nuxt 4 프로젝트입니다.
 
-## Setup
+배포 링크 : https://portfolio-haein.vercel.app
 
-Make sure to install dependencies:
+## 1. 소개
 
-```bash
-# npm
-npm install
+- **포트폴리오**: 프로필, 기술 스택, 참여했던 프로젝트의 기여 내용을 소개하는 페이지
+- **블로그**: 글을 읽고 검색하고 댓글을 남길 수 있는 공개 영역과, 직접 만든 관리자 화면(글 작성/수정, 댓글·메뉴 관리)을 갖춘 **자체 제작 CMS**
+- Supabase(Auth / Database / Storage)를 활용해 백엔드 서버를 구축해 인증과 데이터를 처리
+- **Vercel**에 배포되어 있으며, Lighthouse로 이미지 최적화 등 성능 개선을 지속적으로 측정
 
-# pnpm
-pnpm install
+## 2. 주요 기능
 
-# yarn
-yarn install
+#### 포트폴리오
 
-# bun
-bun install
-```
+- 프로필 소개, 기술 스택, 프로젝트 목록을 스크롤로 보여주는 원페이지 구성
 
-## Development Server
+#### 블로그 (공개 영역)
 
-Start the development server on `http://localhost:3000`:
+- 메뉴별 게시글 목록, 검색, 페이지네이션
+- 게시글 상세: 첨부파일 다운로드, 태그, 관련 글 목록, Tiptap 코드 블록 문법 강조
+- **비회원 댓글**: 로그인 없이 닉네임 + 비밀번호로 댓글 작성/수정/삭제 (비밀번호 검증 단계 포함)
 
-```bash
-# npm
-npm run dev
+#### 블로그 관리자 (Admin CMS)
 
-# pnpm
-pnpm dev
+- Supabase Auth 로그인 + 전역 미들웨어 기반 관리자 경로 보호, 로그인 후 원래 페이지로 리다이렉트
+- Tiptap 에디터로 게시글 작성/수정 (이미지, 첨부파일, 표, 코드 블록, 썸네일)
+- 게시글 목록 검색/필터링, 체크박스 다중 선택 후 일괄 처리
+- 댓글 검색/필터링 및 삭제
+- 메뉴 드래그 앤 드롭 순서 변경, 공개/숨김 상태 관리
 
-# yarn
-yarn dev
+#### 기타
 
-# bun
-bun run dev
-```
+- SEO: 사이트맵 자동 생성, OG 메타 태그, 검색엔진 사이트 인증
 
-## Production
+## 3. 기술 스택
 
-Build the application for production:
+| 구분              | 스택                                                    |
+| ----------------- | ------------------------------------------------------- |
+| Framework         | Nuxt 4, Vue 3, TypeScript                               |
+| Backend           | Supabase (Auth, Database, Storage)                      |
+| UI                | Tailwind CSS 4, shadcn-vue, SCSS                        |
+| Form / 검증       | vee-validate, zod                                       |
+| 에디터            | Tiptap (이미지, 파일, 표, 코드 블록 하이라이팅 등 확장) |
+| 데이터 / 인터랙션 | TanStack Table, vue-draggable-plus, dayjs               |
 
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+---
