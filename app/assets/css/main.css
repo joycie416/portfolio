@@ -111,8 +111,10 @@
   --color-skill-shadcn-ui: var(--skill-shadcn-ui);
   --color-skill-tailwind-css: var(--skill-tailwind-css);
   --color-skill-scss: var(--skill-scss);
+  --color-skill-tiptap: var(--skill-tiptap);
   --color-skill-zod: var(--skill-zod);
   --color-skill-react-hook-form: var(--skill-react-hook-form);
+  --color-skill-vee-validate: var(--skill-vee-validate);
   --color-skill-dayjs: var(--skill-dayjs);
   --color-skill-group-languages: var(--skill-group-languages);
   --color-skill-group-frameworks: var(--skill-group-frameworks);
@@ -223,8 +225,10 @@
   --skill-shadcn-ui: #000000;
   --skill-tailwind-css: #06b6d4;
   --skill-scss: #cc6699;
+  --skill-tiptap: #0d0d0d;
   --skill-zod: #3068b7;
   --skill-react-hook-form: #ec5990;
+  --skill-vee-validate: #26c18b;
   --skill-dayjs: #ff5f4c;
   --skill-group-languages: #3b82f6;
   --skill-group-frameworks: #22c55e;
@@ -339,8 +343,10 @@
   --skill-shadcn-ui: #000000;
   --skill-tailwind-css: #06b6d4;
   --skill-scss: #cc6699;
+  --skill-tiptap: #0d0d0d;
   --skill-zod: #3068b7;
   --skill-react-hook-form: #ec5990;
+  --skill-vee-validate: #26c18b;
   --skill-dayjs: #ff5f4c;
   --skill-group-languages: #3b82f6;
   --skill-group-frameworks: #22c55e;
