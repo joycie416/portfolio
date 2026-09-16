@@ -81,13 +81,13 @@
   - `fn_menus_reorder_on_delete` : 메뉴 삭제 시 남은 형제들의 `order_idx`를 재정렬하고, 삭제된 부모의 자식들을 최상위로 승격.
   - `fn_menus_sync_hidden` : 부모-자식의 `hidden` 상태를 동기화.
 - **게시글 관리**
-  - `posts_bulk_delete`, `posts_bulk_move_menu`, `posts_bulk_update_hidden`: 관리자 화면의 다중 선택 일괄 처리용 RPC.
+  - `posts_bulk_*`: 관리자 화면의 다중 선택 일괄 처리용 RPC.
     - 실패한 행만 반환해 부분 실패를 구분할 수 있게 함.
   - `search_posts_or_title_phrase_or_tags_any` : 제목 부분 일치 또는 태그 기반 검색.
   - `get_post_neighbors` : 게시글 상세의 이전/다음 글 조회.
 - **비회원 댓글**
   - `fn_comments_hash_password` : 댓글 저장/수정 시 비밀번호를 `pgcrypto`(bcrypt)로 해싱.
-  - `comment_anon_verify_password`, `comment_anon_update`, `comment_anon_delete`: 비밀번호 검증에 성공했을 때만 수정/삭제를 허용하는 `SECURITY DEFINER` RPC.
+  - `comment_anon_*` : DB에서 비밀번호 검증 및 검증에 성공했을 때만 비회원 댓글 수정/삭제를 허용하는 `SECURITY DEFINER` RPC.
 
 ## 5. 트러블슈팅
 
@@ -99,7 +99,7 @@
 
 - 댓글 조회 시 `password` 컬럼을 제외해 비밀번호 데이터가 클라이언트로 전달되지 않도록 변경
 - 댓글 저장·수정 시 비밀번호를 `pgcrypto`의 bcrypt로 해싱해 평문으로 저장하지 않도록 처리
-- 비회원 댓글 수정·삭제는 `comment_anon_verify_password`, `comment_anon_update`, `comment_anon_delete` RPC에 위임해 DB 내부에서만 비밀번호를 검증
+- 비회원 댓글 수정·삭제는 RPC에 위임해 DB 내부에서만 비밀번호를 검증
 
 이렇게 변경하여 클라이언트는 비밀번호 원문이나 해시 값을 직접 조회하거나 비교하지 않고, 검증이 완료된 수정/삭제 작업의 결과만 전달받도록 책임을 분리했습니다.
 
@@ -107,9 +107,9 @@
 
 #### 2) 게시글 저장 전에 파일 업로드 경로에 postId가 필요한 문제
 
-게시글 인라인 이미지, 첨부파일의 저장 경로가 `{postId}/...` 형태라, 일반적인 INSERT 흐름과 달리, 게시글이 저장되기 전에 `postId`가 우선적으로 필요했습니다. 따라서 게시글 id를 선점하는 RPC(`reserve_post_id`, `reserve_temp_post_id`)를 생성해 id 발급 -> 파일 업로드 -> URL 반영 -> 게시글 저장 순서로 처리하도록 했습니다.
+게시글 인라인 이미지, 첨부파일의 저장 경로가 `{postId}/...` 형태라, 일반적인 INSERT 흐름과 달리, 게시글이 저장되기 전에 `postId`가 우선적으로 필요했습니다. 따라서 게시글 id를 사전에 발급하는 RPC를 생성해 id 발급 -> 파일 업로드 -> URL 반영 -> 게시글 저장 순서로 처리하도록 했습니다.
 
-또한 업로드 실패 시 스토리지 데이터도 삭제해 고아 파일이 없도록 했습니다.
+또한 파일 업로드 이후 게시글 저장 과정에서 실패하면 이미 업로드된 파일을 삭제해 Storage에 고아 파일이 남지 않도록 처리했습니다.
 
 <!---->
 
@@ -122,7 +122,7 @@
 - 첫 화면의 LCP 후보 이미지에는 `loading="eager"`와 `fetchpriority="high"`를 적용해 요청을 앞당김
 - 화면 밖 목록 이미지는 `loading="lazy"`로 지연 로딩
 
-그 결과 프로필 이미지 다운로드 용량을 `247.8KB → 69.5KB`로 약 **72% 감소**시켰고, Lighthouse 기준 LCP는 `2.754s → 0.550s`로 약 **80% 감소**, Performance 점수는 `84 → 100`으로 개선했습니다.
+그 결과 프로필 이미지 다운로드 용량을 `247.8KB -> 69.5KB`로 약 **72% 감소**시켰고, Lighthouse 기준 LCP는 `2.754s -> 0.550s`로 약 **80% 감소**, Performance 점수는 `84 -> 100`으로 개선했습니다.
 
 이미지 후보 선택 과정과 `width` / `height`, `sizes`, `fetchpriority`, `loading`이 LCP에 미치는 영향은 [블로그 글](https://portfolio-haein.vercel.app/blog/project/30)에 자세히 정리했습니다.
 
@@ -142,7 +142,7 @@
 
 메뉴 정보는 URL에서는 `slug`, Storage와 일부 내부 로직에서는 `id`를 사용하기 때문에, 필요한 값에 따라 조회 방식을 다르게 구성했습니다.
 
-게시글 목록처럼 URL 기준으로 `slug` 필터링이 필요한 경우에는 `posts` 조회 시 `menus`를 inner join해 바로 조건을 적용했습니다. 별도로 `slug → id`를 조회할 필요가 없고, 비로그인 사용자에게는 메뉴 RLS(`hidden = false`)가 적용되어 숨김 메뉴가 join 대상에서 제외되므로 해당 메뉴의 게시글도 함께 노출되지 않도록 처리할 수 있었습니다.
+게시글 목록처럼 URL 기준으로 `slug` 필터링이 필요한 경우에는 `posts` 조회 시 `menus`를 inner join해 바로 조건을 적용했습니다. 별도로 `slug -> id`를 조회할 필요가 없고, 비로그인 사용자에게는 메뉴 RLS(`hidden = false`)가 적용되어 숨김 메뉴가 join 대상에서 제외되므로 해당 메뉴의 게시글도 함께 노출되지 않도록 처리할 수 있었습니다.
 
 반대로 메뉴 썸네일처럼 Storage 경로에 실제 메뉴 `id`가 필요한 경우에는 join으로 해결하지 않고, `validate-menu` 미들웨어가 라우트 검증 과정에서 이미 조회한 `id`를 `useState` 기반 `useMenuRoute`에 저장해 페이지와 컴포저블에서 재사용했습니다.
 
@@ -157,5 +157,3 @@
 지역 변수는 미들웨어가 다시 실행될 때 초기화되므로, 리다이렉트 직전에 목적지 경로를 `useState`에 기록했습니다. 다음 실행에서 현재 경로가 저장된 목적지와 같으면 자신이 발생시킨 리다이렉트로 판단하고 검증을 건너뛰도록 처리했습니다.
 
 이 방식으로 URL 교정 이후 동일한 검증 로직과 데이터 조회가 다시 수행되는 것을 막고, 불필요한 중복 처리도 줄였습니다.
-
----
