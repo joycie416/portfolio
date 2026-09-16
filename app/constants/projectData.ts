@@ -2,6 +2,40 @@ import type { Project } from "@/types/common";
 
 export const PROJECT_DATA: Project[] = [
   {
+    title: "개인 블로그",
+    description: "포트폴리오 및 자체 CMS를 포함한 개인 블로그",
+    contributions: [
+      "이미지 전송 크기와 로딩 시점을 최적화해 Lighthouse LCP를 2.754s -> 0.550s(약 80% 단축), Performance 점수를 84 -> 100으로 개선",
+      "비회원 댓글 비밀번호가 클라이언트에 노출되지 않도록 bcrypt 해싱과 RPC 기반 DB 검증 구조를 설계",
+      "게시글 저장 전 ID가 필요한 파일 업로드 구조를 ID 발급 -> 업로드 -> 저장 흐름으로 재설계하고, 실패 시 고아 파일을 정리해 데이터 정합성을 확보",
+      "메뉴 썸네일을 SSR 단계에서 미리 조회하도록 데이터 로딩 구조를 개선해 하이드레이션 시 발생하던 이미지 깜빡임을 제거",
+      "관리자 인증과 리다이렉트 책임을 전역 미들웨어에서 분리하고, URL 교정 과정의 중복 인증을 방지해 인증 흐름을 안정화",
+    ],
+    skills: [
+      { name: "Nuxt", color: "nuxt" },
+      { name: "Vue", color: "vue" },
+      { name: "TypeScript", color: "typescript" },
+      { name: "Tailwind CSS", color: "tailwind-css" },
+      { name: "Shadcn UI", color: "shadcn-ui" },
+      { name: "Supabase", color: "supabase" },
+      { name: "Tiptap", color: "tiptap" },
+      { name: "Zod", color: "zod" },
+      { name: "vee-validate", color: "vee-validate" },
+    ],
+    links: [
+      {
+        type: "demo",
+        url: "https://portfolio-haein.vercel.app/",
+        text: "Demo",
+      },
+      {
+        type: "github",
+        url: "https://github.com/joycie416/portfolio",
+        text: "GitHub",
+      },
+    ],
+  },
+  {
     title: "GPUAASO",
     description: "GPU 자원과 AI 서비스 운영을 관리하는 플랫폼",
     contributions: [

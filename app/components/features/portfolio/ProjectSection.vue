@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import ProjectCard from "./ProjectCard.vue";
-import { PROJECT_DATA } from "./projectData.js";
+import { PROJECT_DATA } from "../../../constants/projectData.js";
 </script>
 
 <style lang="scss" scoped>
