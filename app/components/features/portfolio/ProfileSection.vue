@@ -8,6 +8,7 @@
       class="absolute inset-0 size-full object-cover"
       height="1080"
       width="1920"
+      sizes="sm:100vw md:100vw lg:100vw xl:100vw"
       format="webp"
       quality="75"
       loading="eager"
@@ -37,6 +38,7 @@
             format="webp"
             width="320"
             height="427"
+            sizes="sm:50vw md:320px"
             fetchpriority="high"
             loading="eager"
           />
