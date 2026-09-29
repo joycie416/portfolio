@@ -6,6 +6,7 @@
       fit="cover"
       height="1080"
       width="1920"
+      sizes="sm:100vw md:100vw lg:100vw xl:100vw"
       format="webp"
       quality="75"
       loading="eager"

@@ -43,7 +43,7 @@ const { resolveRedirectTarget } = usePostLoginRedirect();
 async function handleSubmit() {
   try {
     await signIn(loginForm.email, loginForm.password);
-    await navigateTo(resolveRedirectTarget());
+    reloadNuxtApp({ path: resolveRedirectTarget() });
   } catch {
     // useAuth에서 error 상태를 설정함
   }

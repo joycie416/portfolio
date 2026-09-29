@@ -362,4 +362,8 @@
   p:empty::before {
     content: "\00a0";
   }
+
+  table {
+    margin-block: 24px;
+  }
 }
